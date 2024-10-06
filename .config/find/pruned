@@ -1,0 +1,25 @@
+-ipath /lib/go -o
+-ipath /lib/python* -o
+-ipath /lib64/go -o
+-ipath /lib64/python* -o
+-ipath /usr/include -o
+-ipath /usr/lib/go -o
+-ipath /usr/lib/python* -o
+-ipath /usr/lib64/go -o
+-ipath /usr/lib64/python* -o
+-ipath /boot -o
+-iname proc -o
+-iname sys -o
+-iname backupz -o
+-iname backup -o
+-iname backups -o
+-iname tmp -o
+-iname .trash-1000 -o
+-iname Trash -o
+-iname modules -o
+-iname .cache -o
+-iname run -o
+-iname lost+found -o
+-iname media -o
+-iname node_modules -o
+-iname dev

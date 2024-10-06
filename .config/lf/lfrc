@@ -1,0 +1,65 @@
+# [LFRC]
+  # [INCLUDE]
+    source "~/.config/lf/mappings"
+  # [INTERFACE]
+    set drawbox false
+    set icons true
+    set number true
+    set relativenumber true
+    set preview true
+    set sixel true
+    set previewer "~/.config/lf/scripts/lf-chafa.sh"
+    set cursorpreviewfmt "\033[7;2m"
+    set dupfilefmt "%f.__%n__"
+    set timefmt "2006 Jan _2 15:04:05 "
+  # [SETTINGS]
+    set shell bash
+    set shellopts '-eu'
+    set ifs "\n"
+    set history true
+  # [COMMANDS]
+    # [ONELINE]
+      cmd copy-clip ${{ wl-copy < "$f" }}
+      cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
+      cmd trash &{{ set -f ; trash-put -f $fx ; }}
+      cmd mkdir %{{ IFS=" " ; mkdir -p -- "$*" ; lf -remote "send $id select \"$*\"" }}
+      cmd tar ${{ set -f ; mkdir $1 ; cp -r $fx $1 ; tar czf $1.tar.gz $1 ; rm -rf $1 }}
+    # [CH_BG]
+      cmd bpc &{{
+        export wp="/home/gus/.bg" hpconf='preload = "$f" \n wallpaper = HDMI-A-1, "$f" > /home/gus/.conf/hypr/hyprpaper.conf' ;
+        cp "$f" "${wp}" ; [[ "$(pgrep mpvpaper)" == "" ]] && [[ "$(pgrep hyprpaper)" == "" ]] && echo -e "${hpconf}" && hyprpaper ||
+        pkill 'mpvpaper|hyprpaper' && echo -e "${hpconf}" && hyprpaper ;
+      }}
+      cmd bvc &{{
+        export vidp="/home/gus/.bv" mpvpopt='no-config load-scripts=no aid=no loop-file=inf vo=libmpv panscan=1' ; cp "$f" "${vidp}" ;
+        [[ "$(pgrep mpvpaper)" == "" ]] && [[ "$(pgrep hyprpaper)" == "" ]] && mpvpaper -o "${mpvpopt}" '*' "${vidp}" ||
+        pkill 'mpvpaper|hyprpaper' && mpvpaper -o "${mpvpopt}" '*' "${vidp}" ;
+      }}
+    # [NAV]
+      cmd fcd ${{ 
+        res="$(doas find -L / -type d \( $(cat /home/gus/.config/find/pruned | tr '\n' ' ') \) -prune -o -type d -print 2> /dev/null | fzf --reverse --header='Change Dir')" && cmd="cd" ;
+      }}
+    # TOOLS]
+      cmd open ${{
+        test -L $f && f=$(readlink -f $f) ; export ftar=(image/vnd.djvu\|application/pdf\|application/octet-stream text/*\|application/json image/* audio/* video/* application/pdf\|application/vnd*\|application/epub*) ;
+        case $(file --mime-type "$f" -b) in
+          ${ftar[0]}) setsid -f zathura "$fx" >/dev/null 2>&1 ;;
+          ${ftar[1]}) $EDITOR "$fx" ;;
+      	  ${ftar[2]}) imv "$f" 2>/dev/null ;;
+      	  ${ftar[3]}) mpv --audio-display=no "$f" ;;
+      	  ${ftar[4]}) setsid -f mpv --mute=yes "$fx" -quiet >/dev/null 2>&1 ;;
+      	  ${ftar[6]}) setsid -f zathura "$fx" >/dev/null 2>&1 ;;
+          *) for f in "$fx"; do setsid -f $OPENER "$f" >/dev/null 2>&1; done ;;
+        esac
+      }}
+      cmd extract ${{
+        set -f && export ftar2=(*.tar.bz\|*.tar.bz2\|*.tbz\|*.tbz2 *.tar.gz\|*.tgz *.tar.xz\|*.txz *.zip *.rar *.7z)
+        case $f in
+          ${ftar2[0]}) tar xjvf $f ;;
+          ${ftar2[1]}) tar xzvf $f ;;
+          ${ftar2[2]}) tar xJvf $f ;;
+          ${ftar2[3]}) unzip $f ;;
+          ${ftar2[4]}) unrar x $f ;;
+          ${ftar2[5]}) 7z x $f ;;
+        esac
+      }}
