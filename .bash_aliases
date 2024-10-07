@@ -14,7 +14,7 @@
       NC="${esc}"'[0m' BD_C="${esc}"'['"${LS_BD}"'m' CD_C="${esc}"'['"${LS_CD}"'m' DI_C="${esc}"'['"${LS_DI}"'m' DO_C="${esc}"'['"${LS_DO}"'m' EX_C="${esc}"'['"${LS_EX}"'m' PI_C="${esc}"'['"${LS_PI}"'m' FI_C="${esc}"'['"${LS_FI}"'m' LN_C="${esc}"'['"${LS_LN}"'m' MH_C="${esc}"'['"${LS_MH}"'m' \
       OR_C="${esc}"'['"${LS_OR}"'m' OW_C="${esc}"'['"${LS_OW}"'m' SG_C="${esc}"'['"${LS_SG}"'m' SU_C="${esc}"'['"${LS_SU}"'m' SO_C="${esc}"'['"${LS_SO}"'m' ST_C="${esc}"'['"${LS_ST}"'m' TW_C="${esc}"'['"${LS_TW}"'m' ARC_C="${esc}"'['"${LS_ARC}"'m' GF_C="${esc}"'['"${LS_GF}"'m' \
       IM_C="${esc}"'['"${LS_IM}"'m' AF_C="${esc}"'['"${LS_AF}"'m' VF_C="${esc}"'['"${LS_VF}"'m' UI_C="${esc}"'['"${LS_UI}"'m'
-  # [ALIASES]
+  # [ALIASES] 
     # [GLOBAL_ALIASES]
       alias \
         ct="clear && source ~/.bashrc" \
