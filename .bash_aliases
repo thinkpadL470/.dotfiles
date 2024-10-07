@@ -80,7 +80,7 @@
         ytrss="newsboat -c '$HOME/.cache/newsboat/yt-cache.db' -u '$HOME/.config/newsboat/urls.d/yt.urls'" \
         gitrss="newsboat -c '$HOME/.cache/newsboat/git-cache.db' -u '$HOME/.config/newsboat/urls.d/github.urls'" \
         fdu="fdroidcl update ; fdroidcl install -u ; fdroidcl clean"
-    # [TERMUX_ALIASES] 
+    # [TERMUX_ALIASES]
       test -d "/data/data/com.termux" && alias \
         resshd="pkill sshd && sshd" \
         sshadd="ssh-add ~/.ssh/*-rsa" \
