@@ -1,0 +1,3 @@
+
+46845d146a755d87e4d50a2dce927104a380d1187ba94af8345ebbe5687e9039	{"key":"GET:https://api.tidal.com/v1/artists/13131069?countryCode=SE","integrity":"sha256-xEHY4bhBSkO/azc5Zs8ka047OfipzTB64mxgFgNESJs=","time":1719427693580,"size":2292,"metadata":null,"raw_metadata":null}
+7e6288fccda5547e9067f6ae677cb665414c045f6ae31225dedbdcf738bf2d43	{"key":"GET:https://api.tidal.com/v1/artists/13131069?countryCode=SE","integrity":"sha256-hEq0wALEeiDQ8Lz/PZZ0sSG+gBgyo9P+LZPSPWeNq4A=","time":1719427693580,"size":2292,"metadata":null,"raw_metadata":null}

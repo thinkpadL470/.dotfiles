@@ -49,7 +49,8 @@
         grep="grep --color=auto" \
         fgrep="fgrep --color=auto" \
         egrep="egrep --color=auto" \
-        diff="diff --color=auto"
+        diff="diff --color=auto" \
+        stow="stow --no-folding"
     # [LINUX_ALAISES]
       test -x "/bin/doas" && alias \
         sudo="doas "
