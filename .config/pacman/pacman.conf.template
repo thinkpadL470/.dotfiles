@@ -39,4 +39,4 @@
     LocalFileSigLevel = Optional
     # RemoteFileSigLevel = Required
   # [REPOS]
-    Include = $HOME/.config/pacman/repo.conf
+    Include = ${HOME}/.config/pacman/repo.conf

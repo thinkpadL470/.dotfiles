@@ -1,17 +1,17 @@
 [global]
-    title               = dunst
-    class               = dunst
-    always_run_script   = true
-    ignore_dbusclose    = false
-    monitor             = 0
-    notification_limit  = 10
-    indicate_hidden     = yes
-    sort                = yes
-    idle_threshold      = 120
-    show_age_threshold  = 60
-    follow              = mouse
-    show_indicators     = no
-    browser             = /usr/bin/xdg-open 
+  title               = dunst
+  class               = dunst
+  always_run_script   = true
+  ignore_dbusclose    = false
+  monitor             = 0
+  notification_limit  = 10
+  indicate_hidden     = yes
+  sort                = yes
+  idle_threshold      = 120
+  show_age_threshold  = 60
+  follow              = mouse
+  show_indicators     = no
+  browser             = /usr/bin/xdg-open 
   # [WINDOW]
     alignment           = left
     vertical_alignment  = top

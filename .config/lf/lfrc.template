@@ -36,10 +36,18 @@
         pkill 'mpvpaper|hyprpaper' && mpvpaper -o "${mpvpopt}" '*' "${vidp}" ;
       }}
     # [NAV]
-      cmd fcd ${{ 
-        res="$(doas find -L / -type d \( $(cat /home/gus/.config/find/pruned | tr '\n' ' ') \) -prune -o -type d -print 2> /dev/null | fzf --reverse --header='Change Dir')" && cmd="cd" ;
+      cmd fcd ${{
+        res="$(doas find -L / -type d \( ${pruned} \) -prune -o -type d -print 2> /dev/null | fzf --reverse --header='Change Dir')"
+        if [ -d "$res" ] ; then
+          cmd="cd"
+        elif [ -f "$res" ] ; then
+          cmd="select"
+        else
+          exit 0
+        fi
+        lf -remote "send $id $cmd \"$res\""
       }}
-    # TOOLS]
+    # [TOOLS]
       cmd open ${{
         test -L $f && f=$(readlink -f $f) ; export ftar=(image/vnd.djvu\|application/pdf\|application/octet-stream text/*\|application/json image/* audio/* video/* application/pdf\|application/vnd*\|application/epub*) ;
         case $(file --mime-type "$f" -b) in
