@@ -1,27 +1,21 @@
 #!/bin/bash
-
 recordings=0
-
 update() {
   if [ "$recordings" -gt 0 ]; then
     echo " "
   else
     echo
   fi
-}
-
+};
 begin_record() {
   recordings=$((recordings + 1))
   update
-}
-
+};
 end_record() {
   recordings=$((recordings - 1))
   update
-}
-
+};
 exec sleep infinity &
-
 pid="$!"
 trap begin_record SIGUSR1
 trap end_record SIGUSR2
