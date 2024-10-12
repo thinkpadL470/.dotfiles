@@ -1,5 +1,4 @@
-# Default config for imv
-
+# [IMV_CONFIG]
 [options]
 
 # Suppress built-in key bindings, and specify them explicitly in this
@@ -14,7 +13,6 @@ m alias = command to run
 [binds]
 # Define some key bindings
 q = quit
-y = exec echo working!
 
 # Image navigation
 <Left> = prev

@@ -1,6 +1,0 @@
-freeimage
-python-bitstring
-python-ecdsa
-python-jsonrpclib-pelix
-python-pbkdf2
-python-websocket-client

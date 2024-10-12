@@ -3,7 +3,7 @@
   "position": "top",
   "spacing": 16,
 
-  "modules-left": ["custom/launcher", "custom/recorder", "hyprland/workspaces"],
+  "modules-left": ["custom/launcher", "custom/recording", "hyprland/workspaces"],
   "modules-center": ["hyprland/window"],
   "modules-right": ["network", "pulseaudio", "battery", "clock#date", "clock#time"],
 
@@ -32,13 +32,19 @@
     "tooltip": false
   },
 
-  "custom/recorder": {
+  "custom/recording": {
+    "exec": "exec ~/.local/scripts/recordscreend",
+    "exec-on-event": false,
+    "on-click": "pkill -INT -P \"$(pgrep -xo recordscreen)\" wf-recorder"
+  },
+
+/*  "custom/recorder": {
   	"format": "",
   	"return-type": "json",
   	"interval": 5,
   	"exec": "echo '{\"class\": \"recording\"}'",
   	"exec-if": "pgrep wf-recorder"
-  },
+  }, */
 
   "hyprland/window": {
     "separate-outputs": true
