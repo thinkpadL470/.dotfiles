@@ -2,7 +2,7 @@
 
 ## Variable.sys
 MONN="HDMI-A-1"
-HYPC="${HOME}/dotfiles/.config/hypr/hyprpaper.conf"
+HYPC="${HOME}/.config/hypr/hyprpaper.conf"
 wp="${HOME}/.bg"
 
 ## Variable.quality
