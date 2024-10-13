@@ -22,10 +22,7 @@
         lm="ls -rt1" \
         ll="~/.local/scripts/ll.sh" \
         rearange="~/.local/scripts/rearrange.sh" \
-        tree="ls --tree" \
-        tree1="tree --depth 1" \
-        tree2="tree --depth 2" \
-        tree3="tree --depth 3" \
+        tree="find . | sed -e 's/[^-][^\/]*\//  |/g' -e 's/|\([^ ]\)/|-\1/'" \
         cp="cp -iv" \
         mv="mv -iv" \
         mkd="mkdir" \
@@ -55,7 +52,7 @@
       test -x "/bin/doas" && alias \
         sudo="doas "
       test -d "/home" && alias \
-        sudoedit="doas nvim -u $HOME/.config/nvim/sudoedit" \
+        sudoedit="doas nvim -u ~/.config/nvim/sudoedit" \
         monerodrc="monerod --prune-blockchain --sync-pruned-blocks --detach" \
         del="trash-put -vf" \
         wgetua="wget -U 'Mozilla/5.0 (Windows NT 10.0; rv:127.0) Gecko/20100101 Firefox/127.0'" \
@@ -77,8 +74,8 @@
         tvv="lobster -p Vidcloud --quiet" \
         tvvsd="tvv -q 720" \
         pdf="zathura" \
-        ytrss="newsboat -c '$HOME/.cache/newsboat/yt-cache.db' -u '$HOME/.config/newsboat/urls.d/yt.urls'" \
-        gitrss="newsboat -c '$HOME/.cache/newsboat/git-cache.db' -u '$HOME/.config/newsboat/urls.d/github.urls'" \
+        ytrss="newsboat -c '~/.cache/newsboat/yt-cache.db' -u ' ~/.config/newsboat/urls.d/yt.urls'" \
+        gitrss="newsboat -c '~/.cache/newsboat/git-cache.db' -u '~/.config/newsboat/urls.d/github.urls'" \
         fdu="fdroidcl update ; fdroidcl install -u ; fdroidcl clean"
     # [TERMUX_ALIASES]
       test -d "/data/data/com.termux" && alias \
@@ -88,12 +85,12 @@
         cbc="termux-clipboard-set" \
         cbp="termux-clipboard-get"
     # [ARCH_ALIASES]
-      test -x "/usr/bin/pacman" && export PCCONF="$HOME/.config/pacman/pacman.conf" && alias \
-        mpkg="makepkg -cirs --config '$HOME/.makepkg.conf'" \
-        pacman="pacman --config "$PCCONF"" \
-        downgrade="downgrade --pacman-conf "$PCCONF"" \
+      test -x "/usr/bin/pacman" && export PCCONF="~/.config/pacman/pacman.conf" && alias \
+        mpkg="makepkg -cirs --config '~/.makepkg.conf'" \
+        pacman="pacman --config "${PCCONF}"" \
+        downgrade="downgrade --pacman-conf "${PCCONF}"" \
         paclunneeded="pacman -Qqd | pacman -Rsu --print -" \
-        expac="expac --config "$PCCONF"" \
+        expac="expac --config "${PCCONF}"" \
         pacls="expac -S -H M '%k\t%n' ; echo '\nsize of packages'" \
         paclu='expac -S -H M "%k\t%n" $(pacman -Qqu) | sort -sh ; echo -e "\npackages marked for update, with dl size"' \
         paclo="expac -S '%o' ; echo -e '\noptional dependencies'" \
@@ -103,12 +100,12 @@
       fcd () {
         test -d "/home" && local badir="/" && alias find="sudo find"
         test -d "/data/data/com.termux" && local badir="/data/data/com.termux/files/"
-        cd $(find -L ${badir} -type d \( $(cat $HOME/.config/find/pruned | tr '\n' ' ') \) -prune -o -type d -print 2> /dev/null | fzf --reverse --header='Change Dir')
+        cd $(find -L ${badir} -type d \( $(cat ~/.config/find/pruned | tr '\n' ' ') \) -prune -o -type d -print 2> /dev/null | fzf --reverse --header='Change Dir')
       } ;
       ffc () {
         test -d "/home" && local badir="/" && alias find="sudo find"
         test -d "/data/data/com.termux" && local badir="/data/data/com.termux/files/"
-        cbc $(find -L ${badir} -type d \( $(cat $HOME/.config/find/pruned | tr '\n' ' ') \) -prune -o -type f -print 2> /dev/null | fzf --reverse --header='Copy File Path')
+        cbc $(find -L ${badir} -type d \( $(cat ~/.config/find/pruned | tr '\n' ' ') \) -prune -o -type f -print 2> /dev/null | fzf --reverse --header='Copy File Path')
       } ;
       dltik () {
         test -d "/data/data/com.termux/files/" && local tikfailarc='~/storage/shared/Movies/tiktok/.failed-tik-dl-archive'
@@ -118,7 +115,7 @@
       test -x "/bin/lemurs" && test -x "/bin/hyprctl" && \
       gsd () {
         HYPRCMDS=$(hyprctl -j clients | jq -j '.[| "dispatch closewindow address:\(.address); "');
-        hyprctl --batch "$HYPRCMDS";
+        hyprctl --batch "${HYPRCMDS}";
         test -x "/bin/systemctl" && setsid -f doas systemctl restart lemurs.service
       } ;
       mpfd () {

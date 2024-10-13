@@ -15,4 +15,3 @@
       mixer = "PCM" 
       volume_controller = "softvol"
       no_audio_cache = true
-      cache_path = "cache_directory"
