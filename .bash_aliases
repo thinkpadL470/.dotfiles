@@ -74,7 +74,7 @@
         tvv="lobster -p Vidcloud --quiet" \
         tvvsd="tvv -q 720" \
         pdf="zathura" \
-        ytrss="newsboat -c '~/.cache/newsboat/yt-cache.db' -u ' ~/.config/newsboat/urls.d/yt.urls'" \
+        ytrss="newsboat -c '~/.cache/newsboat/yt-cache.db' -u '~/.config/newsboat/urls.d/yt.urls'" \
         gitrss="newsboat -c '~/.cache/newsboat/git-cache.db' -u '~/.config/newsboat/urls.d/github.urls'" \
         fdu="fdroidcl update ; fdroidcl install -u ; fdroidcl clean"
     # [TERMUX_ALIASES]
