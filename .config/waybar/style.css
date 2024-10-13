@@ -1,28 +1,20 @@
-/* Waybar.import */
-
 @import "mocha.css";
-
-/* Waybar.css */
-
 * {
   all: unset;
   font-family: Fira Code Nerd Font;
   font-size: 17px;
 }
-
 .modules-left {
   background: @base;
   padding: 0 10px;
   border-radius: 0 0 8px 0;
 }
-
 .modules-right {
   background: @base;
   font-weight: bold;
   padding: 0 10px;
   border-radius: 0 0 0 8px;
 }
-
 .modules-center {
   color: @peach;
   font-weight: 500;
@@ -30,12 +22,10 @@
   padding: 0 10px;
   border-radius: 8px;
 }
-
 tooltip {
   color: @mauve;
   background: @base;
 }
-
 #window {
   background: @base;
   font-weight: 500;
@@ -43,64 +33,50 @@ tooltip {
   padding: 0 10px;
   border-radius: 0 0 8px 8px;
 }
-
 window#waybar.empty #window {
   background: rgba(12, 12, 12, 0.0);
 }
-
 #backlight {
   color: @peach;
 }
-
 #battery {
   color: @green;
 }
-
 #clock.date {
   color: @maroon;
 }
-
 #clock.time {
   color: @peach;
 }
-
 #custom-launcher {
   color: @sapphire;
   margin: 0 6px 0 0;
 }
-
-#custom-recorder {
+#custom-recordscreen {
 	color: @red;
 	margin: 0 6px 0 0;
 }
-
 #mpris {
   color: @green;
   font-weight: 600;
 }
-
 #network {
   color: @sapphire;
 }
-
 #pulseaudio {
   color: @teal;
 }
-
 #workspaces {
   color: @mauve;
   font-weight: bold;
   margin: 0 -4px;
 }
-
 #workspaces button {
   margin: 0 4px;
 }
-
 #workspaces button.active {
   color: @peach;
 }
-
 #workspaces button:hover {
   color: @maroon;
 }

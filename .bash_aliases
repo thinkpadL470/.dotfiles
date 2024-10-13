@@ -42,7 +42,7 @@
         lufs="ebur128 --lufs" \
         gclo="git clone" \
         fdu="fdroidcl update ; fdroidcl install -u ; fdroidcl clean" \
-        ffmpeg="ffmpeg --hide-banner" \
+        ffmpeg="ffmpeg -hide_banner" \
         poicolors='for x in {0..8}; do for i in {30..37}; do echo -ne "\e[$x;$i""m$x;$i "; done; echo; done ; tput sgr0' \
         dir="dir --color=auto" \
         vdir="vdir --color=auto" \
@@ -66,8 +66,8 @@
       test -n "${XDG_CURRENT_DESKTOP}" && alias \
         tmuxk="tmux kill-session -t" \
         tmuxn="tmux new-session" \
-        clp="wl-paste" \
-        clc="wl-copy" \
+        cbp="wl-paste" \
+        cbc="wl-copy" \
         mpq="setsid -f mpv --terminal=no --mute=yes" \
         mpl="setsid -f mpv --loop-playlist=inf --shuffle --terminal=no --mute=yes" \
         ani="ani-cli -q 720p" \
