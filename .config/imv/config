@@ -1,37 +1,34 @@
 # [IMV_CONFIG]
-[options]
-suppress_default_binds = true
-[aliases]
-# alias = command to run
-[binds]
-q = quit
-<Left> = prev
-<bracketleft> = prev
-<Right> = next
-<bracketright> = next
-gg = goto 1
-<Shift+G> = goto -1
-j = pan 0 -50
-k = pan 0 50
-h = pan 50 0
-l = pan -50 0
-<Up> = zoom 1
-<Shift+plus> = zoom 1
-i = zoom 1
-<Down> = zoom -1
-<minus> = zoom -1
-o = zoom -1
-<Ctrl+r> = rotate by 90
-x = close
-f = fullscreen
-d = overlay
-p = exec echo $imv_current_file
-c = center
-s = scaling next
-<Shift+S> = upscaling next
-a = zoom actual
-r = reset
-<period> = next_frame
-<space> = toggle_playing
-t = slideshow +1
-<Shift+T> = slideshow -1
+  # [SETTINGS]
+  [options]
+    suppress_default_binds = true
+  [binds]
+    # [APP]
+      zq = quit
+      f = fullscreen
+      ts = scaling next
+      tu = upscaling next
+      r = reset
+    # [INFO]
+      vp = exec echo $imv_current_file
+    # [PLAYBACK]
+      <space> = toggle_playing
+      w = next_frame
+    # [NAV]
+      # [JUMP]
+        p = prev
+        n = next
+        gg = goto 1
+        <Shift+G> = goto -1
+      # [PAN]
+        j = pan 0 -50
+        k = pan 0 50
+        h = pan 50 0
+        l = pan -50 0
+      # [ZOOM]
+        0 = zoom actual
+        i = zoom 1
+        o = zoom -1
+      # [ROTATE]
+        <Ctrl+r> = rotate by 90
+        <Ctrl+f> = flip vertical

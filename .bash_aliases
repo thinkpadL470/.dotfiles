@@ -61,8 +61,8 @@
         wgetw="wgetua -c -N --progress=bar --wait=5s --random-wait --show-progress"
     # [DESKTOP_ALIASES]
       test -n "${XDG_CURRENT_DESKTOP}" && alias \
+        rip="rip --graveyard /tmp/graveyard-${USER}" \
         tmuxk="tmux kill-session -t" \
-        tmuxn="tmux new-session" \
         cbp="wl-paste" \
         cbc="wl-copy" \
         mpq="setsid -f mpv --terminal=no --mute=yes" \
@@ -113,11 +113,6 @@
           cbp > ${tikfailarc}
       } ;
       test -x "/bin/lemurs" && test -x "/bin/hyprctl" && \
-      gsd () {
-        HYPRCMDS=$(hyprctl -j clients | jq -j '.[| "dispatch closewindow address:\(.address); "');
-        hyprctl --batch "${HYPRCMDS}";
-        test -x "/bin/systemctl" && setsid -f doas systemctl restart lemurs.service
-      } ;
       mpfd () {
         find ./ -type f -iname "*${1}*" | mpq --playlist=- &
       }
