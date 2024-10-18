@@ -45,6 +45,7 @@ gradle
 grim
 grub
 gst-plugin-pipewire
+gst-plugins-bad
 gst-plugins-base
 gtk-layer-shell
 hyprland
@@ -69,6 +70,8 @@ libfabric
 libpulse
 libreoffice-still
 librewolf-bin
+libva-nvidia-driver
+libva-utils
 linux
 linux-firmware
 linux-headers
@@ -137,7 +140,6 @@ scrcpy
 screen
 shntool
 slurp
-spotifyd
 stow
 tailscale
 texinfo
@@ -145,7 +147,6 @@ thin-provisioning-tools
 tldr
 tmux
 transmission-gtk
-trash-cli
 ttf-firacode-nerd
 udiskie
 unrar-free

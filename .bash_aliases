@@ -85,7 +85,7 @@
         cbc="termux-clipboard-set" \
         cbp="termux-clipboard-get"
     # [ARCH_ALIASES]
-      test -x "/usr/bin/pacman" && export PCCONF="~/.config/pacman/pacman.conf" && alias \
+      test -x "/usr/bin/pacman" && export PACMCONF="~/.config/pacman/pacman.conf" && alias \
         mpkg="makepkg -cirs --config '~/.makepkg.conf'" \
         pacman="pacman --config "${PCCONF}"" \
         downgrade="downgrade --pacman-conf "${PCCONF}"" \
