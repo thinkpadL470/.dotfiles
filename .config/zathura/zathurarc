@@ -1,55 +1,7 @@
-map [normal] u scroll up
-map [normal] d scroll down
-map [normal] h scroll left
-map [normal] l scroll right
-map [normal] b navigate previous
-map [normal] w navigate next
-map [normal] B navigate previous
-map [normal] W navigate next
-
-map [fullscreen] u scroll up
-map [fullscreen] d scroll down
-map [fullscreen] h scroll left
-map [fullscreen] l scroll right
-map [fullscreen] b navigate previous
-map [fullscreen] w navigate next
-map [fullscreen] B navigate previous
-map [fullscreen] W navigate next
-
-map [presentation] u navigate previous
-map [presentation] d navigate next
-map [presentation] h navigate previous
-map [presentation] l navigate next
-map [presentation] b navigate previous
-map [presentation] w navigate next
-map [presentation] B navigate previous
-map [presentation] W navigate next
-
-map [index] u navigate_index up
-map [index] d navigate_index down
-map [index] h navigate_index collapse
-map [index] l navigate_index expand
-map [index] b navigate_index up
-map [index] w navigate_index down
-map [index] B navigate_index collapse-all
-map [index] W navigate_index expand-all
-
-map [normal] - zoom out
-map [normal] + zoom in
-map [normal] k adjust_window best-fit
-map [normal] j adjust_window width
-
-map [fullscreen] - zoom out
-map [fullscreen] + zoom in
-map [fullscreen] k adjust_window best-fit
-map [fullscreen] j adjust_window width
-
-map [normal] o follow
-map [normal] O display_link
-map [normal] r recolor
-map [normal] p print
-map [normal] t mark_evaluate
-
+# [ ZATHURA_MASTER ]
+  # [ PRE LOAD ]
+include ./zathura-unmap
+  # [ SETTINGS ]
 set font                        "fira code nerd font 13"
 set database                    sqlite
 set dbus-service                false
@@ -57,42 +9,7 @@ set selection-clipboard         clipboard
 set statusbar-basename          true
 set synctex                     false
 set window-title-home-tilde     true
-
-set completion-bg               "#3c3836"
-set completion-fg               "#ebdbb2"
-set completion-group-bg         "#3c3836"
-set completion-group-fg         "#928374"
-set completion-highlight-bg     "#83a598"
-set completion-highlight-fg     "#3c3836"
-
-set default-bg                  "#282828"
-set default-fg                  "#ebdbb2"
-
-set highlight-fg                "#282828"
-
-set index-bg                    "#282828"
-set index-fg                    "#ebdbb2"
-set index-active-bg             "#83a598"
-set index-active-fg             
-
-set inputbar-bg                 "#282828"
-set inputbar-fg                 "#ebdbb2"
-
-set notification-bg             "#282828"
-set notification-fg             "#b8bb26"
-set notification-error-bg       "#282828"
-set notification-error-fg       "#fb4934"
-set notification-warning-bg     "#282828"
-set notification-warning-fg     "#fabd2f"
-
-set render-loading              true
-set render-loading-bg           "#282828"
-set render-loading-fg           "#ebdbb2"
-
-set recolor-keephue             true
-set recolor-lightcolor          "#282828"
-set recolor-darkcolor           "#fbf1c7"
-
-set statusbar-bg                "#3c3836"
-set statusbar-fg                "#ebdbb2"
-set statusbar-v-padding         4
+set incremental-search          true
+  # [ SOURCE ]
+include ./zathura-keybinds
+include ./zathura-style

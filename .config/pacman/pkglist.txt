@@ -9,9 +9,6 @@ base
 base-devel
 bash-completion
 bison
-blueman
-bluez
-bluez-utils
 brave-bin
 cdparanoia
 chafa
@@ -32,7 +29,6 @@ electrum
 expac
 fakeroot
 fastfetch
-fd
 ffmpegthumbnailer
 ffnvcodec-headers
 flex
@@ -130,7 +126,6 @@ python-typeguard
 qt5-multimedia
 qt5-wayland
 qt6-wayland
-r8168-dkms
 rdfind
 reptyr
 ripgrep

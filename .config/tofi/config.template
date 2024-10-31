@@ -1,0 +1,10 @@
+# [TOFI_CONFIG]
+  # [SETTINGS]
+    matching-algorithm = fuzzy
+    drun-launch = true
+  # [FONT]
+    font = "${fontc}"
+    font-size = 16
+    hint-font = true
+  # [SOURCE]
+    include = ./themes/drunwal

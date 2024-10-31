@@ -7,6 +7,5 @@ python-multipledispatch
 python-pa-ringbuffer
 python-pyrr
 python-rtmixer
-r8168-dkms
 shntool
 youtube-tui-git

@@ -1,7 +1,7 @@
 # [NEWSBOATCONF]
   # [FILES]
     include	"~/.config/newsboat/colorschemes/greenscreen"
-    include "~/.config/newsboat/keybinds"
+    include "~/.config/newsboat/input"
     cache-file "~/.cache/newsboat/cache.db"
   # [SETTINGS]
     # [INTERFACE_LOOK]

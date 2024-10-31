@@ -1,5 +1,5 @@
 #!/bin/dash
-set -x
+# set -x
 # [VARIABLES]
   live_f='bv*[vcodec=vp9][height<=480][fps<=30]+mergeall[vcodec=none]/bv*[height<=480][fps<=30]+mergeall[vcodec=none]/bv*[vcodec=vp9][height<=720][fps<=30]+mergeall[vcodec=none]/bv*[height<=720][fps<=30]+mergeall[vcodec=none]/bv*[height<=480]+mergeall[vcodec=none]/bv*[height<=720]+mergeall[vcodec=none] / bv+mergeall[vcodec=none]/b'
   live_o_f='V-%(uploader)s__%(upload_date)s__%(id)s.%(ext)s'
@@ -12,6 +12,8 @@ set -x
   };
 # [EXEC]
   for url in ${urls}; do
-    dllyt ${url} &
+    while true; do
+      dllyt ${url} ;
+    done &
   done ;
   wait

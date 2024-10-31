@@ -1,0 +1,24 @@
+# [DRUNWALTHEME]
+  # [COLORS]
+    background-color = #1B1D1E
+    selection-color = #F92672
+    text-color = #FFFFFF
+  # [WINDOW_STYLE]
+    # [SIZE]
+      width = 100%
+      height = 48
+      outline-width = 3
+      border-width = 3
+    # [POSITION]
+      horizontal = true
+      anchor = bottom
+      result-spacing = 32
+      min-input-width = 120
+    # [PADDING]
+      padding-top = 2
+      padding-bottom = 0
+      padding-left = 20
+      padding-right = 0
+      prompt-padding = 16
+  # [PROMPT_STYLE]
+    prompt-text = "launch: "
