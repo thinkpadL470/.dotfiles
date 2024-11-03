@@ -1,0 +1,11 @@
+#!/bin/dash
+case "$1" in
+  1) printf "$(curl --no-progress-meter ifconfig.me)\n"
+  ;;
+  2) printf "$(curl --no-progress-meter ifconfig.io)\n"
+  ;;
+  v) printf "$(curl --no-progress-meter ipinfo.io.)\n"
+  ;;
+  *) printf 'invalid argument either [1,2,v]\n' ;
+  ;;
+esac

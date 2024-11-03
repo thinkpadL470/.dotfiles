@@ -1,0 +1,2 @@
+#!/bin/dash
+newsboat -c '~/.cache/newsboat/git-cache.db' -u '~/.config/newsboat/urls.d/github.urls'

@@ -1,0 +1,42 @@
+#!/bin/bash
+shopt -s extglob
+trashpwd=$(printf "${PWD}\n" | cut -d '/' -f '1,2,3')
+[ -x ~/.cargo/bin/rip ] &&
+  case "${trashpwd}" in
+    ${HOME}) [ ! -d "${HOME}/.local/share/graveyard" ] &&
+      mkdir -p ${HOME}/.local/share/graveyard
+      ~/.local/func/for_files_rip2_to_home.sh "${@}"
+    ;;
+    /mnt/*) [ ! -d "${trashpwd}/graveyard-${USER}" ] &&
+      mkdir -p ${trashpwd}/graveyard-${USER}
+      ~/.local/func/for_files_rip2_to_mnt.sh "${@}"
+    ;;
+    !(/mnt)) [ ! -d "/tmp/graveyard-${USER}" ] &&
+      mkdir -p /tmp/graveyard-${USER}
+      ~/.local/func/for_files_rip2_to_root.sh "${@}"
+    ;;
+    *) [ ! -d "/tmp/graveyard-${USER}" ] &&
+      mkdir -p /tmp/graveyard-${USER}
+      ~/.local/func/for_files_rip2_to_root.sh "${@}"
+    ;;
+  esac
+
+[ ! -x ~/.cargo/bin/rip ] &&
+  case "${trashpwd}" in
+    ${HOME}) [ ! -d "${HOME}/.local/share/graveyard/mvtrash" ] &&
+      mkdir -p ${HOME}/.local/share/graveyard/mvtrash
+      ~/.local/func/for_files_trash_to_home.sh "${@}"
+    ;;
+    /mnt/*) [ ! -d "${trashpwd}/graveyard-${USER}/mvtrash-${USER}" ] &&
+      mkdir -p ${trashpwd}/graveyard-${USER}/mvtrash-${USER}
+      ~/.local/func/for_files_trash_to_mnt.sh "${@}"
+    ;;
+    !(/mnt)) [ ! -d "/tmp/graveyard-${USER}/mvtrash-${USER}" ] &&
+      mkdir -p /tmp/graveyard-${USER}/mvtrash-${USER}
+      ~/.local/func/for_files_trash_to_root.sh "${@}"
+    ;;
+    *) [ ! -d "/tmp/graveyard-${USER}/mvtrash-${USER}" ] &&
+      mkdir -p /tmp/graveyard-${USER}/mvtrash-${USER}
+      ~/.local/func/for_files_trash_to_root.sh "${@}"
+    ;;
+  esac

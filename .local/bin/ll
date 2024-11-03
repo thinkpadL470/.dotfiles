@@ -45,5 +45,5 @@ s/rwt/'"${st_c}"'7'"${nocolor}"'/g
 s/rwT/'"${st_c}"'6'"${nocolor}"'/g' |
 tr -s " " "\t" | cut --complement -f '2' |
 sed -e 's/\t/\ /4g ; s/\t/&'"${arc_c}"'/ ; s/\t/'"${nocolor}"'&/2' |
-~/.local/scripts/rearrange.sh 1 3 4 2 |
+rearrange.sh 1 3 4 2 |
 sed -e '1d ; s/\ ..-/'"${md_c}"'&/ ; s/-..\ /&'"${nocolor}"'/ ; /\(^'"${esc}"'\['"${ls_di}"'md\|^'"${esc}"'\['"${ls_ln}"'ml\)/s/'"${esc}"'\['"${ls_arc}"'.*$//g' ;

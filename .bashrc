@@ -6,15 +6,15 @@
     set -o vi
     shopt -s autocd
     shopt -s histappend
-    test -r -/.inputrc && bind -f ~/.inputrc
+    [ -r -/.inputrc ] && bind -f ~/.inputrc
   # [VARIABLES]
     export \
       PS1='\[$(tput setaf 33)\]\u\[$(tput setaf 69)\]@\[$(tput setaf 105)\]\h \[$(tput setaf 141)\]\W \[$(tput sgr0)\]$ ' \
       PATH="${PATH}:${HOME}/.local/bin:${HOME}/.local/scripts:${HOME}/.cargo/bin" \
-      HISTFILESIZE=-1 \
-      HISTSIZE=-1 \
-      HISTCONTROL="ignoreboth:erasedups" \
-      HISTFILE="~/.bash_history" \
+      HISTSIZE=100000 \
+      HISTFILESIZE=100000 \
+      HISTCONTROL=ignoredups \
+      HISTFILE="${HOME}/.bash_history" \
       HISTTIMEFORMAT="[%F %T] "
       SHELL=/bin/bash
       VISUAL="/usr/bin/nvim" \

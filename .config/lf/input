@@ -23,8 +23,8 @@
       map ad push :mkdir<space>
       map aa push :tar<space>
       map rn push :rename<space>
-      map ax :extract
-      map dx :trash
+      map ax extarc
+      map dx ripf
     # [NAV_FILELIST]
       map h updir
       map j down

@@ -131,6 +131,7 @@ reptyr
 ripgrep
 rsync
 rustup
+scdoc
 scrcpy
 screen
 shntool

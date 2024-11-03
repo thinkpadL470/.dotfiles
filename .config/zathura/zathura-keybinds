@@ -4,8 +4,8 @@
 map [normal] )tib toggle_inputbar
 map [normal] )fib focus_inputbar
 map [normal] / feedkeys <S-9>tib<S-9>fib/
-mpa [normal] n search forward
-mpa [normal] p search backward
+map [normal] n search forward
+map [normal] p search backward
     # [ NAV ]
       # [ MOVE ]
 map [normal] k scroll up

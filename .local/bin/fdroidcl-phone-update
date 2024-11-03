@@ -1,0 +1,2 @@
+#!/bin/dash
+fdroidcl update ; fdroidcl install -u ; fdroidcl clean

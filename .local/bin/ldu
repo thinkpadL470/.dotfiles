@@ -1,0 +1,2 @@
+#!/bin/dash
+sudo du -shc $(find -H * .* -maxdepth 0 -type d 2> /dev/null) 2> /dev/null
