@@ -90,6 +90,12 @@ return {
         -- --
     },
     {
+        'lambdalisue/vim-fern',
+        keys = {
+            { '<leader>mf', '<CMD>Fern . -drawer -toggle<CR>', { desc = 'manage files' }, },
+        },
+    },
+    {
         'echasnovski/mini.surround',
         opts = {
             mappings = {
