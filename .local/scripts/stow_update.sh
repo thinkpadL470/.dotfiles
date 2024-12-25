@@ -5,3 +5,4 @@ do
     stow -R .
     git assch
 done
+
