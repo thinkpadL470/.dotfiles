@@ -7,5 +7,3 @@ case "$1" in
   *) date +%y-%b-%d-%H
   ;;
 esac
-
-

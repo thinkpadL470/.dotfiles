@@ -1,13 +1,25 @@
 #!/bin/dash
-[ -d /data/data/com.termux ] &&
-  basedir="/data/data/com.termux/files/"
-[ -d /home ] &&
-  basedir="/"
-[ -x /bin/sudo ] && [ ! -x /bin/doas ] &&
-  auth=sudo
-[ ! -x /bin/sudo ] && [ -x /bin/doas ] &&
-  auth=doas
-[ -x /bin/sudo ] && [ -x /bin/doas ] &&
-  printf -- 'doas and sudo installed\nuninstall either doas or sudo\n'
+. ~/.local/func/check_auth_and_set_local_vars.sh
 prunedtargets=$(cat ~/.config/find/pruned | tr '\n' ' ')
-cd "$(${auth} find -L ${basedir} -type d \( ${prunedtargets% *} \) -prune -o -type d -print 2>/dev/null | fzf --reverse --header='Change Dir')"
+# [ IN_SHELL ]
+[ -z "$lf" ] && {
+    [ "${basedir}" = "/home/${USER}" ] && {
+        cd "$(find -L ${basedir} -type d ! \( ${prunedtargets% *} \) 2>/dev/null |
+        fzf --reverse --header='Change Dir')" ; 
+    };
+    [ ! "${basedir}" = "/home/${USER}" ] && basedir="/" && {
+        cd "$(${auth} find -L ${basedir} -type d ! \( ${prunedtargets% *} \) 2>/dev/null |
+        fzf --reverse --header='Change Dir')" ;
+    };
+}
+# [ IN_LF ]
+[ -n "$lf" ] && {
+    [ "${basedir}" = "/home/${USER}" ] && {
+        find -L ${basedir} -type d ! \( ${prunedtargets% *} \) 2>/dev/null |
+        fzf --reverse --header='Change Dir' ;
+    };
+    [ ! "${basedir}" = "/home/${USER}" ] && basedir="/" && {
+        ${auth} find -L ${basedir} -type d ! \( ${prunedtargets% *} \) 2>/dev/null |
+        fzf --reverse --header='Change Dir' ;
+    };
+}

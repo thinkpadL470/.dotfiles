@@ -17,7 +17,7 @@
     [ -d /data/data/com.termux ] && \
       for i in /data/data/com.termux/files/usr/etc/profile.d/*.sh; do test -r $i && source $i && unset i; done
     # [SOURCE]
-      [ -d /data/data/com.termux ] && [ test "$BASH" ] && \
+      [ -d /data/data/com.termux ] && [ "${SHELL}" = "/bin/bash" ] && \
         [ -f /data/data/com.termux/files/usr/etc/bash.bashrc ] && \
           . /data/data/com.termux/files/usr/etc/bash.bashrc && \
         [ -f /data/data/com.termux/files/home/.bashrc ] && \

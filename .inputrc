@@ -17,6 +17,7 @@
   # [KEYBINDINGS]
     # [SHORTCUTS]
       TAB:menu-complete
+      "\e[Z":menu-complete-backward
       "\C-b": "cd ..\n"
       "\C-x": alias-expand-line
     # [SEARCH]

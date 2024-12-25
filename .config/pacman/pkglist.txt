@@ -8,6 +8,7 @@ automake
 base
 base-devel
 bash-completion
+bat
 bison
 brave-bin
 cdparanoia
@@ -31,6 +32,7 @@ fakeroot
 fastfetch
 ffmpegthumbnailer
 ffnvcodec-headers
+firefox
 flex
 foot
 friture-git
@@ -77,6 +79,7 @@ llvm
 lsd
 lsp-plugins-lv2
 lua51-lgi
+luarocks
 lvm2
 lynx
 m4
@@ -90,6 +93,7 @@ neovim
 newsboat
 nheko
 ninja
+nmap
 noto-fonts
 noto-fonts-cjk
 noto-fonts-emoji
@@ -103,6 +107,7 @@ openmpi
 openpmix
 openssh
 openucx
+pandoc-cli
 pavucontrol
 pipewire
 pipewire-alsa
@@ -139,6 +144,10 @@ slurp
 stow
 tailscale
 texinfo
+texlive-fontsrecommended
+texlive-latex
+texlive-latexrecommended
+texlive-xetex
 thin-provisioning-tools
 tldr
 tmux
@@ -160,5 +169,6 @@ ydotool
 youtube-tui-git
 zathura
 zathura-pdf-mupdf
+zathura-ps
 zenith
 zram-generator

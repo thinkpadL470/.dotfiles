@@ -1,0 +1,6 @@
+[ -z "${bi_d}" ] && bi_d="${HOME}~/.local/bin"
+[ -z "${fu_d}" ] && fu_d="${HOME}/.local/func"
+[ -z "${sh_d}" ] && sh_d="${HOME}/.local/scripts"
+[ -z "${dotbi_d}" ] && dotbi_d="${HOME}/.dotfiles/.local/bin"
+[ -z "${dotfu_d}" ] && dotfu_d="${HOME}/.dotfiles/.local/func"
+[ -z "${dotsh_d}" ] && dotsh_d="${HOME}/.dotfiles/.local/scripts"

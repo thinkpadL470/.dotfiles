@@ -1,6 +1,6 @@
-# [LF_MAPPINGS]
-  # [MAPPINGS]
-    # [GENERAL]
+# [ LF_MAPPINGS ]
+  # [ MAPPINGS ]
+    # [ GENERAL ]
       clearmaps
       map rr reload
       map Q quit
@@ -11,7 +11,7 @@
       map ` !true
       map <c-l> redraw
       map . set hidden!
-    # [EDIT]
+    # [ EDIT ]
       map <space> :toggle; down
       map v invert-below
       map u unselect
@@ -25,7 +25,7 @@
       map rn push :rename<space>
       map ax extarc
       map dx ripf
-    # [NAV_FILELIST]
+    # [ NAV_FILELIST ]
       map h updir
       map j down
       map k up
@@ -37,12 +37,12 @@
       map <c-u> half-up
       map gg top
       map G bottom
-    # [NAV_FUNC]
+    # [ NAV_FUNC ]
       map / search
       map ff find
       map fd :fcd
       map gh cd ~
-    # [LF_DEFAULT_SORT]
+    # [ LF_DEFAULT_SORT ]
       map sn :set sortby natural; set info
       map ss :set sortby size; set info size
       map st :set sortby time; set info time

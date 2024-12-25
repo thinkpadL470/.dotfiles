@@ -1,0 +1,79 @@
+#!/bin/dash
+# set -x
+. ~/.local/func/define_script_directories_in_variables.sh
+
+# # This Works but needs rewrite or improvement
+#
+#
+# sub_dir_list=$({ find . \( ! -path './*' -o -prune \) -type d 2>/dev/null |
+#     sed '1d' ;
+# }) ;
+# duf_output=$({ printf '%s' "${sub_dir_list}" | \
+#     { while IFS= read -r sub_dir
+#         do
+#             sub_dir_bytes_tot=$({
+#                 [ "$(ls -A "${sub_dir}")" ] && {
+#                     sub_dir_bytes_list=$({
+#                         ls -1RAl "${sub_dir}" 2>/dev/null |
+#                         sed '/^$/d ; /^total/d ; /\..*\/.*:/d ; 1d ; s/\ *\ /\ /g' |
+#                         cut -d' ' -f'5' ;
+#                     }) ;
+#                     for byte_size in ${sub_dir_bytes_list:-0}
+#                     do
+#                         sub_dir_bytes_add=$(( ${sub_dir_bytes_add:-0} + ${byte_size:-0} )) ;
+#                     done ; 
+#                 } ; printf '%s\n' "${sub_dir_bytes_add:-0}" ;
+#             }) ;
+#             # printf '%s\t%s\n' \
+#             #     "d_$(printf '%s\n' "${sub_dir_bytes_tot:-0}" | ${fu_d}/bytes_to_humanread.sh)" \
+#             printf '%s\t%s\n' \
+#                 "d${sub_dir_bytes_tot:-0}" \
+#                 "${sub_dir}" ;
+#             dir_bytes_tot=$(( ${dir_bytes_tot:-0} + ${sub_dir_bytes_tot:-0} )) ;
+#         done ;
+#         find . \( ! -path './*' -o -prune \) -type f 2>/dev/null | sed '1d' | \
+#             { while IFS= read -r file
+#                 do
+#                     file_size=$({
+#                         ls -1RAl "${file}" 2>/dev/null |
+#                             sed 's/\ *\ /\ /g' |
+#                             cut -d' ' -f'5' ;
+#                     }) ;
+#                     size_of_files=$(( ${size_of_files:-0} + ${file_size:-0} )) ;
+#                     # human_file_size=$(printf '%s\n' "${file_size}" | ${fu_d}/bytes_to_humanread.sh) ;
+#                     # printf '%s\t%s\n' \
+#                     #     "f_${human_file_size}" \
+#                     printf '%s\t%s\n' \
+#                         "f${file_size}" \
+#                         "${file}" ;
+#                 done ;
+#                 # printf '%s\t%s\n' \
+#                 #     "d_$(printf '%s\n' "$(( ${dir_bytes_tot} + ${size_of_files} ))" | ${fu_d}/bytes_to_humanread.sh)" \
+#                 printf '%s\t%s\n' \
+#                     "d$(( ${dir_bytes_tot} + ${size_of_files} ))" \
+#                     "." ;
+#             } ;
+#     } | sort -r -k2 - ;
+# })
+# # left_types_bytes
+# left_types_bytes=$({
+#     printf '%s\n' "${duf_output}" |
+#         sed 's/\t.*//g' ;
+# })
+# temp_f_names=$(${fu_d}/mk_tmp_f_n.sh left_types middle_bytes right_names)
+#
+# left_type_file=$(printf '%s\n' "${temp_f_names}" | cut -d' ' -f'1')
+# { printf '%s\n' "${left_types_bytes}" |
+#     tr -d '[:digit:]' ;
+# } > ${left_type_file}
+# middle_bytes_file=$(printf '%s\n' "${temp_f_names}" | cut -d' ' -f'2')
+# { printf '%s\n' "${left_types_bytes}" |
+#     sed 's/^.//g' |
+#     ${fu_d}/bytes_to_humanread.sh ;
+# } > ${middle_bytes_file}
+# right_names_file=$(printf '%s\n' "${temp_f_names}" | cut -d' ' -f'3')
+# { printf '%s\n' "${duf_output}" |
+#         sed 's/.*\t//g' ;
+# } > ${right_names_file}
+# paste ${left_type_file} ${middle_bytes_file} ${right_names_file}
+# rm ${left_type_file} ${middle_bytes_file} ${right_names_file}

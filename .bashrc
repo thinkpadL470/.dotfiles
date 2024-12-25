@@ -6,7 +6,7 @@
     set -o vi
     shopt -s autocd
     shopt -s histappend
-    [ -r -/.inputrc ] && bind -f ~/.inputrc
+    [ -e ~/.inputrc ] && bind -f ~/.inputrc
   # [VARIABLES]
     export \
       PS1='\[$(tput setaf 33)\]\u\[$(tput setaf 69)\]@\[$(tput setaf 105)\]\h \[$(tput setaf 141)\]\W \[$(tput sgr0)\]$ ' \
@@ -15,11 +15,11 @@
       HISTFILESIZE=100000 \
       HISTCONTROL=ignoredups \
       HISTFILE="${HOME}/.bash_history" \
-      HISTTIMEFORMAT="[%F %T] "
-      SHELL=/bin/bash
-      VISUAL="/usr/bin/nvim" \
-      EDITOR="/usr/bin/nvim" \
-      PAGER="less"
+      HISTTIMEFORMAT="[%F %T] " \
+      SHELL=/bin/bash \
+      VISUAL=/usr/bin/nvim \
+      EDITOR=/usr/bin/nvim \
+      PAGER=/usr/bin/less
     [ -n "${XDG_CURRENT_DESKTOP}" ] && export \
       BROWSER="/usr/bin/librewolf" \
       OPENER="xdg-open"

@@ -1,25 +1,15 @@
--ipath /lib/go -o
--ipath /lib/python* -o
--ipath /lib64/go -o
--ipath /lib64/python* -o
--ipath /usr/include -o
--ipath /usr/lib/go -o
--ipath /usr/lib/python* -o
--ipath /usr/lib64/go -o
--ipath /usr/lib64/python* -o
--ipath /boot -o
--iname proc -o
--iname sys -o
--iname backupz -o
--iname backup -o
--iname backups -o
--iname tmp -o
--iname .trash-1000 -o
--iname Trash -o
--iname modules -o
--iname .cache -o
--iname run -o
--iname lost+found -o
--iname media -o
--iname node_modules -o
--iname dev
+-path */[Gg]o -prune -o
+-path */[Pp]ython* -prune -o
+-path */[Ii]nclude -prune -o
+-path /boot -prune -o
+-path /proc -prune -o
+-path /sys -prune -o
+-path */[Tt][Mm][Pp] -prune -o
+-path /run -prune -o
+-path */[Nn]ode_modules -prune -o
+-path */[Mm]odules -prune -o
+-path */site-local -prune -o
+-path */ghc-* -prune -o
+-path */jvm* -prune -o
+-path */texmf-dist* -prune -o
+-path ~/.cache -prune

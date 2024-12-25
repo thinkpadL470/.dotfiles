@@ -1,42 +1,46 @@
 #!/bin/bash
+. ~/.local/func/define_script_directories_in_variables.sh
 shopt -s extglob
 trashpwd=$(printf "${PWD}\n" | cut -d '/' -f '1,2,3')
-[ -x ~/.cargo/bin/rip ] &&
-  case "${trashpwd}" in
-    ${HOME}) [ ! -d "${HOME}/.local/share/graveyard" ] &&
-      mkdir -p ${HOME}/.local/share/graveyard
-      ~/.local/func/for_files_rip2_to_home.sh "${@}"
-    ;;
-    /mnt/*) [ ! -d "${trashpwd}/graveyard-${USER}" ] &&
-      mkdir -p ${trashpwd}/graveyard-${USER}
-      ~/.local/func/for_files_rip2_to_mnt.sh "${@}"
-    ;;
-    !(/mnt)) [ ! -d "/tmp/graveyard-${USER}" ] &&
-      mkdir -p /tmp/graveyard-${USER}
-      ~/.local/func/for_files_rip2_to_root.sh "${@}"
-    ;;
-    *) [ ! -d "/tmp/graveyard-${USER}" ] &&
-      mkdir -p /tmp/graveyard-${USER}
-      ~/.local/func/for_files_rip2_to_root.sh "${@}"
-    ;;
-  esac
-
-[ ! -x ~/.cargo/bin/rip ] &&
-  case "${trashpwd}" in
-    ${HOME}) [ ! -d "${HOME}/.local/share/graveyard/mvtrash" ] &&
-      mkdir -p ${HOME}/.local/share/graveyard/mvtrash
-      ~/.local/func/for_files_trash_to_home.sh "${@}"
-    ;;
-    /mnt/*) [ ! -d "${trashpwd}/graveyard-${USER}/mvtrash-${USER}" ] &&
-      mkdir -p ${trashpwd}/graveyard-${USER}/mvtrash-${USER}
-      ~/.local/func/for_files_trash_to_mnt.sh "${@}"
-    ;;
-    !(/mnt)) [ ! -d "/tmp/graveyard-${USER}/mvtrash-${USER}" ] &&
-      mkdir -p /tmp/graveyard-${USER}/mvtrash-${USER}
-      ~/.local/func/for_files_trash_to_root.sh "${@}"
-    ;;
-    *) [ ! -d "/tmp/graveyard-${USER}/mvtrash-${USER}" ] &&
-      mkdir -p /tmp/graveyard-${USER}/mvtrash-${USER}
-      ~/.local/func/for_files_trash_to_root.sh "${@}"
-    ;;
-  esac
+[ -x "${HOME}/.cargo/bin/rip" ] && [ ! "${HOME}" = /root ] &&
+    case "${trashpwd}" in
+        ${HOME})
+            [ ! -d "${HOME}/.local/share/graveyard" ] &&
+                mkdir -p ${HOME}/.local/share/graveyard
+            {
+                for item in "${@}"
+                do
+                    rip --graveyard "${HOME}/.local/share/graveyard" "${item}"
+                done ;
+            }
+            ;;
+        /mnt/*) 
+            [ ! -d "${trashpwd}/graveyard-${USER}" ] &&
+                mkdir -p ${trashpwd}/graveyard-${USER}
+            {
+                for item in "${@}"
+                do
+                    rip --graveyard "${trashpwd}/graveyard-${USER}" "${item}"
+                done ;
+            }
+            ;;
+        !(/mnt))
+            [ ! -d "/tmp/graveyard-${USER}" ] &&
+                mkdir -p /tmp/graveyard-${USER}
+            ${fu_d}/for_files_rip2_to_root.sh "${@}"
+            ;;
+        *)
+            [ ! -d "/tmp/graveyard-${USER}" ] &&
+                mkdir -p /tmp/graveyard-${USER}
+            ${fu_d}/for_files_rip2_to_root.sh "${@}"
+            ;;
+    esac
+[ ! -x "${HOME}/.cargo/bin/rip" ] && [ "${HOME}" = "/home/*" ] && {
+    . ${fu_d}/del_mvtrash.sh ;
+}
+[ "${HOME}" = /root ] && {
+    printf "$trashpwd" | grep home && {
+        HOME="$trashpwd" &&
+        . ${fu_d}/del_mvtrash.sh ; 
+    } ;
+}
