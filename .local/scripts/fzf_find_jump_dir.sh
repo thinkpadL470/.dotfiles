@@ -1,5 +1,4 @@
 #!/bin/dash
-# set -x
 . ~/.local/func/check_auth_and_set_local_vars.sh
 prunedtargets=$(cat ~/.config/find/pruned | tr '\n' ' ')
 # [ IN_SHELL ]
@@ -16,10 +15,9 @@ prunedtargets=$(cat ~/.config/find/pruned | tr '\n' ' ')
 [ -n "$lf" ] && {
     [ "${basedir}" = "/home/${USER}" ] && {
         find -L ${basedir} -type d ! \( ${prunedtargets% *} \) 2>/dev/null |
-        fzf --reverse --header='Change Dir' ;
-    };
-    [ ! "${basedir}" = "/home/${USER}" ] && basedir="/" && {
-        ${auth} find -L ${basedir} -type d ! \( ${prunedtargets% *} \) 2>/dev/null |
-        fzf --reverse --header='Change Dir' ;
+        fzf --reverse --header='Change Dir' ; exit 0
+    } || {
+        ${auth} find -L ${basedirroot} -type d ! \( ${prunedtargets% *} \) 2>/dev/null |
+        fzf --reverse --header='Change Dir' ; exit 0
     };
 }
