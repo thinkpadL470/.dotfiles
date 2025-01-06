@@ -1,14 +1,17 @@
 #!/bin/bash
+# set -x
 . ~/.local/func/define_script_directories_in_variables.sh
 shopt -s extglob
-trashpwd=$(printf "${PWD}\n" | cut -d '/' -f '1,2,3')
+[ -d /home ] &&
+    trashpwd=$(printf '%s\n' "${PWD}" | cut -d '/' -f '1-3')
+[ -d /data/data/com.termux/files/home ] &&
+    trashpwd=$(printf '%s\n' "${PWD}" | cut -d '/' -f '1-6')
 [ -x "${HOME}/.cargo/bin/rip" ] && [ ! "${HOME}" = /root ] &&
     case "${trashpwd}" in
         ${HOME})
             [ ! -d "${HOME}/.local/share/graveyard" ] &&
                 mkdir -p ${HOME}/.local/share/graveyard
-            {
-                for item in "${@}"
+            { for item in "${@}"
                 do
                     rip --graveyard "${HOME}/.local/share/graveyard" "${item}"
                 done ;
@@ -17,8 +20,7 @@ trashpwd=$(printf "${PWD}\n" | cut -d '/' -f '1,2,3')
         /mnt/*) 
             [ ! -d "${trashpwd}/graveyard-${USER}" ] &&
                 mkdir -p ${trashpwd}/graveyard-${USER}
-            {
-                for item in "${@}"
+            { for item in "${@}"
                 do
                     rip --graveyard "${trashpwd}/graveyard-${USER}" "${item}"
                 done ;
@@ -35,7 +37,8 @@ trashpwd=$(printf "${PWD}\n" | cut -d '/' -f '1,2,3')
             ${fu_d}/for_files_rip2_to_root.sh "${@}"
             ;;
     esac
-[ ! -x "${HOME}/.cargo/bin/rip" ] && [ "${HOME}" = "/home/*" ] && {
+[ ! -x "${HOME}/.cargo/bin/rip" ] &&
+    [ "${HOME}" = "/home/*" -o "${HOME}" = "/data/data/com.termux/files/home" ] && {
     . ${fu_d}/del_mvtrash.sh ;
 }
 [ "${HOME}" = /root ] && {

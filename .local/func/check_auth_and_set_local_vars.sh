@@ -1,9 +1,12 @@
 #!/bin/dash
-[ -d /data/data/com.termux ] &&
-    basedir="/data/data/com.termux/files/"
-[ -d /home ] &&
-    pwd_trunkated=$(printf "${PWD}" | cut -d '/' -f '1,2,3') &&
-        basedir="${pwd_trunkated}"
+[ -d /home ] && {
+    basedir=$(printf "${PWD}" | cut -d '/' -f '1-3') ;
+    basedirroot=$(printf "${PWD}" | cut -d '/' -f '1-2') ;
+};
+[ -d /data/data/com.termux/files/home ] && {
+    basedir=$(printf "${PWD}" | cut -d '/' -f '1-6') ;
+    basedirroot=$(printf "${PWD}" | cut -d '/' -f '1-5') ;
+};
 [ -x /bin/sudo ] && [ ! -x /bin/doas ] &&
     auth=sudo
 [ ! -x /bin/sudo ] && [ -x /bin/doas ] &&
