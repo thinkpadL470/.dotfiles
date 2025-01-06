@@ -1,6 +1,17 @@
 #!/bin/dash
 # set -x
-. ~/.local/func/define_script_directories_in_variables.sh
+# . ~/.local/func/define_script_directories_in_variables.sh
+
+du -sk * .* 2>/dev/null |
+    awk 'function human(size) {
+        unit=" KB MB GB TB EB PB YB ZiB"
+        while (size>=1024 && length(unit)>1)
+              {size/=1024; unit=substr(unit,4)}
+        unit=substr(unit,1,3)
+        unitformat=(unit=="KB")?"%5d":"%0.2f"
+        return sprintf( unitformat"%s ", size, unit)
+    }
+    {gsub(/^[0-9]+/, human($1)); print}' | sort -r -k2 | sed '/\.\.$/d'
 
 # # This Works but needs rewrite or improvement
 #
