@@ -139,6 +139,7 @@ rustup
 scdoc
 scrcpy
 screen
+shellcheck
 shntool
 slurp
 stow

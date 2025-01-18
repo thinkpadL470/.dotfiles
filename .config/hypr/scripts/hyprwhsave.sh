@@ -1,11 +1,19 @@
 #/bin/dash
-set -x
-[ -e ~/.bg.jpg ] && wpext=jpg
-[ -e ~/.bg.png ] && wpext=png
-savewp () {
-  cp ~/.bg.${wpext} ~/Pictures/wallpapers/WP-$(date +%y-%b-%d-%H-%M-%S).${wpext} &&
+# -- look for wallpaper in home dir
+wpext=$(ls -1 .bg.* | head -n1)
+wpext=${wpext##*.}
+# --
+
+# -- save the wallpaper
+[ -n "${wpext}" ] && {
+    { [ ! -d "${HOME}/Pictures/wallpapers" ] &&
+        mkdir -p ${HOME}/Pictures/wallpapers ;
+    };
+    cp ${HOME}/.bg.${wpext} ${HOME}/Pictures/wallpapers/WP-$(date +%y-%b-%d-%H-%M-%S).${wpext} &&
     notify-send -t 2000 "hyprwhsave" 'wallpaper saved' ||
-    notify-send -t 2000 "hyprwhsave" 'wallpaper faild saveing'
+    notify-send -t 2000 "hyprwhsave" 'wallpaper faild saveing' ;
+} || {
+    notify-send -t 2000 "hyprwhsave" 'no applicable wallpaper exists' ;
+    exit 1 ;
 }
-# [EXEC]
-[ -n "${wpext}" ] && savewp || notify-send -t 2000 "hyprwhsave" 'no applicable wallpaper exists' ; exit
+# --

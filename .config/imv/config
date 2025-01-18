@@ -1,34 +1,38 @@
-# [IMV_CONFIG]
-## [SETTINGS]
+# -- [ SETTINGS ]
 [options]
 suppress_default_binds = true
 overlay = true
 overlay_font = FiraCode Nerd Font Mono:16
+# --
+
+# -- [ BINDS ]
 [binds]
-### [APP]
 <Shift+Q> = quit
 ts = scaling next
 r = reset
-### [INFO]
 fn = exec echo $imv_current_file
-### [PLAYBACK]
 <space> = toggle_playing
+# -- [ NAV BINDS ]
 w = next_frame
-### [NAV]
-#### [JUMP]
 p = prev
 n = next
 gg = goto 1
 <Shift+G> = goto -1
-#### [PAN]
+
+# -- [ PAN BINDS ]
 j = pan 0 -50
 k = pan 0 50
 h = pan 50 0
 l = pan -50 0
-#### [ZOOM]
+# --
+
+# -- [ ZOOM BINDS ]
 0 = zoom actual
 i = zoom 1
 o = zoom -1
-#### [ROTATE]
+# --
+
+# -- [ ROTATE BINDS ]
 <Ctrl+r> = rotate by 90
 <Ctrl+f> = flip vertical
+# --

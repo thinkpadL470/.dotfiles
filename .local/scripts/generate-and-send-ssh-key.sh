@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/dash
 . ${HOME}/.local/func/define_script_directories_in_variables.sh
 # BEGIN Define base vars
 default_filename=id_test

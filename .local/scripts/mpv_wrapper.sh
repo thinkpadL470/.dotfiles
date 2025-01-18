@@ -19,4 +19,3 @@ case "$1" in
         printf -- '-pi\tplay all files in playlist infinetly\n'
     ;;
 esac
-

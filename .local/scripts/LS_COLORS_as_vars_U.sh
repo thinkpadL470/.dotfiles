@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/dash
 . ${HOME}/.dotfiles/.local/func/define_script_directories_in_variables.sh
 { 
     printf '%s%s\n%s%s\n' \

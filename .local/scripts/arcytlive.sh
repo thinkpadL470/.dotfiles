@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/dash
 trap "kill -- -$$" INT EXIT
 ytdlp_select_format=$(printf '%s%s%s%s%s%s%s' \
     'bv*[vcodec=vp9][height<=480][fps<=30]+mergeall[vcodec=none]/' \

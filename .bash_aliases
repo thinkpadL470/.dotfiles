@@ -21,7 +21,7 @@
                 diff="diff --color=auto" \
                 stow="stow --no-folding"
         # [ LINUX_ALAISES ]
-            [ -x /bin/doas ] && alias \
+            [ -x /usr/bin/doas ] && alias \
                 sudo="doas "
             [ -d /home ] && alias \
                 sudoedit="doas nvim -u ~/.config/nvim/sudoedit" \

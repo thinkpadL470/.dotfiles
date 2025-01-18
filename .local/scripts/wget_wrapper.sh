@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/dash
 case "$1" in
   -p) wget -nv --progress=bar --show-progress -U 'Mozilla/5.0 (Windows NT 10.0; rv:127.0) Gecko/20100101 Firefox/127.0' "$2"
   ;;

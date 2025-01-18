@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/dash
 git_repo="https://github.com/Michele0303/tiktok-live-recorder"
 main_folder="${HOME}/.local/share/pyvirt_env/tiklr"
 env_folder="${main_folder}/${main_folder##*/}_env"

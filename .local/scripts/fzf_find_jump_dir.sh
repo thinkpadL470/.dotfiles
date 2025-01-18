@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/dash
 . ~/.local/func/check_auth_and_set_local_vars.sh
 prunedtargets=$(cat ~/.config/find/pruned | tr '\n' ' ')
 # [ IN_SHELL ]

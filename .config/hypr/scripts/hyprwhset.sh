@@ -1,10 +1,9 @@
 #!/bin/dash
 # -- set variables
-bassh="${HOME}/.config/hypr"
 monn="HDMI-A-1"
 hyprpapc="${HOME}/.config/hypr/hyprpaper.conf"
-pid_hyprpaper=$(ps -a -o "pid comm" | grep hyprpaper)
-pid_mpvpaper=$(ps -a -o "pid comm" | grep mpvpaper)
+pid_hyprpaper=$(ps -a -o "pid comm" | grep hyprpaper | tr -cd '0-9')
+pid_mpvpaper=$(ps -a -o "pid comm" | grep mpvpaper | tr -cd '0-9')
 # --
 
 # -- Get Image url
@@ -27,15 +26,12 @@ rconfig=$({ printf '%s\n%s\n%s\n' \
 })
 # --
 
-# -- preform operations
-${bassh}/func/flushwp.sh
-[ -z "${pid_hyprpaper% *}" -o -z "${pid_mpvpaper% *}" ] ||
-    kill -9 ${pid_hyprpaper% *} ${pid_mpvpaper% *} && {
+# -- kill running wallpaper services, append config and run hyprpaper
+${HOME}/.config/hypr/func/flushwp.sh
+[ -z "${pid_hyprpaper}" -a -z "${pid_mpvpaper}" ] ||
+    kill -9 ${pid_hyprpaper} ${pid_mpvpaper} && {
     curl -s ${image_url} > ${wp} ;
     printf '%s\n' "${rconfig}" > ${hyprpapc} ;
     hyprpaper ;
 }
 # --
-# defimage &&
-# reloadconf &&
-# hyprpaper ;
