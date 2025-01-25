@@ -1,0 +1,88 @@
+#!/usr/bin/env sh
+. ${HOME}/.local/func/define_script_directories_in_variables.sh
+
+# -- Be sure /tmp as tmp directory by setting TMPDIR env
+export TMPDIR=/tmp
+# --
+
+# -- Catch arguments. and error if a condition is met
+[ -n "${2}" ] && error_messege='expected_only_one_argument'
+[ -z "${1}" ] && error_messege="no_file_path_provided ${error_messege}"
+[ "$(id -u)" -eq 0 ] && error_messege="cannot_be_run_as_root ${error_messege}"
+[ -d "${1}" ] && error_messege="${1}_is_a_directory ${error_messege}"
+[ -n "${error_messege}" ] && { printf '%s\n' "${error_messege}" |
+    while IFS= read -r msg
+    do
+        printf '%s\n' "doasedit: ${msg}" >&2 
+    done ;
+    exit 1 ;
+}
+# --
+
+# -- Safe shell options
+set -eu
+# --
+
+# -- get true file path, Get filename, extract file extention for use with temp file
+src="$(doas ${sh_d}/readlinkf_posix.sh "${1}")"
+filename="${src##*/}"
+[ "${filename}" = "${filename##*.}" ] &&
+    file_extension="" || file_extension="${filename##*.}"
+# --
+
+# -- Hooks for recursive removing of a temporary directory
+trap 'rm -rf ${tmp_d}' EXIT HUP QUIT TERM INT ABRT
+# --
+
+# -- Create temp dir, Random suffix for temporary files, Create a temp file for the source file
+tmp_d="${TMPDIR}/$(${fu_d}/output_random_number_string.sh 6).tmp" &&
+mkdir -p "${tmp_d}" &&
+[ -d "${tmp_d}" ] && printf '%s\n' "${tmp_d}" || {
+    td_error_messege='cannot create temporary directory' ;
+    printf '%s\n' "${td_error_messege}" ;
+    exit 1 ;
+}
+suffix=$(${fu_d}/output_random_number_string.sh 6)
+[ -z "${file_extension}" ] &&
+    tmp_f="${tmp_d}/${filename}.${suffix}" ||
+    tmp_f="${tmp_d}/${filename%%.*}${suffix}.${file_extension}"
+# --
+
+# -- test File writeability condition, test Other conditions
+[ -w "$src" ] && {
+    w_error_message='editing files in a writable directory is not permitted' ;
+    printf '%s\n' "$filename: ${w_error_message}" ;
+    exit 1 ;
+}
+[ ! -r "${src}" ] && doas [ -f "${src}" ] && doas cat "${src}" > "${tmp_f}" 2>/dev/null ||
+[ -r "${src}" ] && cat "${src}" > "${tmp_f}" 2>/dev/null || {
+    printf '%s%s\n' \
+    "cannot transfer the content " \
+    "of the file to temporary one" ;
+    exit 1 ;
+}
+
+# -- Create copy of the temporary file, Move the contents of a temporary file to its copy for later comparison
+tmp_cf="${tmp_f}.copy"
+cat "${tmp_f}" > "${tmp_cf}"
+# --
+
+# -- Editing the file by the user using the default editor, if not specified, then vi is used
+${EDITOR:-vi} "${tmp_f}"
+# --
+
+# -- Compare the temporary file and the temporary copy
+cmp -s "${tmp_f}" "${tmp_cf}" && printf "%s\n" "doasedit: ${filename} unchanged" && exit 0 || {
+    attempt=0 ;
+    until doas cp -f "${tmp_f}" "${src}"
+    do
+        attempt=$((attempt + 1))
+        [ "${attempt}" -ge 3 ] && {
+            c_error_messege='cannot accept changes' ;
+            printf '%s\n' "doasedit: ${c_error_messege}" ;
+        }
+    done ;
+    printf "%s\n" "doasedit: ${filename} changes are accepted" ;
+    exit 0
+}
+# --

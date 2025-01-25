@@ -1,51 +1,57 @@
-# [ LF_MAPPINGS ]
-  # [ MAPPINGS ]
-    # [ GENERAL ]
-      clearmaps
-      map rr reload
-      map Q quit
-      map <enter> shell
-      map i $$PAGER "$f"
-      map bp bpc
-      map bv bvc
-      map ` !true
-      map <c-l> redraw
-      map . set hidden!
-    # [ EDIT ]
-      map <space> :toggle; down
-      map v invert-below
-      map u unselect
-      map yy copy
-      map yc copy-clip
-      map dd cut
-      map p :paste; clear
-      map C clear
-      map ad push :mkdir<space>
-      map aa push :tar<space>
-      map rn push :rename<space>
-      map ax extarc
-      map dx ripf
-    # [ NAV_FILELIST ]
-      map h updir
-      map j down
-      map k up
-      map l open
-      map H high
-      map M middle
-      map L low
-      map <c-d> half-down
-      map <c-u> half-up
-      map gg top
-      map G bottom
-    # [ NAV_FUNC ]
-      map / search
-      map ff find
-      map fd :fcd
-      map gh cd ~
-    # [ LF_DEFAULT_SORT ]
-      map sn :set sortby natural; set info
-      map ss :set sortby size; set info size
-      map st :set sortby time; set info time
-      map sa :set sortby atime; set info atime
-      map sc :set sortby ctime; set info ctime
-      map se :set sortby ext; set info
+# -- GENERAL
+clearmaps
+map rr reload
+map Q quit
+map <enter> shell
+map i $$PAGER "$f"
+map bg bgc
+map ` !true
+map <c-l> redraw
+map . set hidden!
+# --
+
+# -- EDIT
+map <space> :toggle; down
+map v invert-below
+map u unselect
+map yy copy
+map yc copy-clip
+map dd cut
+map p :paste; clear
+map C clear
+map ad push :mkdir<space>
+map aa push :tar<space>
+map rn push :rename<space>
+map ax extarc
+map dx ripf
+# --
+
+# -- NAV_FILELIST
+map h updir
+map j down
+map k up
+map l open
+map H high
+map M middle
+map L low
+map <c-d> half-down
+map <c-u> half-up
+map gg top
+map G bottom
+# --
+
+# -- NAV_FUNC
+map / search
+map ff find
+map fd :fcd
+map gh cd ~
+# --
+
+# -- LF_DEFAULT_SORT
+map sn :set sortby natural; set info
+map ss :set sortby size; set info size
+map st :set sortby time; set info time
+map sa :set sortby atime; set info atime
+map sc :set sortby ctime; set info ctime
+map se :set sortby ext; set info
+# --

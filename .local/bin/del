@@ -1,13 +1,20 @@
 #!/bin/bash
-# set -x
 . ~/.local/func/define_script_directories_in_variables.sh
 shopt -s extglob
+
+# -- Defin current branch directory depending on system
 [ -d /home ] &&
-    trashpwd=$(printf '%s\n' "${PWD}" | cut -d '/' -f '1-3')
+    branchpwd=$(printf '%s\n' "${PWD}" | cut -d '/' -f '1-3')
 [ -d /data/data/com.termux/files/home ] &&
-    trashpwd=$(printf '%s\n' "${PWD}" | cut -d '/' -f '1-6')
-[ -x "${HOME}/.cargo/bin/rip" ] && [ ! "${HOME}" = /root ] &&
-    case "${trashpwd}" in
+    branchpwd=$(printf '%s\n' "${PWD}" | cut -d '/' -f '1-6')
+rip_binary=$(which rip 2>/dev/null && : || printf '%s\n' "no_rip")
+# --
+
+# -- if rip is installed and not running with root delete with rip
+[ -x "${rip_binary}" ] && [ ! "${HOME}" = /root ] &&
+    case "${branchpwd}" in
+
+        # -- in the case of branch pwd is inside users home trash to users graveyard
         ${HOME})
             [ ! -d "${HOME}/.local/share/graveyard" ] &&
                 mkdir -p ${HOME}/.local/share/graveyard
@@ -17,33 +24,62 @@ shopt -s extglob
                 done ;
             }
             ;;
+        # --
+
+        # -- if in a mnt/ dir trash to users graveyard in mnt dir
         /mnt/*) 
-            [ ! -d "${trashpwd}/graveyard-${USER}" ] &&
-                mkdir -p ${trashpwd}/graveyard-${USER}
+            [ ! -d "${branchpwd}/graveyard-${USER}" ] &&
+                mkdir -p ${branchpwd}/graveyard-${USER}
             { for item in "${@}"
                 do
-                    rip --graveyard "${trashpwd}/graveyard-${USER}" "${item}"
+                    rip --graveyard "${branchpwd}/graveyard-${USER}" "${item}"
                 done ;
             }
             ;;
+        # --
+
+        # -- if branchpwd not in user home or a mnt/ dir trash to users system graveyard
         !(/mnt))
             [ ! -d "/tmp/graveyard-${USER}" ] &&
                 mkdir -p /tmp/graveyard-${USER}
-            ${fu_d}/for_files_rip2_to_root.sh "${@}"
+            {
+                for item in "${@}"
+                do
+                    rip --graveyard "/tmp/graveyard-${USER}" "${item}"
+                done
+            }
+            # ${fu_d}/for_files_rip2_to_root.sh "${@}"
             ;;
+        # --
+
+        # -- use user system graveyard in all other cases
         *)
             [ ! -d "/tmp/graveyard-${USER}" ] &&
                 mkdir -p /tmp/graveyard-${USER}
-            ${fu_d}/for_files_rip2_to_root.sh "${@}"
+            {
+                for item in "${@}"
+                do
+                    rip --graveyard "/tmp/graveyard-${USER}" "${item}"
+                done
+            }
+            # ${fu_d}/for_files_rip2_to_root.sh "${@}"
             ;;
-    esac
-[ ! -x "${HOME}/.cargo/bin/rip" ] &&
+        # --
+    esac || rip_case_failed=1
+# --
+
+# -- if rip is not installed and home is not root home or if rip case failed use the mvtrash script instead
+[ ! -x "${rip_binary}" ] || [ "${rip_case_failed}" = 1 ] &&
     [ "${HOME}" = "/home/*" -o "${HOME}" = "/data/data/com.termux/files/home" ] && {
     . ${fu_d}/del_mvtrash.sh ;
 }
+# --
+
+# -- if ran with root user overwtite the home variable with the branchpwd and run mvtrash script
 [ "${HOME}" = /root ] && {
-    printf "$trashpwd" | grep home && {
-        HOME="$trashpwd" &&
+    printf "$branchpwd" | grep home && {
+        HOME="$branchpwd" &&
         . ${fu_d}/del_mvtrash.sh ; 
     } ;
 }
+# --

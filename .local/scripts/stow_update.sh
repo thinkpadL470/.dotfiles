@@ -14,5 +14,5 @@ do
             rm -r ${HOME}/${target} 2>/dev/null
         done ;
     }
-    git assch
+    [ "${1}" = "-c" ] && git assch
 done

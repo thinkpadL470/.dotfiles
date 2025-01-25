@@ -1,13 +1,19 @@
 #!/usr/bin/dash
-. ~/.local/func/check_auth_and_set_local_vars.sh
+# -- set vars, basedir, autentication program, clip aliaas and program, targets to prune
+. ~/.local/func/check_base_dir.sh
+. ~/.local/func/check_auth.sh
+. ~/.local/func/check_clip_copy.sh
 prunedtargets=$(cat ~/.config/find/pruned | tr '\n' ' ')
-# [ IN_SHELL ]
+# --
+
+# -- IN_SHELL
 [ -z "$lf" ] && {
     [ "${basedir}" = "/home/${USER}" -o "${basedir}" = "/data/data/com.termux/files/home" ] && {
-        ${cbc} "$(find -L ${basedir} -type f ! \( ${prunedtargets% *} \) 2>/dev/null |
+        ${cbc} "$(find -L ${basedir} ! \( ${prunedtargets% *} \) -type f 2>/dev/null |
         fzf --reverse --header='Copy File Path')" ; 
     } || {
-        ${cbc} "$(${auth} find -L ${basedir} -type f ! \( ${prunedtargets% *} \) 2>/dev/null |
+        ${cbc} "$(${auth} find -L ${basedirroot} ! \( ${prunedtargets% *} \) -type f 2>/dev/null |
         fzf --reverse --header='Change Dir')" ;
     };
 }
+# --

@@ -1,36 +1,46 @@
-# [ LFRC ]
-    # [ INCLUDE ]
-        source "~/.config/lf/input"
-    # [ INTERFACE ]
-        set promptfmt "\033[32;1m%u@%h\033[0m"
-        set rulerfmt "\033[7;31m %m \033[0m| \033[7;33m %c \033[0m|\033[7;35m %s \033[0m| %i/%t)"
-        set statfmt "\033[36m%p\033[0m| %c| %u| %g"
-        set preview false
-        set ratios "1"
-        set drawbox false
-        set icons true
-        set dupfilefmt "%f.__%n__"
-        set timefmt "2006 Jan _2 15:04:05 "
-    # [ SETTINGS ]
-        set shell bash
-        set shellopts '-eu'
-        set ifs "\n"
-        set history true
-    # [ COMMANDS ]
-        # [ ONELINE ]
-            cmd open ${{ . ~/.config/lf/func/lf-open.sh }}
-            cmd copy-clip ${{ wl-copy < $f }}
-            cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
-            cmd mkdir %{{ IFS=" " ; mkdir -p -- "$*" ; lf -remote "send $id select \"$*\"" }}
-            cmd tar ${{ set -f ; mkdir $1 ; cp -r $fx $1 ; tar czf $1.tar.gz $1 ; rm -rf $1 }}
-            cmd ripf &{{ . ~/.bashrc && ~/.local/bin/del $fx ; }}
-            cmd extarc !{{ . ~/.config/lf/func/extarc.sh }}
-        # [ CH_BG ]
-            cmd bpc &{{ . ~/.config/lf/func/lf-bpc.sh }}
-            cmd bvc &{{ . ~/.config/lf/func/lf-bvc.sh }}
-        # [ NAV ]
-            cmd fcd ${{
-                targetdir=$(~/.local/scripts/fzf_find_jump_dir.sh)
-                [ -d "${targetdir}" ] && cmd="cd" || exit 0
-                lf -remote "send $id $cmd \"${targetdir}\""
-            }}
+# -- INCLUDE
+source "~/.config/lf/input"
+# --
+
+# -- INTERFACE
+set promptfmt "\033[32;1m%u@%h\033[0m"
+set rulerfmt "\033[7;31m %m \033[0m| \033[7;33m %c \033[0m|\033[7;35m %s \033[0m| %i/%t)"
+set statfmt "\033[36m%p\033[0m| %c| %u| %g"
+set preview false
+set ratios "1"
+set drawbox false
+set icons true
+set dupfilefmt "%f.__%n__"
+set timefmt "2006 Jan _2 15:04:05 "
+# --
+
+# -- SETTINGS
+set shell bash
+set shellopts '-eu'
+set ifs "\n"
+set history true
+# --
+
+# -- COMMANDS
+    # -- ONELINE
+    cmd open ${{ . ~/.config/lf/func/lf-open.sh }}
+    cmd copy-clip ${{ wl-copy < $f }}
+    cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
+    cmd mkdir %{{ IFS=" " ; mkdir -p -- "$*" ; lf -remote "send $id select \"$*\"" }}
+    cmd tar ${{ set -f ; mkdir $1 ; cp -r $fx $1 ; tar czf $1.tar.gz $1 ; rm -rf $1 }}
+    cmd ripf &{{ . ~/.bashrc && ~/.local/bin/del $fx ; }}
+    cmd extarc !{{ . ~/.config/lf/func/extarc.sh }}
+    # --
+
+    # -- CH_BG
+    cmd bgc &{{ . ~/.config/lf/func/lf-bg.sh }}
+    # --
+
+    # -- NAV
+    cmd fcd ${{
+        targetdir=$(~/.local/scripts/fzf_find_jump_dir.sh)
+        [ -d "${targetdir}" ] && cmd="cd" || exit 0
+        lf -remote "send $id $cmd \"${targetdir}\""
+    }}
+    # --
+# --

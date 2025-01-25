@@ -1,36 +1,44 @@
-# [ ZATHURA_KEYBINDS ]
-  # [ NORMAL ]
-    # [ SEARCH ]
+# -- NORMAL_SEARCH
 map [normal] )tib toggle_inputbar
 map [normal] )fib focus_inputbar
 map [normal] / feedkeys <S-9>tib<S-9>fib/
 map [normal] n search forward
 map [normal] p search backward
-    # [ NAV ]
-      # [ MOVE ]
+# --
+
+# -- NAV_MOVE
 map [normal] k scroll up
 map [normal] j scroll down
 map [normal] h scroll left
 map [normal] l scroll right
 map [normal] d scroll half-down
 map [normal] u scroll half-up
-      # [ PAGES ]
+# --
+
+# -- NAV_PAGES
 map [normal] tw toggle_page_mode
 map [normal] <C-h> navigate previous
 map [normal] <C-l> navigate next
-    # [ WINDOW ]
+# --
+
+# -- NAV_WINDOW
 map [normal] o zoom out
 map [normal] i zoom in
 map [normal] O adjust_window best-fit
 map [normal] I adjust_window width
 map [normal] ! recolor
-  # [ PRESENTATION ]
+# --
+
+# -- NAV_PRESENTATION
 map [presentation] <C-h> navigate previous
 map [presentation] <C-l> navigate next
-  # [ INDEX ]
+# --
+
+# -- NAV_INDEX
 map [index] k navigate_index up
 map [index] j navigate_index down
 map [index] h navigate_index collapse
 map [index] l navigate_index expand
 map [index] H navigate_index collapse-all
 map [index] L navigate_index expand-all
+# --
