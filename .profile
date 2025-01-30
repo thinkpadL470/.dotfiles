@@ -5,11 +5,30 @@
 
 # -- DESKTOP
     # -- VARIABLES
-    unset LC_TIME
     export \
-        LC_TIME="en_DK.utf-8"
+        PATH="${PATH}:${HOME}/.local/bin:${HOME}/.local/scripts:${HOME}/.cargo/bin" \
+        HISTSIZE=100000 \
+        HISTFILESIZE=100000 \
+        HISTCONTROL=ignoredups \
+        HISTFILE="${HOME}/.bash_history" \
+        SHELL=/bin/bash \
+        VISUAL=/usr/bin/nvim \
+        EDITOR=/usr/bin/nvim \
+        PAGER=/usr/bin/less
     [ -x "/usr/bin/foot" ] && \
         export TERM='foot'
+    # --
+
+    # -- Desktop vars
+    [ -n "${XDG_CURRENT_DESKTOP}" ] && export \
+        BROWSER="/usr/bin/librewolf" \
+        OPENER="xdg-open"
+    # --
+
+    # -- LANG_PATH
+    [ -d /usr/lib/jvm ] && export \
+         RUBYPATH="~/.local/share/gem/ruby/3.2.0/bin" \
+         INSTALL4J_JAVA_HOME="/usr/lib/jvm/java-8-openjdk/jre"
     # --
 
     # -- NVIDIA 

@@ -17,7 +17,6 @@ o.termguicolors = true
 o.wrap = false
 o.wildmenu = true
 o.undofile = true
-o.undodir = "${XDG_STATE_HOME}/nvim/undo/"
 o.undolevels = 1000
 o.undoreload = 10000
 o.completeopt = {'menu', 'menuone'}

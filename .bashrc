@@ -11,29 +11,7 @@
 
 # -- VARIABLES
     # -- Bash/posix vars
-    export \
-        PS1='\[$(tput setaf 33)\]\u\[$(tput setaf 69)\]@\[$(tput setaf 105)\]\h \[$(tput setaf 141)\]\W \[$(tput sgr0)\]$ ' \
-        PATH="${PATH}:${HOME}/.local/bin:${HOME}/.local/scripts:${HOME}/.cargo/bin" \
-        HISTSIZE=100000 \
-        HISTFILESIZE=100000 \
-        HISTCONTROL=ignoredups \
-        HISTFILE="${HOME}/.bash_history" \
-        SHELL=/bin/bash \
-        VISUAL=/usr/bin/nvim \
-        EDITOR=/usr/bin/nvim \
-        PAGER=/usr/bin/less
-    # --
-
-    # -- Desktop vars
-    [ -n "${XDG_CURRENT_DESKTOP}" ] && export \
-        BROWSER="/usr/bin/librewolf" \
-        OPENER="xdg-open"
-    # --
-
-    # -- LANG_PATH
-        [ -d /usr/lib/jvm ] && export \
-             RUBYPATH="~/.local/share/gem/ruby/3.2.0/bin" \
-             INSTALL4J_JAVA_HOME="/usr/lib/jvm/java-8-openjdk/jre"
+    export PS1='\[$(tput setaf 33)\]\u\[$(tput setaf 69)\]@\[$(tput setaf 105)\]\h \[$(tput setaf 141)\]\W \[$(tput sgr0)\]$ '
     # --
 # --
 

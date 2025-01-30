@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 . ${HOME}/.local/func/define_script_directories_in_variables.sh
+readlinkfsh=$(which readlinkf_posix.sh)
 
 # -- Be sure /tmp as tmp directory by setting TMPDIR env
 export TMPDIR=/tmp
@@ -24,7 +25,7 @@ set -eu
 # --
 
 # -- get true file path, Get filename, extract file extention for use with temp file
-src="$(doas ${sh_d}/readlinkf_posix.sh "${1}")"
+src="$(doas ${readlinkfsh} "${1}")"
 filename="${src##*/}"
 [ "${filename}" = "${filename##*.}" ] &&
     file_extension="" || file_extension="${filename##*.}"

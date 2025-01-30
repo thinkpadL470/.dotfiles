@@ -2,8 +2,7 @@
 . ${HOME}/.local/func/define_script_directories_in_variables.sh
 # -- set variables
 hyprpapc="${HOME}/.config/hypr/hyprpaper.conf"
-pid_hyprpaper=$(ps -a -o "pid comm" | grep hyprpaper | tr -cd '0-9')
-pid_mpvpaper=$(ps -a -o "pid comm" | grep mpvpaper | tr -cd '0-9')
+hyprpapsh="${HOME}/.config/hypr/scripts"
 # --
 
 # -- Get Image url
@@ -27,11 +26,10 @@ rconfig=$({ printf '%s\n%s\n%s\n' \
 # --
 
 # -- kill running wallpaper services, append config and run hyprpaper
-${fu_d}/flushwp.sh
-[ -z "${pid_hyprpaper}" -a -z "${pid_mpvpaper}" ] ||
-    kill -9 ${pid_hyprpaper} ${pid_mpvpaper} && {
-    curl -s ${image_url} > ${wp} ;
-    printf '%s\n' "${rconfig}" > ${hyprpapc} ;
-    hyprpaper ;
-}
+. ${fu_d}/flushwp.sh
+kill -15 $(cat /run/user/1000/mpvpaper_d.pid) || true
+kill -15 $(cat /run/user/1000/hyprpaper_d.pid) || true
+curl -s ${image_url} > ${wp}
+printf '%s\n' "${rconfig}" > ${hyprpapc}
+${hyprpapsh}/hyprpaper_d.sh &
 # --

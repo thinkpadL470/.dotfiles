@@ -4,8 +4,8 @@ recordings=0
 
 UpdateRec () {
     [ "$recordings" -gt 0 ] &&
-        [ -n "$(ps -a -o "pid comm" | grep rec_sc.sh | tr -cd '0-9')" ] && echo ""
-        [ -n "$(ps -a -o "pid comm" | grep rec_sc_gif.sh | tr -cd '0-9')" ] && echo "󰄄"
+        [ -n "$(pgrep rec_sc.sh)" ] && echo ""
+        [ -n "$(pgrep rec_sc_gif.sh)" ] && echo "󰄄"
     [ "$recordings" -lt 1 ] && echo
 };
 begin_record () {

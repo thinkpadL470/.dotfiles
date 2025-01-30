@@ -2,6 +2,6 @@
 for prefix in ${@}
 do
     printf \
-        '%s' \
-        "${PWD}/.${prefix}.$(${fu_d}/output_random_number_string.sh 6) "
+        '%s\n' \
+        "${PWD}/.${prefix}.$(${bi_d}/rsg -r -H 12) "
 done

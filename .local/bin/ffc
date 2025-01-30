@@ -4,6 +4,7 @@
 . ~/.local/func/check_auth.sh
 . ~/.local/func/check_clip_copy.sh
 prunedtargets=$(cat ~/.config/find/pruned | tr '\n' ' ')
+[ "$1" = "." ] && { basedir='.' ; basedirroot='.' ; }
 # --
 
 # -- IN_SHELL

@@ -9,7 +9,7 @@ set drawbox false
 set icons true
 set number true
 set relativenumber true
-set previewer "~/.config/lf/scripts/lf-chafa.sh"
+set previewer "~/.config/lf/func/lf-chafa.sh"
 set cursorpreviewfmt "\033[7;2m"
 set dupfilefmt "%f.__%n__"
 set timefmt "2006 Jan _2 15:04:05 "
@@ -39,7 +39,7 @@ set history true
     # --
 
     # -- NAV
-    cmd fcd ${{
+    cmd fcd &{{
         export selected_dir=$(~/.local/scripts/fzf_find_jump_dir.sh)
         [ -d "${selected_dir}" ] && cmd="cd"
         lf -remote "send $id $cmd \"${selected_dir}\""

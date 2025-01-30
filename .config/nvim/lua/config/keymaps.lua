@@ -45,7 +45,7 @@ return {
             setmap('i', '<C-k>', '<C-x><C-n>', { desc = 'In Current File Completion' }),
         
             -- Find
-            setmap('n', '<leader>ff', '<CMD>FzfLua files<CR>', { desc = 'Find Files' }),
+            -- setmap('n', '<leader>ff', '<CMD>FzfLua files<CR>', { desc = 'Find Files' }),
             setmap('n', '<leader>fh', '<CMD>FzfLua helptags<CR>', { desc = 'Find Help' }),
             setmap('n', '<leader>fc', '<CMD>FzfLua commands<CR>', { desc = 'Find Commands' }),
             setmap('n', '<leader>fm', '<CMD>FzfLua keymaps<CR>', { desc = 'Find KeyMaps' }),
