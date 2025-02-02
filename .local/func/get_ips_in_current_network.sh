@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/env dash
 . ~/.local/func/define_script_directories_in_variables.sh
 netipa=$({
     ip a |

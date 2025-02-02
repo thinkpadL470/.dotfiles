@@ -1,2 +1,2 @@
-#!/bin/dash
+#!/usr/bin/env dash
 newsboat -c '~/.cache/newsboat/yt-cache.db' -u '~/.config/newsboat/urls.d/yt.urls'

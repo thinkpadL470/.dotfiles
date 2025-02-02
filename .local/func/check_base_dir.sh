@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 [ -d /home ] && {
     basedir=$(printf "${PWD}" | cut -d '/' -f '1-3') ;
     basedirroot="/" ;

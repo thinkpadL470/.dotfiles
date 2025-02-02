@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 . ~/.local/func/define_script_directories_in_variables.sh
 hypr_conf="${HOME}/.config/hypr/hyprinput.conf"
 main_mod=$(grep '$mainMod\( =\|=\)' "${hypr_conf}")

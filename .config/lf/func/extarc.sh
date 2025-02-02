@@ -1,3 +1,4 @@
+#!/usr/bin/env dash
 set -f
 case $f in
     *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar -xjvf $f

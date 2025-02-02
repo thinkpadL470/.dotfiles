@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 # -- look for wallpaper in home dir
 current_wp=$(ls -1 .bg.* | head -n1)
 wpext=${current_wp##*.}

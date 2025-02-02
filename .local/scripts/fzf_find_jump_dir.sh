@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 # -- set vars, basedir, autentication program, clip aliaas and program, and targets to prune
 . ~/.local/func/check_base_dir.sh
 . ~/.local/func/check_auth.sh
@@ -22,10 +22,10 @@ prunedtargets=$(cat ~/.config/find/pruned | tr '\n' ' ')
 [ -n "$lf" ] && {
     [ "${basedir}" = "/home/${USER}" ] && {
         find -L ${basedir} -type d ! \( ${prunedtargets% *} \) 2>/dev/null |
-        fzf --reverse --header='Change Dir' ; exit 0
+        fzf --reverse --header='Change Dir' ; exit 0 ;
     } || {
         ${auth} find -L ${basedirroot} -type d ! \( ${prunedtargets% *} \) 2>/dev/null |
-        fzf --reverse --header='Change Dir' ; exit 0
+        fzf --reverse --header='Change Dir' ; exit 0 ;
     };
 }
 # --

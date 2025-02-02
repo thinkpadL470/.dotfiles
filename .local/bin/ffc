@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 # -- set vars, basedir, autentication program, clip aliaas and program, targets to prune
 . ~/.local/func/check_base_dir.sh
 . ~/.local/func/check_auth.sh

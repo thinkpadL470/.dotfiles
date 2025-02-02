@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/env dash
 two_column_var=${1}
 total_column_width=$(
     for string_on_line in ${two_column_var}

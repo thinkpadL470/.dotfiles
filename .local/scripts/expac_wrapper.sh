@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 [ "${#}" -gt 1 ] && {
     printf '%s\n%s\n' \
         'more than one argument specified only specify one' \

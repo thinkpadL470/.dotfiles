@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/env dash
 die()
 {
 	_ret="${2:-1}"

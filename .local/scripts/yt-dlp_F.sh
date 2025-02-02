@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 url="${1}"
 shift
 printf '%s\t%s\t%-10s\t%s\n' "ID" "EXT" "RESOLUTION" "FPS"

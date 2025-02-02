@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 . ~/.local/func/define_script_directories_in_variables.sh
 shopt -s extglob
 

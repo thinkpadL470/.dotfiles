@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/env dash
 # -- run du in current dir and convert dir sizes to human readable
 du -sk * .* 2>/dev/null |
     awk 'function human(size) {

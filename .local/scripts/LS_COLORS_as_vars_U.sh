@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 . ${HOME}/.dotfiles/.local/func/define_script_directories_in_variables.sh
 # -- add text to so sorceing of script puts escape charecter in a var append to script
 {

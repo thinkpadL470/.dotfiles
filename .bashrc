@@ -10,9 +10,22 @@
 # --
 
 # -- VARIABLES
-    # -- Bash/posix vars
-    export PS1='\[$(tput setaf 33)\]\u\[$(tput setaf 69)\]@\[$(tput setaf 105)\]\h \[$(tput setaf 141)\]\W \[$(tput sgr0)\]$ '
-    # --
+export \
+    PS1='\[$(tput setaf 33)\]\u\[$(tput setaf 69)\]@\[$(tput setaf 105)\]\h \[$(tput setaf 141)\]\W \[$(tput sgr0)\]$ ' \
+    PROMPT_COMMAND="history -a ; ${PROMPT_COMMAND}"
+# --
+
+# -- Desktop vars
+[ -n "${XDG_CURRENT_DESKTOP}" ] && {
+    export OPENER="xdg-open"
+lwbinary=$(type librewolf) &&
+    export  BROWSER="${lwbinary##* }"
+}
+# --
+
+# -- NVIDIA 
+[ -n "${__GL_SHADER_DISK_CACHE_PATH}" ] && export \
+    __GL_SHADER_DISK_CACHE_PATH="~/.cache/nv"
 # --
 
 # -- SOURCE

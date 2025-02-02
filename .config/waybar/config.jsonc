@@ -23,13 +23,13 @@
     },
     "custom/launcher": {
         "format": "",
-        "on-click": "pkill yofi || yofi",
+        "on-click": "kill $(cat ${XDG_RUNTIME_DIR}/tofi.lock) || tofi-drun",
         "tooltip": false
     },
     "custom/recordscreen": {
-        "exec": "exec ~/.config/waybar/scripts/rec_sc_d.sh",
+        "exec": "~/.config/waybar/scripts/rec_sc_d.sh",
         "exec-on-event": false,
-        "on-click": "pkill -INT -P \"$(pgrep -xo 'rec_sc.sh|rec_sc_gif.sh')\" wf-recorder"
+        "on-click": "kill -15 \"$(cat ${UPID_DIR}/rec_sc.pid ${UPID_DIR}/rec_sc_gif.pid)\""
     },
     "hyprland/window": {
         "separate-outputs": true

@@ -1,5 +1,4 @@
-#/bin/dash
-. ~/.bashrc
+#!/usr/bin/env dash
 . ~/.config/lf/func/lf_open_filetype_vars.sh
 # -- define programs to use to open file in diffrent cases
 test -L $f && f=$(readlink -f $f)

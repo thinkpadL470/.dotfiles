@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 . ~/.local/func/define_script_directories_in_variables.sh
 [ "${#}" -lt 1 ] && ani-cli -q 720p ${@}
 [ "${#}" -gt 0 ] &&

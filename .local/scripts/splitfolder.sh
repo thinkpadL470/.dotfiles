@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 working_dir="${PWD}"
 number_of_dirs="${1}"
 sub_dir_prefix="${2}"

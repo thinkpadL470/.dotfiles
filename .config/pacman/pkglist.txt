@@ -1,6 +1,7 @@
 alsa-plugins
 alsa-utils
 android-tools
+argbash
 aria2
 audacity
 autoconf
@@ -11,6 +12,7 @@ bash-completion
 bat
 bison
 brave-bin
+busybox
 cdparanoia
 chafa
 checkbashisms
@@ -143,6 +145,7 @@ shellcheck
 shntool
 slurp
 stow
+systemd-bootchart
 tailscale
 texinfo
 texlive-fontsrecommended

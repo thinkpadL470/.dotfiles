@@ -30,7 +30,7 @@ set history true
     cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
     cmd mkdir %{{ IFS=" " ; mkdir -p -- "$*" ; lf -remote "send $id select \"$*\"" }}
     cmd tar ${{ set -f ; mkdir $1 ; cp -r $fx $1 ; tar czf $1.tar.gz $1 ; rm -rf $1 }}
-    cmd ripf &{{ . ~/.bashrc && ~/.local/bin/del $fx ; }}
+    cmd ripf &{{ ~/.local/bin/del $fx ; }}
     cmd extarc !{{ . ~/.config/lf/func/extarc.sh }}
     # --
 
@@ -39,7 +39,7 @@ set history true
     # --
 
     # -- NAV
-    cmd fcd &{{
+    cmd fcd ${{
         export selected_dir=$(~/.local/scripts/fzf_find_jump_dir.sh)
         [ -d "${selected_dir}" ] && cmd="cd"
         lf -remote "send $id $cmd \"${selected_dir}\""

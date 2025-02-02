@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 # -- Defin vars, mainfile if mainfile is a link get real file path, define tmp file
 main_file=${HOME}/.local/bin/ani-cli
 [ -L "${main_file}" ] && main_file=$(readlink -f ${main_file})

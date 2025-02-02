@@ -113,14 +113,13 @@ assign_positional_args 1 "${_positionals[@]}"
 
 
 # vvv  PLACE YOUR CODE HERE  vvv
-set -x
 erorr_mg='ERROR could not start mpv or find failed'
 mpv_args='--terminal=no --mute=yes '"${_arg_mpv_options}"
 [ "${_arg_play_infinity}" = "on" ] && mpv_args='--loop-playlist=inf --shuffle '"${mpv_args}"
 [ -n "${_arg_find_query}" ] && find_result=$(find ./ -type f -iname "*${_arg_find_query}*" 2>/dev/null)
 [ -z "${_arg_find_query}" ] &&
-    setsid -f mpv ${mpv_args} "${_arg_files}" ||
-    setsid -f mpv ${mpv_args} --playlist="${find_result}" || {
+    setsid -f mpv ${mpv_args} "${_arg_files[@]}" ||
+    { printf '%s\n' "${find_result}" | setsid -f mpv ${mpv_args} --playlist=- ; } || {
         printf '%s\n' "${erorr_mg}" ;
         exit 1 ;
     }

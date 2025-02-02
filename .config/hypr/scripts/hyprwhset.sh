@@ -1,8 +1,8 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 . ${HOME}/.local/func/define_script_directories_in_variables.sh
 # -- set variables
-hyprpapc="${HOME}/.config/hypr/hyprpaper.conf"
-hyprpapsh="${HOME}/.config/hypr/scripts"
+hyprsh="${HOME}/.config/hypr/scripts"
+hyprpc="${HOME}/.config/hypr/hyprpaper.conf"
 # --
 
 # -- Get Image url
@@ -18,7 +18,7 @@ wp="${HOME}/.bg.${image_url##*.}"
 # --
 
 # -- Generate config
-rconfig=$({ printf '%s\n%s\n%s\n' \
+hpconfig=$({ printf '%s\n%s\n%s\n' \
     "preload = ${wp} " \
     "wallpaper = , ${wp} " \
     "splash = false" ;
@@ -27,9 +27,11 @@ rconfig=$({ printf '%s\n%s\n%s\n' \
 
 # -- kill running wallpaper services, append config and run hyprpaper
 . ${fu_d}/flushwp.sh
-kill -15 $(cat /run/user/1000/mpvpaper_d.pid) || true
-kill -15 $(cat /run/user/1000/hyprpaper_d.pid) || true
+[ -s "${UPID_DIR}/mpvpaper_d.pid" ] &&
+    kill -15 $(cat ${UPID_DIR}/mpvpaper_d.pid)
+[ -s "${UPID_DIR}/hyprpaper_d.pid" ] &&
+    kill -15 $(cat ${UPID_DIR}/hyprpaper_d.pid)
 curl -s ${image_url} > ${wp}
-printf '%s\n' "${rconfig}" > ${hyprpapc}
-${hyprpapsh}/hyprpaper_d.sh &
+printf '%s\n' "${hpconfig}" > ${hyprpc}
+setpgid dash ${hyprsh}/hyprpaper_d.sh & exit 0
 # --

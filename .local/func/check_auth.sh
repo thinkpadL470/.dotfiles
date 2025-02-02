@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 [ -x /bin/sudo ] && [ ! -x /bin/doas ] &&
     auth=sudo
 [ ! -x /bin/sudo ] && [ -x /bin/doas ] &&

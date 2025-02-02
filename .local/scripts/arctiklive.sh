@@ -1,6 +1,8 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
+printf '%s' "$$" > ${UPID_DIR}/arctiklive.pid
+trap "dd if=/dev/null of=${UPID_DIR}/arctiklive.pid ; exit" INT TERM KILL
+trap "kill 0" EXIT
 main_folder="${HOME}/.local/share/pyvirt_env/tiklr"
-trap "kill -- -$$" INT EXIT
 for usr in $(cat ${HOME}/.yt-dlp/tik_live_urls)
 do
     while true

@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/env dash
 # -- generate thumbnail for video and images
 case "$(file -Lb --mime-type -- "$1")" in
     image/vnd.microsoft.icon)

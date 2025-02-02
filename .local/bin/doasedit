@@ -36,14 +36,14 @@ trap 'rm -rf ${tmp_d}' EXIT HUP QUIT TERM INT ABRT
 # --
 
 # -- Create temp dir, Random suffix for temporary files, Create a temp file for the source file
-tmp_d="${TMPDIR}/$(${fu_d}/output_random_number_string.sh 6).tmp" &&
+tmp_d="${TMPDIR}/$(${bi_d}/rsg -r -L 6 -H 10).tmp" &&
 mkdir -p "${tmp_d}" &&
 [ -d "${tmp_d}" ] && printf '%s\n' "${tmp_d}" || {
     td_error_messege='cannot create temporary directory' ;
     printf '%s\n' "${td_error_messege}" ;
     exit 1 ;
 }
-suffix=$(${fu_d}/output_random_number_string.sh 6)
+suffix=$(${bi_d}/rsg -r -L 6 -H 10)
 [ -z "${file_extension}" ] &&
     tmp_f="${tmp_d}/${filename}.${suffix}" ||
     tmp_f="${tmp_d}/${filename%%.*}${suffix}.${file_extension}"

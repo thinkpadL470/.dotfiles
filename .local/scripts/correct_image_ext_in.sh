@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 . ${HOME}/.local/func/define_script_directories_in_variables.sh
 ls -1 | while IFS= read -r file
 do

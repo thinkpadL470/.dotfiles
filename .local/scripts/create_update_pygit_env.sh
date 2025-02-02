@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 [ "${1}" = "-h" ] && {
     printf '%s\n%s\n%s\n%s\n' \
         "first argument is the github repo that shall be cloned" \

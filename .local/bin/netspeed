@@ -1,2 +1,2 @@
-#!/bin/dash
+#!/usr/bin/env dash
 curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -

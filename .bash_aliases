@@ -1,6 +1,6 @@
 # -- GLOBAL_ALIASES
 alias \
-    ct="clear && source ~/.bashrc" \
+    ct="clear" \
     ls="ls --color=auto" \
     lm="ls -rt1" \
     cp="cp -iv" \
@@ -29,7 +29,6 @@ alias \
 
 # -- TERMUX_ALIASES
 [ -d /data/data/com.termux ] && alias \
-    resshd="pkill sshd && sshd" \
     sshadd="ssh-add ~/.ssh/*-rsa" \
     sshconf="nvim ~/../usr/etc/ssh/sshd_config" \
     cbc="termux-clipboard-set" \

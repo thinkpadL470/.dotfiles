@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 . ${HOME}/.dotfiles/.local/func/define_script_directories_in_variables.sh
 . ${fu_d}/source_ls_colors_as_vars.sh
 ll_output=$({ busybox ls --color=always --full-time -hAl -lc ${@} |

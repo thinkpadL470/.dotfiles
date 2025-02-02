@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 [ "${#}" -gt 0 ] && case "${1}" in
     --tvs)
         lobster_quality_opts='-q 720'

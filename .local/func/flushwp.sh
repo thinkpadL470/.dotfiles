@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 # -- the dir to trash files to, if no dir create it
 tra_dir="${HOME}/.local/share/graveyard"
 [ ! -d "${tra_dir}" ] && mkdir -p ${tra_dir}

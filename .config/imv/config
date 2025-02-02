@@ -1,38 +1,38 @@
-# -- [ SETTINGS ]
+# -- SETTINGS
 [options]
 suppress_default_binds = true
-overlay = true
-overlay_font = FiraCode Nerd Font Mono:16
+overlay =                true
+overlay_font =           FiraCode Nerd Font Mono:16
 # --
 
-# -- [ BINDS ]
+# -- BINDS
 [binds]
-<Shift+Q> = quit
-ts = scaling next
-r = reset
-fn = exec echo $imv_current_file
-<space> = toggle_playing
-# -- [ NAV BINDS ]
-w = next_frame
-p = prev
-n = next
-gg = goto 1
+<Shift+Q> =  quit
+ts =         scaling next
+r =          reset
+fn =         exec echo $imv_current_file
+<space> =    toggle_playing
+# -- NAV_BINDS
+w =         next_frame
+p =         prev
+n =         next
+gg =        goto 1
 <Shift+G> = goto -1
 
-# -- [ PAN BINDS ]
+# -- PAN_BINDS
 j = pan 0 -50
 k = pan 0 50
 h = pan 50 0
 l = pan -50 0
 # --
 
-# -- [ ZOOM BINDS ]
+# -- ZOOM_BINDS
 0 = zoom actual
 i = zoom 1
 o = zoom -1
 # --
 
-# -- [ ROTATE BINDS ]
+# -- ROTATE_BINDS
 <Ctrl+r> = rotate by 90
 <Ctrl+f> = flip vertical
 # --

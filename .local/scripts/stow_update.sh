@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 [ -d "${HOME}/.dotfiles" ] &&
     stow_foos="${HOME}/.dotfiles"
 [ -d "${HOME}/.dotfiles_privet" ] &&

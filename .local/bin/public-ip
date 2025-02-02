@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/env dash
 case "$1" in
     1) printf "$(curl --no-progress-meter ifconfig.me)\n"
         ;;

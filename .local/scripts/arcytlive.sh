@@ -1,5 +1,7 @@
-#!/usr/bin/dash
-trap "kill -- -$$" INT EXIT
+#!/usr/bin/env dash
+printf '%s' "$$" > ${UPID_DIR}/arcytlive.pid
+trap "dd if=/dev/null of=${UPID_DIR}/arcytlive.pid ; exit" INT TERM KILL
+trap "kill 0" EXIT
 ytdlp_select_format=$(printf '%s%s%s%s%s%s%s' \
     'bv*[vcodec=vp9][height<=480][fps<=30]+mergeall[vcodec=none]/' \
     'bv*[height<=480][fps<=30]+mergeall[vcodec=none]/' \
@@ -29,5 +31,5 @@ do
         -o "${ytdlp_output_format}" "${url}" ;
         }
     done &
-done
+done ;
 wait

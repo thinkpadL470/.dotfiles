@@ -1,2 +1,2 @@
-#!/usr/bin/dash
+#!/usr/bin/env dash
 ~/.local/func/sed_nocolor.sh

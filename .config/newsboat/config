@@ -27,3 +27,4 @@ cache-file "~/.cache/newsboat/cache.db"
     download-timeout        10
     prepopulate-query-feeds yes
     # --
+# --

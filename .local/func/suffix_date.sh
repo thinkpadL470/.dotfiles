@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/usr/bin/env dash
 case "$1" in
   nanosecs) date +%y-%b-%d-%H-%M-%S-%6N
   ;;
