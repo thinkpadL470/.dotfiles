@@ -7,7 +7,7 @@
     "'\033[')" \
     'nocolor="${esc}"' \
     "'0m'" ;
-} > ${dotfu_d}/source_ls_colors_as_vars.sh
+} > ${dotsh_d}/LS_C_es_vars.sh
 # --
 
 # -- generate escape sequences set in vars from LS…COLORS var append to script
@@ -19,13 +19,13 @@
     sort -u -t, -k3 |
     tr -d ',' |
     sed "s/=/_es=\'/g ; s/$/\'/g" ;
-} >> ${dotfu_d}/source_ls_colors_as_vars.sh
+} >> ${dotsh_d}/LS_C_es_vars.sh
 # --
 
 # -- extract es vars and make colorvars out of them and append to script
 {
-    cat ${fu_d}/source_ls_colors_as_vars.sh |
+    cat ${sh_d}/LS_C_es_vars.sh |
     sed '1,2d ; s/_.*=/_col=/g
          s/'"'"'/"${esc}"'"'"'/ ; s/'"'"'$/m'"'"'/' 
-} >> ${dotfu_d}/source_ls_colors_as_vars.sh
+} >> ${dotsh_d}/LS_C_es_vars.sh
 # --

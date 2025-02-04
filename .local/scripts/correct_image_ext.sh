@@ -32,4 +32,4 @@ do
             ${bi_d}/del ${file} || rm ${file} ;
         };
     }
-done ;
+done ; exit 0

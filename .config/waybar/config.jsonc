@@ -27,9 +27,8 @@
         "tooltip": false
     },
     "custom/recordscreen": {
-        "exec": "~/.config/waybar/scripts/rec_sc_d.sh",
-        "exec-on-event": false,
-        "on-click": "kill -15 \"$(cat ${UPID_DIR}/rec_sc.pid ${UPID_DIR}/rec_sc_gif.pid)\""
+        "exec": "exec ~/.config/waybar/scripts/rec_sc_d.sh",
+        "exec-on-event": false
     },
     "hyprland/window": {
         "separate-outputs": true

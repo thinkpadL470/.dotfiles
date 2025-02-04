@@ -1,6 +1,6 @@
 #!/usr/bin/env dash
 . ${HOME}/.dotfiles/.local/func/define_script_directories_in_variables.sh
-. ${fu_d}/source_ls_colors_as_vars.sh
+. ${sh_d}/LS_C_es_vars.sh
 ll_output=$({ busybox ls --color=always --full-time -hAl -lc ${@} |
     tr -s ' ' |
     sed '1d

@@ -29,9 +29,9 @@ cp $f ${wp}${f##*.}
 # -- run wallpaper service
 [ "${wp_application}" = 'hyprpaper' ] && {
     printf '%s\n' "${genconfig}" > ${hyprpc} ;
-    setpgid dash ${hyprsh}/hyprpaper_d.sh ; exit 0
+    setpgid dash ${hyprsh}/hyprpaper_d.sh & exit 0
 }
 [ "${wp_application}" = 'mpvpaper' ] && {
-    setpgid dash ${sh_d}/mpvpaper_d.sh "${wp}${f##*.}" ; exit 0
+    setpgid dash ${sh_d}/mpvpaper_d.sh "${wp}${f##*.}" & exit 0
 }
 # --
