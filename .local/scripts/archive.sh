@@ -1,0 +1,10 @@
+#!/usr/bin/env dash
+set -eu
+suffix=${1}
+shift
+items=${@}
+arc_folder="${suffix}_$(date +%y.%b.%d.%H.%M.%S).d"
+mkdir -m 700 ${arc_folder}
+cp -r ${items} ${arc_folder} &&
+tar -czf ${arc_folder}.tar.gz ${arc_folder} &&
+rm -rf ${arc_folder}
