@@ -1,0 +1,14 @@
+/boot
+/proc
+/sys
+/run
+*[Gg]o
+*[Pp]ython*
+*[Ii]nclude
+*tmp
+*[Nn]ode_modules
+*[Mm]odules
+*site-local
+*ghc-*
+*jvm*
+*texmf-dist*

@@ -28,7 +28,8 @@
     },
     "custom/recordscreen": {
         "exec": "exec ~/.config/waybar/scripts/rec_sc_d.sh",
-        "exec-on-event": false
+        "exec-on-event": false,
+        "on-click": "cat ${UPID_DIR}/wf_recorder.pid | xargs kill -TERM"
     },
     "hyprland/window": {
         "separate-outputs": true

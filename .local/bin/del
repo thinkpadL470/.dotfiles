@@ -1,85 +1,136 @@
-#!/usr/bin/bash
-. ~/.local/func/define_script_directories_in_variables.sh
-shopt -s extglob
+#!/usr/bin/env dash
+hash -r
 
-# -- Defin current branch directory depending on system
-[ -d /home ] &&
-    branchpwd=$(printf '%s\n' "${PWD}" | cut -d '/' -f '1-3')
-[ -d /data/data/com.termux/files/home ] &&
-    branchpwd=$(printf '%s\n' "${PWD}" | cut -d '/' -f '1-6')
-rip_binary=$(which rip 2>/dev/null && : || printf '%s\n' "no_rip")
 # --
-
-# -- if rip is installed and not running with root delete with rip
-[ -x "${rip_binary}" ] && [ ! "${HOME}" = /root ] &&
-    case "${branchpwd}" in
-
-        # -- in the case of branch pwd is inside users home trash to users graveyard
-        ${HOME})
-            [ ! -d "${HOME}/.local/share/graveyard" ] &&
-                mkdir -p ${HOME}/.local/share/graveyard
-            { for item in "${@}"
-                do
-                    rip --graveyard "${HOME}/.local/share/graveyard" "${item}"
-                done ;
-            }
-            ;;
-        # --
-
-        # -- if in a mnt/ dir trash to users graveyard in mnt dir
-        /mnt/*) 
-            [ ! -d "${branchpwd}/graveyard-${USER}" ] &&
-                mkdir -p ${branchpwd}/graveyard-${USER}
-            { for item in "${@}"
-                do
-                    rip --graveyard "${branchpwd}/graveyard-${USER}" "${item}"
-                done ;
-            }
-            ;;
-        # --
-
-        # -- if branchpwd not in user home or a mnt/ dir trash to users system graveyard
-        !(/mnt))
-            [ ! -d "/tmp/graveyard-${USER}" ] &&
-                mkdir -p /tmp/graveyard-${USER}
-            {
-                for item in "${@}"
-                do
-                    rip --graveyard "/tmp/graveyard-${USER}" "${item}"
-                done
-            }
-            # ${fu_d}/for_files_rip2_to_root.sh "${@}"
-            ;;
-        # --
-
-        # -- use user system graveyard in all other cases
-        *)
-            [ ! -d "/tmp/graveyard-${USER}" ] &&
-                mkdir -p /tmp/graveyard-${USER}
-            {
-                for item in "${@}"
-                do
-                    rip --graveyard "/tmp/graveyard-${USER}" "${item}"
-                done
-            }
-            # ${fu_d}/for_files_rip2_to_root.sh "${@}"
-            ;;
-        # --
-    esac || rip_case_failed=1
-# --
-
-# -- if rip is not installed and home is not root home or if rip case failed use the mvtrash script instead
-[ ! -x "${rip_binary}" ] || [ "${rip_case_failed}" = 1 ] &&
-    [ "${HOME}" = "/home/*" -o "${HOME}" = "/data/data/com.termux/files/home" ] && {
-    . ${fu_d}/del_mvtrash.sh ;
+sh_name=$(basename $0)
+invoking_user=$(logname) # get the user running the script
+invoking_user_home="/home/${invoking_user}" # set var for the runnting user
+{ # find and set rip binary
+    rip_bin=$(type rip 2>/dev/null || printf '%s\n' "no_rip") ;
+    [ ! "${rip_bin}" = "no_rip" ] && rip_bin=$(realpath ${rip_bin##* }) ;
 }
 # --
 
-# -- if ran with root user overwtite the home variable with the branchpwd and run mvtrash script
-[ "${HOME}" = /root ] && {
-    printf "$branchpwd" | grep home && {
-        HOME="$branchpwd" &&
-        . ${fu_d}/del_mvtrash.sh ; 
+# -- get the path for source file
+get_fsrc_base_path () {
+    local item=${1} ; # get full path for source file
+    local full_item=$(cd $(dirname ${item}) && pwd)/$(basename "${item}") ;
+    { # get the base path for source path, depending on system
+        [ -d /home ] && {
+            printf '%s\n' "${full_item}" | cut -d '/' -f '1-3' ;
+        } ;
+        [ -d /data/data/com.termux/files/home ] && {
+            printf '%s\n' "${full_item}" | cut -d '/' -f '1-6' ;
+        } ;
     } ;
+    return 0 ;
 }
+# --
+
+# -- generate the specified directories in sequence
+mkdir_folders_inseq () {
+    local first_dir="${1}" ;
+    local end_dir="${2}/" ;
+    [ "${#first_dir}" -gt "${#end_dir}" ] && {
+        # if paths where provided in the wrong order switch the vars
+        local a="${end_dir}" ; local b="${first_dir}" ;
+        local first_dir="${a}" ; local end_dir="${b}" ;
+    } ;
+    local dir_seqence=$({
+        # generate list of the directories to create
+        until [ "${first_dir}" = "${end_dir}" ]
+        do
+            end_dir="${end_dir%/*}"
+            printf '%s\n' "${end_dir}"
+        done | sort ;
+    }) ;
+    { # create the directories depending on if running as root or not
+        [ "$(printf '%s' "${first_dir}" | grep -c "^${invoking_user_home}")" -ge 1 ] && { 
+            printf '%s\n' "${dir_seqence}" |
+            while IFS= read item ; do mkdir -m 700 ${item} ; done ;
+        } ;
+        [ "$(printf '%s' "${first_dir}" | grep -c "^${invoking_user_home}")" -lt 1 ] && {
+            printf '%s\n' "${dir_seqence}" |
+            while IFS= read item ; do mkdir -m 755 ${item} ; done ;
+        } ;
+    } ;
+    # check if the directory path was sucessfully created
+    [ ! -d "${end_dir}" ] && return 1 ;
+    [ -d "${end_dir}" ] && return 0 ;
+}
+mkdir_folders_inseq_ret () {
+    [ "${ret}" = 1 ] && {
+        printf '%s\n' "${sh_name}: mkdir_folders_inseq: directory was not created sucsessfully" ;
+        exit 1 ;
+    } ;
+    return 0 ;
+}
+# --
+
+# -- delete files to the specified path
+delete_file () {
+    local rip2b="${rip_bin}" ;
+    local path="${1}" ;
+    local item="${2}" ;
+    [ -x "${rip2b}" ] && [ ! "${HOME}" = /root ] && {
+        # trash with rip if installed and not running as root
+        ${rip2b} --graveyard "${path}" "${item}" ;
+    } || { # all other cases use mv to trash the file
+        mv "${item}" "${path}/${item##*/}$(date +%y-%b-%d-%H-%M-%S-%6N)" ||
+        mv "${item}" "${path}/${item}$(date +%y-%b-%d-%H-%M-%S-%6N)" ;
+    } || return 1 ;
+    return 0 ;
+}
+delete_file_ret () {
+    [ "${ret}" = 1 ] && {
+        printf '%s\n' "${sh_name}: delete_file: faild to delete file" ;
+        exit 1 ;
+    } ;
+    return 0 ;
+}
+# --
+
+# -- main code to run
+files_list="${@}" ;
+printf '%s\n' ${files_list} | while IFS= read file
+# for each file get the base dir and trash the file to the apropiate trash folder
+do
+    fsrc_base_path="$(get_fsrc_base_path ${file})"
+    case "${fsrc_base_path}" in
+        ${invoking_user_home}) # use graveyard in users home
+        base_dir="${invoking_user_home}/.local"
+        trash_path="${base_dir}/share/graveyard"
+        [ ! -x "${rip_bin}" ] && trash_path="${trash_path}/mvtrash" # if rip is not installed append mv folder
+        [ ! -d "${trash_path}" ] && {
+            mkdir_folders_inseq "${base_dir}" "${trash_path}" ; {
+                ret="${?}" ; mkdir_folders_inseq_ret ;
+            } ;
+        }
+        delete_file "${trash_path}" "${file}" ; { ret="${?}" ; delete_file_ret ; }
+        ;;
+        /mnt/*) # use graveyard in the mounted drive
+        # base_dir = ${fsrc_base_path}
+        trash_path="${fsrc_base_path}/graveyard"
+        [ ! -x "${rip_bin}" ] && trash_path="${trash_path}-${invoking_user}/mvtrash-${invoking_user}"
+        [ ! -d "${trash_path}" ] && {
+            mkdir_folders_inseq "${fsrc_base_path}" "${trash_path}" ; {
+                ret="${?}" ; mkdir_folders_inseq_ret ;
+            } ;
+        }
+        delete_file "${trash_path}" "${file}" ; { ret="${?}" ; delete_file_ret ; }
+        ;;
+        *) # use system graveyard in all other cases
+        base_dir="/tmp"
+        trash_path="/tmp/graveyard"
+        [ ! -x "${rip_bin}" ] && trash_path="${trash_path}-${invoking_user}/mvtrash-${invoking_user}"
+        [ ! -d "${trash_path}" ] && {
+            mkdir_folders_inseq "${base_dir}" "${trash_path}" ; {
+                ret="${?}" ; mkdir_folders_inseq_ret ;
+            } ;
+        }
+        delete_file "${trash_path}" "${file}" ; { ret="${?}" ; delete_file_ret ; }
+        ;;
+    esac
+done
+exit 0 ;
 # --

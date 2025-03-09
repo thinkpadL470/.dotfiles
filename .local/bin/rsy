@@ -1,2 +1,2 @@
 #!/usr/bin/env dash
-rsync -haruvz "$@" --partial-dir='.rsync-partial' --info=progress2 
+rsync -haruvz --partial-dir='.rsync-partial' --info=progress2 ${@}

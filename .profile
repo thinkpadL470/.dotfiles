@@ -1,6 +1,6 @@
 # -- VARIABLES
 export \
-    PATH="${PATH}:${HOME}/.local/bin:${HOME}/.local/scripts:${HOME}/.cargo/bin" \
+    PATH="${HOME}/.local/bin:${HOME}/.local/scripts:${PATH}" \
     HISTSIZE= \
     HISTFILESIZE= \
     HISTCONTROL=ignorespace:erasedups \
@@ -8,15 +8,15 @@ export \
     HISTFILE="${HOME}/.history" \
 
 shbinary=$(type bash) &&
-    export SHELL=${shbinary##*.}
+    export SHELL=${shbinary##* }
 
 vibinary=$(type nvim) &&
-    export VISUAL=${vibinary##*.}
+    export VISUAL=${vibinary##* }
 
 lessbinary=$(type less) &&
-    export PAGER=${lessbinary##*.}
+    export PAGER=${lessbinary##* }
 
-EDITOR=${VISUAL}
+export EDITOR=${VISUAL}
 [ -x "/usr/bin/foot" ] && \
     export TERM='foot'
 # --
@@ -28,32 +28,39 @@ EDITOR=${VISUAL}
 # --
 
 # -- SOURCE
-[ -f "$HOME/.config/fabric/fabric-bootstrap.inc" ] && \
+[ -f "$HOME/.config/fabric/fabric-bootstrap.inc" ] &&
     . ~/.config/fabric/fabric-bootstrap.inc
 # --
 
 # -- TERMUX
-[ -d /data/data/com.termux ] && \
+[ -d /data/data/com.termux ] &&
     for i in /data/data/com.termux/files/usr/etc/profile.d/*.sh; do test -r $i && source $i && unset i; done
 # --
 
     # -- SOURCE
-    [ -d /data/data/com.termux ] && [ "${SHELL}" = "/bin/bash" ] && \
-        [ -f /data/data/com.termux/files/usr/etc/bash.bashrc ] && \
-            . /data/data/com.termux/files/usr/etc/bash.bashrc && \
-        [ -f /data/data/com.termux/files/home/.bashrc ] && \
-            . /data/data/com.termux/files/home/.bashrc
+    [ -d /data/data/com.termux ] && [ "${SHELL}" = "/bin/bash" ] && {
+        [ -f /data/data/com.termux/files/usr/etc/bash.bashrc ] &&
+            . /data/data/com.termux/files/usr/etc/bash.bashrc ;
+        [ -f /data/data/com.termux/files/home/.bashrc ] &&
+            . /data/data/com.termux/files/home/.bashrc ;
+    }
     # --
 
     # -- EXEC
-        [ -d /data/data/com.termux ] && \
-            eval $(ssh-agent) && eval 'ssh-agent'
-            [ -x ~/.local/scripts/update-env-conf.sh ] && \
+    [ -d /data/data/com.termux ] && {
+        eval $(ssh-agent) && eval 'ssh-agent' ;
+        [ -x ~/.local/scripts/update-env-conf.sh ] &&
             ~/.local/scripts/update-env-conf.sh
+    }
     # --
 # --
 
 # -- GLOBAL
-    [ -f ~/.bashrc ] && \
-        . ~/.bashrc
+[ -f ~/.bashrc ] && \
+    . ~/.bashrc
+# --
+
+# -- NIX
+[ -f /usr/etc/profile.d/nix.sh ] &&
+    . /usr/etc/profile.d/nix.sh
 # --

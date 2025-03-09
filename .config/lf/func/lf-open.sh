@@ -4,23 +4,23 @@
 test -L $f && f=$(readlink -f $f)
 case $(file --mime-type $f -b) in
 image/vnd.djvu | application/pdf | application/octet-stream)
-    setsid -f zathura $f
+    sh -c 'zathura $0' $f & exit
     ;;
 text/* | application/json)
     $EDITOR $fx
     ;;
 image/*)
-    imv $f 2>/dev/null
+    setpgid imv $fx > /dev/null 2>&1 &
     ;;
 audio/*)
     mpv --audio-display=no $f
     ;;
 video/*)
-    setsid -f mpv --mute=yes $fx -quiet >/dev/null 2>&1
+    setpgid mpv --mute=yes --really-quiet $fx > /dev/null 2>&1 &
     ;;
 *)
     for f in $fx; do
-        setsid -f $OPENER $f >/dev/null 2>&1
+        setpgid -f $OPENER $f >/dev/null 2>&1
     done
     ;;
 esac

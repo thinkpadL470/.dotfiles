@@ -1,7 +1,24 @@
 #!/usr/bin/env dash
 printf '%s' "$$" > ${UPID_DIR}/arctiklive.pid
-trap "dd if=/dev/null of=${UPID_DIR}/arctiklive.pid ; exit" INT TERM KILL
-trap "kill 0" EXIT
+
+# -- pid files
+pids="${UPID_DIR}/arctiklive.pid"
+# --
+
+# -- define cleanup
+cleanup () {
+    {
+        rm ${pids}
+    } 2>/dev/null
+}
+# --
+
+# -- setup traps
+trap "exit" INT TERM HUP QUIT
+trap "cleanup ; kill -- -$$" EXIT
+# --
+
+# -- run tikliverec py script for every user and wait
 main_folder="${HOME}/.local/share/pyvirt_env/tiklr"
 for usr in $(cat ${HOME}/.yt-dlp/tik_live_urls)
 do
@@ -16,3 +33,4 @@ do
     done &
 done ;
 wait
+# --

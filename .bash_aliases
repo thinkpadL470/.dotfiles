@@ -46,7 +46,6 @@ alias \
 
 # -- FUNC
 [ -d ~/.local/func ] && alias \
-    fcd=". ~/.local/scripts/fzf_find_jump_dir.sh" \
-    mp="~/.local/scripts/mpv_wrapper.sh" \
+    fcd=". ~/.local/scripts/fzf_dir_jump.sh" \
     lf="~/.local/scripts/lf_wrapper.sh"
 # --

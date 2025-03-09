@@ -1,6 +1,6 @@
 #!/usr/bin/env dash
 . ${HOME}/.local/func/define_script_directories_in_variables.sh
-ls -1 | while IFS= read -r file
+find . -type f | while IFS= read -r file
 do
     {
         image_format=$(file ${file} 2>&1 |

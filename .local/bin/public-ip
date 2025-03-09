@@ -1,11 +1,19 @@
 #!/usr/bin/env dash
+usage () {
+    printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n' \
+        "usage: $(basename $0): [-1,-2,--verbose]" \
+        "-h         print this help" \
+        "-1         use ifconfig.me" \
+        "-2         use ifconfig.io" \
+        "--verbose  use a verbose output on ipinfo.io." ;
+}
 case "$1" in
-    1) printf "$(curl --no-progress-meter ifconfig.me)\n"
+    -1) printf "$(curl --no-progress-meter ifconfig.me)\n"
         ;;
-    2) printf "$(curl --no-progress-meter ifconfig.io)\n"
+    -2) printf "$(curl --no-progress-meter ifconfig.io)\n"
         ;;
-    v) printf "$(curl --no-progress-meter ipinfo.io.)\n"
+    --verbose) printf "$(curl --no-progress-meter ipinfo.io.)\n"
         ;;
-    *) printf 'invalid argument either [1,2,v]\n' ;
+    *) usage
         ;;
 esac

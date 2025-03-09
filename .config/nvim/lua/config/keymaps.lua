@@ -46,10 +46,10 @@ return {
         
             -- Find
             -- setmap('n', '<leader>ff', '<CMD>FzfLua files<CR>', { desc = 'Find Files' }),
-            setmap('n', '<leader>fh', '<CMD>FzfLua helptags<CR>', { desc = 'Find Help' }),
-            setmap('n', '<leader>fc', '<CMD>FzfLua commands<CR>', { desc = 'Find Commands' }),
-            setmap('n', '<leader>fm', '<CMD>FzfLua keymaps<CR>', { desc = 'Find KeyMaps' }),
-            setmap('n', '<leader>fb', '<CMD>FzfLua buffers<CR>', { desc = 'Find KeyMaps' }),
+            -- setmap('n', '<leader>fh', '<CMD>FzfLua helptags<CR>', { desc = 'Find Help' }),
+            -- setmap('n', '<leader>fc', '<CMD>FzfLua commands<CR>', { desc = 'Find Commands' }),
+            -- setmap('n', '<leader>fm', '<CMD>FzfLua keymaps<CR>', { desc = 'Find KeyMaps' }),
+            -- setmap('n', '<leader>fb', '<CMD>FzfLua buffers<CR>', { desc = 'Find KeyMaps' }),
             -- setmap('n', '<leader>mf', '<CMD>Lexplore<CR>', { desc = 'manage files' }),
             setmap('n', '<leader>ml', '<CMD>Lazy<CR>', { desc = 'manage Lazy' }),
             --

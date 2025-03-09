@@ -1,89 +1,177 @@
-#!/usr/bin/env sh
-. ${HOME}/.local/func/define_script_directories_in_variables.sh
-readlinkfsh=$(which readlinkf_posix.sh)
-
-# -- Be sure /tmp as tmp directory by setting TMPDIR env
-export TMPDIR=/tmp
+#!/usr/bin/env dash
+# --
+cleanup () {
+    rm -rf ${tmp_objects%%:*} ;
+}
+trap "exit" HUP QUIT TERM INT ABRT
+trap "cleanup ; kill -- -$$" EXIT
 # --
 
-# -- Catch arguments. and error if a condition is met
-[ -n "${2}" ] && error_messege='expected_only_one_argument'
-[ -z "${1}" ] && error_messege="no_file_path_provided ${error_messege}"
-[ "$(id -u)" -eq 0 ] && error_messege="cannot_be_run_as_root ${error_messege}"
-[ -d "${1}" ] && error_messege="${1}_is_a_directory ${error_messege}"
+# -- catch arguments
+[ "${#}" -gt 1 ] && error_messege='expected_only_one_argument' ;
+[ -z "${1}" ] && error_messege="no_file_path_provided ${error_messege}" ;
+[ "$(id -u)" -eq 0 ] && error_messege="cannot_be_run_as_root ${error_messege}" ;
+[ -d "${1}" ] && error_messege="${1}_is_a_directory ${error_messege}" ;
 [ -n "${error_messege}" ] && { printf '%s\n' "${error_messege}" |
     while IFS= read -r msg
     do
-        printf '%s\n' "doasedit: ${msg}" >&2 
+        printf '%s\n' "$(basename $0): ${msg}" >&2
     done ;
     exit 1 ;
+};
+# --
+
+# -- get the attributes of the file like name and ext
+get_f_name_attributes () {
+    local file_name="${1##*/}" ;
+    [ "${file_name}" = "${file_name##*.}" ] && # check if file has a extention
+        local file_extension="" || local file_extension="${file_name##*.}" ;
+    printf '%s' "${file_name%.*}:${file_extension}" ; # print the data
+    return 0 ;
 }
 # --
 
-# -- Safe shell options
-set -eu
-# --
-
-# -- get true file path, Get filename, extract file extention for use with temp file
-src="$(doas ${readlinkfsh} "${1}")"
-filename="${src##*/}"
-[ "${filename}" = "${filename##*.}" ] &&
-    file_extension="" || file_extension="${filename##*.}"
-# --
-
-# -- Hooks for recursive removing of a temporary directory
-trap 'rm -rf ${tmp_d}' EXIT HUP QUIT TERM INT ABRT
-# --
-
-# -- Create temp dir, Random suffix for temporary files, Create a temp file for the source file
-tmp_d="${TMPDIR}/$(${bi_d}/rsg -r -L 6 -H 10).tmp" &&
-mkdir -p "${tmp_d}" &&
-[ -d "${tmp_d}" ] && printf '%s\n' "${tmp_d}" || {
-    td_error_messege='cannot create temporary directory' ;
-    printf '%s\n' "${td_error_messege}" ;
-    exit 1 ;
+# -- generate a string of random length and random content of numbers and letters
+generate_random_string () {
+    local min="6" ; # define minimal length
+    local max="12" ; # define max length
+    local char_count=$({ # generate the length of the final string
+        ($(od -An -N4 -tu /dev/urandom)${min+%(${max+$max- }$min+1)${max++$min}}) ;
+    }) ;
+    tr -cd "A-Za-z1-9" < /dev/urandom | head -c ${char_count} ; # generate the string
+    return 0 ;
 }
-suffix=$(${bi_d}/rsg -r -L 6 -H 10)
-[ -z "${file_extension}" ] &&
-    tmp_f="${tmp_d}/${filename}.${suffix}" ||
-    tmp_f="${tmp_d}/${filename%%.*}${suffix}.${file_extension}"
 # --
 
-# -- test File writeability condition, test Other conditions
-[ -w "$src" ] && {
-    w_error_message='editing files in a writable directory is not permitted' ;
-    printf '%s\n' "$filename: ${w_error_message}" ;
-    exit 1 ;
+# -- check what auth tool is configured on the system
+check__auth () {
+    local doas_bin=$(realpath /usr/bin/doas) || { # set doas bin, if not in default path try to find it with type
+        local doas_bin=$(type doas) && local doas_bin=$(realpath ${doas_bin##* }) ;
+    } || { doas_bin="" ; true ; } ;
+    local sudo_bin=$(realpath /usr/bin/sudo) || { # like for doas, do the same for sudo
+        local sudo_bin=$(type sudo) && local sudo_bin=$(realpath ${sudo_bin##* }) ;
+    } || { sudo_bin="" ; true ; } ;
+    [ -x "${sudo_bin}" ] && [ ! -x "${doas_bin}" ] && local auth=${sudo_bin} || true ;
+    [ ! -x "${sudo_bin}" ] && [ -x "${doas_bin}" ] && local auth=${doas_bin} || true ;
+    [ ! -x "${sudo_bin}" ] && [ ! -x "${doas_bin}" ] && return 1 ;
+    printf '%s' "${auth}" ;
+    return 0 ;
 }
-[ ! -r "${src}" ] && doas [ -f "${src}" ] && doas cat "${src}" > "${tmp_f}" 2>/dev/null ||
-[ -r "${src}" ] && cat "${src}" > "${tmp_f}" 2>/dev/null || {
-    printf '%s%s\n' \
-    "cannot transfer the content " \
-    "of the file to temporary one" ;
-    exit 1 ;
+check__auth_ret () {
+    ret="${?}" ;
+    [ "${ret}" = 1 ] && {
+        printf '%s\n' "${sh_name}: check__auth: setup your authentication, uninstall either doas or sudo" ;
+        exit 1 ;
+    } ;
+    return 0 ;
 }
-
-# -- Create copy of the temporary file, Move the contents of a temporary file to its copy for later comparison
-tmp_cf="${tmp_f}.copy"
-cat "${tmp_f}" > "${tmp_cf}"
 # --
 
-# -- Editing the file by the user using the default editor, if not specified, then vi is used
+
+# --
+mkdir_folders_inseq () {
+    local first_dir="${1}" ;
+    local end_dir="${2}/" ;
+    local dir_seqence=$({
+        until [ "${first_dir}" = "${end_dir}" ]
+        do
+            end_dir="${end_dir%/*}"
+            printf '%s\n' "${end_dir}"
+        done | sort ;
+    }) ;
+    [ ! "${HOME}" = /root ] && {
+        printf '%s\n' "${dir_seqence}" |
+        while IFS= read item ; do mkdir -m 700 ${item} ; done ;
+    } 2>/dev/null ;
+    [ "${HOME}" = /root ] && {
+        printf '%s\n' "${dir_seqence}" |
+        while IFS= read item ; do mkdir -m 755 ${item} ; done ;
+    } 2>/dev/null ;
+    [ -d "${end_dir}" ] && return 0 || return 1
+}
+# --
+
+# --
+get_tmp_array () {
+    [ -w "${src_file}" ] && {
+        return 1 ;
+    } ;
+    local tmp_d="${tmpdir}/$(generate_random_string).tmp.d" ;
+    [ ! -d "${tmp_d}" ] && {
+        mkdir_folders_inseq "${tmpdir}" "${tmp_d}" || return 2 ;
+    } ;
+    local suffix=$(generate_random_string) ;
+    local src_f_atributes=$(get_f_name_attributes "${src_file}") ;
+    [ -z "${src_f_atributes##*.}" ] &&
+        local tmp_f="${tmp_d}/${src_f_atributes%%.*}.${suffix}" ||
+        local tmp_f="${tmp_d}/${src_f_atributes%%.*}.${suffix}.${src_f_atributes##*.}"
+    printf '%s' "${tmp_d}:${tmp_f}" ;
+    return 0 ;
+}
+# --
+
+# --
+move_src_2_tmp () {
+    local tmp_f="${1}" ;
+    { [ ! -r "${src_file}" ] && ${auth} [ -f "${src_file}" ] && ${auth} cat "${src_file}" > "${tmp_f}" ;
+    } 2>/dev/null || {
+    [ -r "${src_file}" ] && cat "${src_file}" > "${tmp_f}" ;
+    } 2>/dev/null || {
+        return 1 ;
+    } ;
+    cat "${tmp_f}" > "${tmp_f}.copy" ;
+}
+# --
+
+# --
+verify_changes () {
+    local tmp_f=${1}
+    cmp -s "${tmp_f}" "${tmp_f}.copy" && return 1 || {
+        local attempt=0 ;
+        until doas cp -f "${tmp_f}" "${src_file}"
+        do
+            local attempt=$((attempt + 1))
+            [ "${attempt}" -ge 3 ] && {
+                return 2
+            }
+        done ;
+        return 0 ;
+    } ;
+}
+# --
+
+# --
+sh_name=$(basename $0)
+auth=$(check__auth) ; check__auth_ret
+src_file="$(doas realpath "${1}")"
+tmpdir="${HOME}/tmp"
+tmp_objects="$(get_tmp_array)" ; {
+    [ "${ret}" = 1 ] && {
+        printf '%s\n' "${sh_name}: get_tmp_array: editing file in writebal dir is not premitted" ; exit 1 ;
+    } ;
+    [ "${ret}" = 2 ] && {
+        printf '%s\n' "${sh_name}: get_tmp_array: faild to make temp directory" ; exit 1 ;
+    } ;
+}
+    tmp_d="$(printf '%s' "${tmp_objects}" | cut -d':' -f'1')"
+    tmp_f="$(printf '%s' "${tmp_objects}" | cut -d':' -f'2')"
+move_src_2_tmp "${tmp_f}" ; {
+    ret="${?}" ;
+    [ "${ret}" = 1 ] && {
+        printf '%s\n' "${sh_name}: move_src_2_tmp: failed to move ${src_file} to ${tmp_f}" ; exit 1 ;
+    } ;
+}
 ${EDITOR:-vi} "${tmp_f}"
-# --
-
-# -- Compare the temporary file and the temporary copy
-cmp -s "${tmp_f}" "${tmp_cf}" && printf "%s\n" "doasedit: ${filename} unchanged" && exit 0 || {
-    attempt=0 ;
-    until doas cp -f "${tmp_f}" "${src}"
-    do
-        attempt=$((attempt + 1))
-        [ "${attempt}" -ge 3 ] && {
-            c_error_messege='cannot accept changes' ;
-            printf '%s\n' "doasedit: ${c_error_messege}" ;
-        }
-    done ;
-    printf "%s\n" "doasedit: ${filename} changes are accepted" ;
-    exit 0
+verify_changes "${tmp_f}" ; {
+    ret="${?}" ;
+    [ "${ret}" = 0 ] && {
+        printf '%s\n' "${sh_name}: verify_changes: changes accepted to ${src_file}" ; exit 0 ;
+    } ;
+    [ "${ret}" = 1 ] && {
+        printf '%s\n' "${sh_name}: verify_changes: ${src_file} left unchanged" ; exit 1 ;
+    } ;
+    [ "${ret}" = 2 ] && {
+        printf '%s\n' "${sh_name}: verify_changes: attempted force copying ${tmp_f} to ${src_file} with failure" ; exit 1 ;
+    } ;
 }
 # --

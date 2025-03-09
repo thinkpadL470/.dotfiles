@@ -1,0 +1,82 @@
+#!/usr/bin/env dash
+# -- basic functions
+. ${HOME}/.local/func/define_script_directories_in_variables.sh
+usage () {
+printf '%s\n%s\n%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n' \
+    "Usage: $(basename $0)," \
+    "[--help] [--size-of] [--marked-for-update]," \
+    "[--opt-deps] [--recently-install] [--deps-of]" \
+    '--help              Display this help' \
+    '--size-of           Size of packages' \
+    '--marked-for-update Packages marked for update, with dl size' \
+    '--opt-deps          optional dependencies' \
+    '--recently-install  30 last installed' \
+    '--deps-of           <package> dependencies of package' ;
+}
+# --
+
+# -- catch arguments
+[ "${#}" -gt 2 ] && {
+    printf '%s\n%s\n' \
+        'more than two argument specified only specify two' \
+        "use $(basename ${0}) -h to print usage" ;
+    exit 1 ;
+}
+[ "${#}" -lt 1 ] && { 
+    printf '%s\n%s\n' \
+        'one argument has to be specified' \
+        "use $(basename ${0}) -h to print usage" ;
+    exit 1 ;
+}
+# --
+
+# -- evaluate arguments
+
+
+
+[ "${#}" -eq 1 -o "${#}" -eq 2 ] &&
+    case "${1}" in
+        --size-of)
+            expac \
+                --config "${HOME}/.config/pacman/pacman.conf" \
+                -S -H M '%k\t%n'
+            printf '\n%s\n' 'size of packages'
+            ;;
+        --marked-for-update)
+            expac \
+                --config "${HOME}/.config/pacman/pacman.conf" \
+                -S -H M "%k\t%n" $(pacman -Qqu) |
+                sort -sh
+            printf '\n%s\n' \
+                'packages marked for update, with dl size'
+            ;;
+        --opt-deps)
+            expac \
+                --config "${HOME}/.config/pacman/pacman.conf" \
+                -S '%o' 2>&1 |
+                tr -s ' ' | tr -s ' ' '\n'
+            printf '\n%s\n' 'optional dependencies'
+            ;;
+        --recently-install)
+            expac \
+                --config "${HOME}/.config/pacman/pacman.conf" \
+                --timefmt='%Y-%m-%d %T' '%l\t%n' |
+                sort |
+                tail -n 30
+            printf '\n%s\n' "30 last installed"
+            ;;
+        --deps-of)
+            shift
+            expac --config "${HOME}/.config/pacman/pacman.conf" \
+                -S '%D' "${@}" |
+                sed 's/\ \ /:/g' |
+                tr ':' '\n'
+            printf '\n%s\n' \
+                'dependencies of package'
+            ;;
+        --help) usage
+            ;;
+        *) usage
+            ;;
+    esac ; exit 0
+# --
