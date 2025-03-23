@@ -57,6 +57,7 @@ get_fsrc_dir_realpath () {
 }
 
 check__auth () {
+    [ -f /data/data/com.termux/files/home ] && { auth="" ; printf '%s\n' "on mobile device no need for auth" ; return 0 ; }
     local doas_bin=$(realpath /usr/bin/doas) || { # set doas bin, if not in default path try to find it with type
         local doas_bin=$(type doas) && local doas_bin=$(realpath ${doas_bin##* }) ;
     } || { doas_bin="" ; true ; } ;
