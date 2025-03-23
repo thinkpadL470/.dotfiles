@@ -46,7 +46,7 @@ generate_random_string () {
 }
 
 get_fsrc_dir_realpath () {
-    local pattern=${1}
+    local pattern=${1} ;
     realpath $({
         { find ~/../../ -iname "${pattern}" ;
         } 2>/dev/null |

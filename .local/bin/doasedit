@@ -35,9 +35,8 @@ get_f_name_attributes () {
 generate_random_string () {
     local min="6" ; # define minimal length
     local max="12" ; # define max length
-    local char_count=$({ # generate the length of the final string
-        ($(od -An -N4 -tu /dev/urandom)${min+%(${max+$max- }$min+1)${max++$min}}) ;
-    }) ;
+    # generate the length of the final string
+    local char_count=$(($(od -An -N4 -tu /dev/urandom)${min+%(${max+$max- }$min+1)${max++$min}})) ;
     tr -cd "A-Za-z1-9" < /dev/urandom | head -c ${char_count} ; # generate the string
     return 0 ;
 }

@@ -1,7 +1,6 @@
 #!/usr/bin/env dash
-set -x
 [ "${1}" = "-h" -o "${#}" -lt 1 ] && {
-    printf '%s\n%s\n\n%s\n%s\n' \
+    printf '%s\n' \
         "first argument is the github repo that shall be cloned" \
         "second argument is the name of the virtaul enviorment and main folder(no spaces and quote it)" \
         "if this tool has alredy been used it updates the git repo thats been created, " \
@@ -27,7 +26,7 @@ env_folder="${git_folder}"/"${name}"_env
     [ ! -d "${env_folder}" ] && { cd ${git_folder} ; python -m venv "${name}_env" ; };
     [ -d "${env_folder}" ] && {
         cd ${git_folder} ;
-        reqfile=$(find . -type f -name 'requirements.txt') ;
+        reqfile=$(find . -type f -name '[Rr]equirements.txt') ;
         . ${env_folder}/bin/activate && {
             pip3 install -r ${reqfile} ;
             pip3 install -U -r ${reqfile} ;
