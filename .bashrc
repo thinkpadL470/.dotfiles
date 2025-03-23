@@ -11,7 +11,7 @@
 
 # -- VARIABLES
 export \
-    PS1='\[$(printf "\033[38:5:33m" )\]\u\[$(tput setaf 69)\]@\[$(tput setaf 105)\]\h \[$(tput setaf 141)\]\W \[$(tput sgr0)\]$ ' \
+    PS1="\[\e[38;5;33m\]\u\[\e[38;5;69m\]@\[\e[38;5;105m\]\h \[\e[38;5;141m\]\w \[\033[0m\]$ " \
     PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
 # --
 

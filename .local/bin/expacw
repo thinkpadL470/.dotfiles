@@ -1,6 +1,5 @@
 #!/usr/bin/env dash
 # -- basic functions
-. ${HOME}/.local/func/define_script_directories_in_variables.sh
 usage () {
 printf '%s\n%s\n%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n' \
     "Usage: $(basename $0)," \
