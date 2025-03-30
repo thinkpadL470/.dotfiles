@@ -93,7 +93,7 @@ restart_sshd () {
     };
 }
 restart_sshd_ret () {
-    local ret=${1} ;
+    local ret="${?}" ;
     [ "${ret}" = 1 ] && {
         printf '%s\n' "${sh_name}: restart_sshd: sshd faild to restart" ;
         exit 0 ;
