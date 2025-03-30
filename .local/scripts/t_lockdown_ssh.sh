@@ -57,7 +57,7 @@ get_fsrc_dir_realpath () {
 }
 
 check__auth () {
-    [ -d /data/data/com.termux/files/home ] && { printf '%s' "${auth}" ; return 0 ; };
+    [ -d /data/data/com.termux/files/home ] && { printf '%s' "" ; return 0 ; };
     local doas_bin=$(realpath /usr/bin/doas) || { # set doas bin, if not in default path try to find it with type
         local doas_bin=$(type doas) && local doas_bin=$(realpath ${doas_bin##* }) ;
     } || { doas_bin="" ; true ; };
@@ -127,7 +127,12 @@ grep 'PasswordAuthentication yes' "${conf_f}" >/dev/null 2>&1 && {
         s/PubkeyAuthentication\ no/PubkeyAuthentication\ yes/g' ${conf_f} > ${tmp_f1} &
     } || { printf '%s\n' "${sh_name}: sed: sed faild to substitute settings in ${conf_f}" ; exit 1 ; };
 }
-cat < ${tmp_f1} | ${auth} tee ${conf_f} && {
-    restart_sshd ; restart_sshd_ret ;
-} && exit 0 || exit 1
+[ -n "${auth}" ] && { cat < ${tmp_f1} | ${auth} tee ${conf_f} && {
+        restart_sshd ; restart_sshd_ret ;
+    } && exit 0 || exit 1 ;
+}
+[ -z "${auth}" ] && { cat < ${tmp_f1} | tee ${conf_f} && {
+        restart_sshd ; restart_sshd_ret ;
+    } && exit 0 || exit 1 ;
+}
 # --
