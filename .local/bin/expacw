@@ -30,9 +30,6 @@ printf '%s\n%s\n%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n' \
 # --
 
 # -- evaluate arguments
-
-
-
 [ "${#}" -eq 1 -o "${#}" -eq 2 ] &&
     case "${1}" in
         --size-of)

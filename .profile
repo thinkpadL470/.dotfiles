@@ -56,7 +56,7 @@ export EDITOR=${VISUAL}
 # --
 
 # -- GLOBAL
-[ -f ~/.bashrc ] && \
+[ -f ~/.bashrc ] &&
     . ~/.bashrc
 # --
 

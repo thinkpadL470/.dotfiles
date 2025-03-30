@@ -9,9 +9,7 @@ pids="\
 
 # -- define cleanup function
 cleanup () {
-    {
-        cat ${pids} | xargs kill -TERM ;
-        rm ${pids} ;
+    { cat ${pids} | xargs kill -TERM ; rm ${pids} ;
     } 2>/dev/null
 }
 # --
@@ -20,6 +18,5 @@ cleanup () {
 trap "exit" HUP INT TERM QUIT
 trap "cleanup ; kill -- -$$" EXIT
 [ -n "${HYPR_BAR}" ] && { ${HYPR_BAR} & hyprbar_PID=$! ; }
-[ -z "${HYPR_BAR}" ] && { waybar & hyprbar_PID=$! ; }
 wait "${hyprbar_PID}"
 exit

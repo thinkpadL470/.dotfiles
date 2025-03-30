@@ -1,5 +1,29 @@
 #!/usr/bin/env dash
-. ${HOME}/.local/func/define_script_directories_in_variables.sh
+# --
+flush_wp () {
+local tra_dir="${HOME}/.local/share/graveyard" ;
+[ ! -d "${tra_dir}" ] && mkdir -p ${tra_dir} ;
+ls -1 ${HOME}/.bg.* |
+    while IFS= read -r wpfile
+    do
+        wpfilep=${wpfile%/*}
+        mkdir -p ${tra_dir}/${wpfilep}
+        mv ${wpfile} ${tra_dir}/${wpfilep}$(date +%y-%b-%d-%H-%M-%S)${wpfile##*/}
+    done ;
+    return 0 ;
+}
+# --
+
+# --
+kill_paper_services () {
+    [ -s "${UPID_DIR}/mpvpaper_d.pid" ] &&
+        kill -TERM $(cat ${UPID_DIR}/mpvpaper_d.pid) ;
+    [ -s "${UPID_DIR}/hyprpaper_d.pid" ] &&
+        kill -TERM $(cat ${UPID_DIR}/hyprpaper_d.pid) ;
+    return 0 ;
+}
+# --
+
 # -- vars: wallpaper no ext, what is running?, define hyprpaper conf, generate config
 wp=~/.bg.
 
@@ -7,6 +31,7 @@ wp=~/.bg.
     cat ~/.config/mime/video.txt | grep -x "${f##*.}" && wp_application='mpvpaper'
     cat ~/.config/mime/image.txt | grep -x "${f##*.}" && wp_application='hyprpaper'
     # --
+sh_d="${HOME}/.local/scripts"
 [ "${wp_application}" = "hyprpaper" ] && {
     hyprsh="${HOME}/.config/hypr/scripts"
     hyprpc=${HOME}/.config/hypr/hyprpaper.conf ;
@@ -19,12 +44,9 @@ wp=~/.bg.
 # --
 
 # -- set selected lf file as wallpaper file and kill running wallpaper services 
-. ${fu_d}/flushwp.sh
+flush_wp
 cp $f ${wp}${f##*.}
-[ -s "${UPID_DIR}/mpvpaper_d.pid" ] &&
-    kill -TERM $(cat ${UPID_DIR}/mpvpaper_d.pid) || true
-[ -s "${UPID_DIR}/hyprpaper_d.pid" ] &&
-    kill -TERM $(cat ${UPID_DIR}/hyprpaper_d.pid) || true
+kill_paper_services
 # --
 
 # -- run wallpaper service

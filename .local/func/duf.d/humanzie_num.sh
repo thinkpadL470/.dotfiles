@@ -1,4 +1,3 @@
-#!/usr/bin/env dash
 humanazie_num () {
 awk 'function human(size) {
         unit=" KB MB GB TB EB PB YB ZB"
@@ -10,6 +9,3 @@ awk 'function human(size) {
     }
     {gsub(/^[0-9]+/, human($1)); printf "%-6s%-3s%s\n", $1, $2, $3 }' 
 }
-# -- run du in current dir and convert dir sizes to human readable
-du -sk * .* 2>/dev/null | humanazie_num | sort -r -k2 | sed '/\.\.$/d'
-# --

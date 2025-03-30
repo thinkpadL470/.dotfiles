@@ -10,9 +10,7 @@ ${UPID_DIR}/mpvpaper_d.pid"
 
 # -- define cleanup function
 cleanup () {
-    {
-        rm ${pids} ;
-    } 2>/dev/null
+    { rm ${pids} ; } 2>/dev/null
 }
 # --
 
