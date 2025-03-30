@@ -109,7 +109,6 @@ tmpdir=${HOME}/tmp
 tmp_d="${tmpdir}/$(generate_random_string).tmp.d"
 [ ! -d "${tmp_d}" ] && mkdir_folders_inseq "${tmpdir}" "${tmp_d}" ; mkdir_folders_inseq_ret "${tmp_d}"
 tmp_f1="${tmp_d}/sshd_config.$(generate_random_string)"
-mkfifo -m 600 ${tmp_f1} &
 rel_etc_p=$(get_fsrc_dir_realpath "etc")
 conf_f="${rel_etc_p}/ssh/sshd_config"
 # --
@@ -118,19 +117,19 @@ conf_f="${rel_etc_p}/ssh/sshd_config"
 grep 'PasswordAuthentication no' "${conf_f}" >/dev/null 2>&1 && {
     {
         sed 's/PasswordAuthentication\ no/PasswordAuthentication\ yes/g
-        s/PubkeyAuthentication\ yes/PubkeyAuthentication\ no/g' ${conf_f} > ${tmp_f1} &
+        s/PubkeyAuthentication\ yes/PubkeyAuthentication\ no/g' ${conf_f} > ${tmp_f1} ;
     } || { printf '%s\n' "${sh_name}: sed: sed faild to substitute settings in ${conf_f}" ; exit 1 ; };
 }
 grep 'PasswordAuthentication yes' "${conf_f}" >/dev/null 2>&1 && {
     {
         sed 's/PasswordAuthentication\ yes/PasswordAuthentication\ no/g
-        s/PubkeyAuthentication\ no/PubkeyAuthentication\ yes/g' ${conf_f} > ${tmp_f1} &
+        s/PubkeyAuthentication\ no/PubkeyAuthentication\ yes/g' ${conf_f} > ${tmp_f1} ;
     } || { printf '%s\n' "${sh_name}: sed: sed faild to substitute settings in ${conf_f}" ; exit 1 ; };
 }
-[ -n "${auth}" ] && { cat < ${tmp_f1} | ${auth} tee ${conf_f} && {
+[ -n "${auth}" ] && { ${auth} cp ${tmp_f1} ${conf_f} && {
         restart_sshd ; restart_sshd_ret ;
     } && exit 0 || exit 1 ;
-} || { cat < ${tmp_f1} | tee ${conf_f} && {
+} || { cp ${tmp_f1} ${conf_f} && {
         restart_sshd ; restart_sshd_ret ;
     } && exit 0 || exit 1 ;
 }
