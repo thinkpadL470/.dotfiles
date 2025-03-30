@@ -130,8 +130,7 @@ grep 'PasswordAuthentication yes' "${conf_f}" >/dev/null 2>&1 && {
 [ -n "${auth}" ] && { cat < ${tmp_f1} | ${auth} tee ${conf_f} && {
         restart_sshd ; restart_sshd_ret ;
     } && exit 0 || exit 1 ;
-}
-[ -z "${auth}" ] && { cat < ${tmp_f1} | tee ${conf_f} && {
+} || { cat < ${tmp_f1} | tee ${conf_f} && {
         restart_sshd ; restart_sshd_ret ;
     } && exit 0 || exit 1 ;
 }
