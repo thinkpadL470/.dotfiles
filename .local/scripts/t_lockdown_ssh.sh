@@ -1,5 +1,5 @@
 #!/usr/bin/env dash
-set -u
+set -xu
 # --
 cleanup () {
     rm -rf ${tmp_d}
