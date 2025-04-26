@@ -2,17 +2,17 @@
 * {
   all: unset;
   font-family: Fira Code Nerd Font;
-  font-size: 17px;
+  font-size: 16px;
 }
 .modules-left {
   background: @base;
-  padding: 0 10px;
+  padding: 0 16px;
   border-radius: 0 0 8px 0;
 }
 .modules-right {
   background: @base;
   font-weight: bold;
-  padding: 0 10px;
+  padding: 0 16px;
   border-radius: 0 0 0 8px;
 }
 .modules-center {

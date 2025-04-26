@@ -1,7 +1,7 @@
 # [YTDLP_CONF]
   # [ALAISES]
     --alias gulopt,-X "--user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36' --no-restrict-filenames --no-download-archive --flat-playlist --print filename"
-    --alias dlyts,-X "--sponsorblock-mark sponsor,selfpromo,preview -f '((bv*[vcodec~="'"vp*9*"'"]/bv*)+ba)/b -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
+    --alias dlyts,-X "--sponsorblock-mark sponsor,selfpromo,preview -f '((bv*[vcodec~="'"vp*9*"'"]/bv*)+ba)/b' -o 'V-%(upload_date,release_date,modified_date|Unknown)s_%(title)s_%(id)s_%(duration_string)s.%(ext)s'"
     --alias dlytsds,-X "--sponsorblock-mark sponsor,selfpromo,preview -f '((bv*[height<=720]/bv*[height<=480]/bv*)[vcodec~="'"vp*9*"'"][fps<=30]+ba)/((bv*[height<=720]/bv*[height<=480]/bv*)[fps<=30]+ba) / ((bv*[height<=720]/bv*[height<=480]/bv*)+ba/b)' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
     --alias dlythds,-X "--sponsorblock-mark sponsor,selfpromo,preview -f '((bv*[height<=1080]/bv*)[vcodec~="'"vp*9*"'"][fps<=30]+ba)/((bv*[height<=1080]/bv*)[fps<=30]+ba) / ((bv*[height<=1080]/bv*)+ba/b)' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
     --alias dlyt,-X "-f '((bv*[vcodec~="'"vp*9*"'"]/bv*)+ba)/b' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s' "

@@ -1,5 +1,6 @@
 #!/usr/bin/env dash
 # -- set variables
+set -x
 hyprsh="${HOME}/.config/hypr/scripts"
 hyprpc="${HOME}/.config/hypr/hyprpaper.conf"
 # --

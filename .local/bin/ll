@@ -18,14 +18,14 @@ sed_color_format_ls_output () {
     s/rwT/'"${st_col}"'6/g ; s/rws/'"${tw_col}"'7'"${nocolor}"'/g ; s/rwS/'"${tw_col}"'7'"${nocolor}"'/g
     s/\t/&'"${z_col}"'/' ;
 }
+awk_rearange_col () {
+    awk -F '\t' '{ OFS="\t"; print $1,$3,$4,$2 }' ;
+}
 sed_remove_size_for_dirs_and_links () {
     sed \
     -e '\q^'"${esc%*[}"'\['"${di_es}"'q s/'"${esc%*[}"'\['"${z_es}"'.*$//g' \
     -e '\q^'"${esc%*[}"'\['"${ln_es}"'q s/'"${esc%*[}"'\['"${z_es}"'.*$//g' \
     -e 's/\ ../\ / ; s/\ ..-/'"${mh_col}"'&/ ; s/$/'"${nocolor}"'/g' ;
-}
-awk_rearange_col () {
-    awk -F '\t' '{ OFS="\t"; print $1,$3,$4,$2 }' ;
 }
 # --
 

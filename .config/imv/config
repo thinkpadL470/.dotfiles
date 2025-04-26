@@ -12,6 +12,7 @@ ts =         scaling next
 r =          reset
 fn =         exec echo $imv_current_file
 <space> =    toggle_playing
+d =          overlay
 # -- NAV_BINDS
 w =         next_frame
 p =         prev
