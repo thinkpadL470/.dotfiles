@@ -38,6 +38,32 @@
         #   echo "Hello, ${config.home.username}!"
         # '')
     ];
+
+    gtk = {
+        enable = true;
+        iconTheme = {
+            name = "Papirus-Dark";
+            package = pkgs.papirus-icon-theme;
+            };
+        theme = {
+            name = "palenight";
+            package = pkgs.palenight-theme;
+            };
+        cursorTheme = {
+            name = "whitesur-cursors";
+            package = pkgs.whitesur-cursors;
+        };
+        gtk3.extraConfig = {
+            Settings = ''
+            gtk-application-prefer-dark-theme=1
+            '';
+        };
+        gtk4.extraConfig = {
+            Settings = ''
+            gtk-application-prefer-dark-theme=1
+            '';
+        };
+    };
     
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
     # plain files is through 'home.file'.
