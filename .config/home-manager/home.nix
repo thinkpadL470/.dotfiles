@@ -41,18 +41,18 @@
 
     gtk = {
         enable = true;
-        iconTheme = {
-            name = "Papirus-Dark";
-            package = pkgs.papirus-icon-theme;
-            };
+        # iconTheme = {
+        #     name = "Papirus-Dark";
+        #     package = pkgs.papirus-icon-theme;
+        #     };
         theme = {
-            name = "palenight";
-            package = pkgs.palenight-theme;
+            name = "sierra";
+            package = pkgs.sierra-gtk-theme;
             };
-        cursorTheme = {
-            name = "whitesur-cursors";
-            package = pkgs.whitesur-cursors;
-        };
+        # cursorTheme = {
+        #     name = "whitesur-cursors";
+        #     package = pkgs.whitesur-cursors;
+        # };
         gtk3.extraConfig = {
             Settings = ''
             gtk-application-prefer-dark-theme=1
@@ -62,6 +62,12 @@
             Settings = ''
             gtk-application-prefer-dark-theme=1
             '';
+        };
+    };
+
+    dconf.settings = {
+        "org/gnome/desktop/interface" = {
+            color-scheme = "prefer-dark";
         };
     };
     
