@@ -1,82 +1,82 @@
-@import "mocha.css";
+/* general theme */
+@import "utopia.css";
 * {
-  all: unset;
-  font-family: Fira Code Nerd Font;
-  font-size: 16px;
+    all: unset; font-family: FiraCode Nerd Font Propo; font-size: 18;
 }
-.modules-left {
-  background: @base;
-  padding: 0 16px;
-  border-radius: 0 0 8px 0;
-}
-.modules-right {
-  background: @base;
-  font-weight: bold;
-  padding: 0 16px;
-  border-radius: 0 0 0 8px;
-}
-.modules-center {
-  color: @peach;
-  font-weight: 500;
-  margin: 0 8px;
-  padding: 0 10px;
-  border-radius: 8px;
-}
-tooltip {
-  color: @mauve;
-  background: @base;
-}
-#window {
-  background: @base;
-  font-weight: 500;
-  margin: 0 8px;
-  padding: 0 10px;
-  border-radius: 0 0 8px 8px;
-}
-window#waybar.empty #window {
-  background: rgba(12, 12, 12, 0.0);
-}
-#backlight {
-  color: @peach;
-}
-#battery {
-  color: @green;
-}
-#clock.date {
-  color: @maroon;
-}
-#clock.time {
-  color: @peach;
-}
-#custom-launcher {
-  color: @sapphire;
-  margin: 0 6px 0 0;
-}
-#custom-recordscreen {
-	color: @red;
-	margin: 0 6px 0 0;
-}
-#mpris {
-  color: @green;
-  font-weight: 600;
-}
-#network {
-  color: @sapphire;
-}
-#pulseaudio {
-  color: @teal;
-}
-#workspaces {
-  color: @mauve;
-  font-weight: bold;
-  margin: 0 -4px;
-}
-#workspaces button {
-  margin: 0 4px;
-}
-#workspaces button.active {
-  color: @peach;
-}
-#workspaces button:hover {
-  color: @maroon;
-}
+/* -- */
+
+/* -- container types look */
+
+    /* -- tooltip look */
+    tooltip {
+        background: @gray015-60; color: @color03;
+        border: 2 solid @gray035-80; border-radius: 4;
+    }
+    /* -- */
+
+    /* -- window look */
+    window#waybar {
+        background-image:
+            /* linear-gradient(35deg, @color07-50-d, @color03-50-d, @color07-50-d, @color03-50-d, @color07-50-d, @color03-50-d); */
+            linear-gradient(45deg, @gray005-50, @gray025-50, @gray005-50, @gray025-50, @gray005-50, @gray025-50);
+        /* background-image: linear-gradient(-90deg, red, blue); */
+        background-size: 200% 600%;
+        background-repeat: no-repeat;
+        animation: bg-ani 40s infinite alternate;
+        border-left: 0px solid @gray015-45;
+        border-right: 0px solid @gray015-45;
+        border-bottom: 3px solid @color07;
+        border-bottom-right-radius: 32px;
+        border-bottom-left-radius: 32px;
+    }
+    @keyframes bg-ani {
+        0% {
+            background-position: top left;
+        }
+        100% {
+            background-position: bottom right;
+        }
+    }
+    /* -- */
+
+    /* -- modules containsers look */
+    .modules-center, .modules-left, .modules-right { padding: 0 22; }
+    .modules-center { color: @color07; margin: 0 0 6 0;
+        padding: 0 200;
+    }
+    .modules-left, .modules-right { color: @color06;
+    }
+    .modules-left { margin: 0 0 8 0; }
+    .modules-right { margin: 0 0 8 0; }
+    /* -- */
+/* -- */
+
+/* -- modules look */
+#workspaces button.active { color: @color03; }
+
+    /* -- general module look */
+    #window, #memory-wrap, #prossessing-units, #submap, #workspaces,
+    #date-wrap, #battery, #network, #mpris, #custom-recordscreen,
+    #custom-launcher, #pulseaudio, #keyboard-wrap, #upower-wrap {
+        background-color: @color01-85;
+        padding: 2 6;
+        border: 2 solid @gray035;
+        border-radius: 12;
+        border-top: 1 solid @gray035;
+        border-top-right-radius: 4;
+        border-top-left-radius: 2;
+    }
+    /* -- */
+
+    /* -- induvidual config */
+    window#waybar.empty #window { border: 0; background: transparent; color: transparent; }
+    #network { font-weight: bold; }
+    #prossessing-units { padding: 0 0 0 8; }
+    #date-wrap { color: @color04; font-weight: 500; }
+    #pulseaudio { padding: 0 0 0 9; }
+    #memory-wrap { padding: 0 0 0 8; }
+    #keyboard-state { padding: 0 0 0 2; }
+    #keyboard-wrap, #submap { font-weight: bold; }
+    /* #submap.capture { } */
+    /* -- */
+/* -- */

@@ -5,10 +5,10 @@ drun-launch = true
 
 # -- FONT
 font = "${fontc}"
-font-size = 16
+font-size = 14
 hint-font = true
 # --
 
 # -- SOURCE
-include = ./themes/drunwal
+include = ./themes/utopia
 # --

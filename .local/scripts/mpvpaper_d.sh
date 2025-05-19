@@ -1,6 +1,22 @@
-#!/bin/env dash
+#!/usr/bin/env dash
 [ -z "${UPID_DIR}" ] && { [ -z "${XDG_RUNTIME_DIR}" ] && exit || UPID_DIR=${XDG_RUNTIME_DIR} ; }
 printf '%s\n' "$$" > ${UPID_DIR}/mpvpaper_d.pid
+
+
+# app_name=mpvpaper
+# script_name=$(basename $0)
+# lockdir="${UPID_DIR}/${script_name}"
+# pidfile="${lockdir}/pid"
+# ! mkdir $lockdir 2>/dev/null && {
+#     pid=$(cat $pidfile) ;
+#     ! kill -0 ${pid} 2>/dev/null && {
+#         rm -rf ${lockdir} ;
+#         exec "$0" "$@" ;
+#     } ;
+#     exit 1 ;
+# } || {
+#     printf '%s\n' "$$" > ${pidfile} ;
+# }
 
 # -- set pids file to use for cleanup
 pids="\

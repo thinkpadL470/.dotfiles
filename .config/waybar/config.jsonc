@@ -1,56 +1,215 @@
 {
-    "layer": "top",
-    "position": "top",
-    "spacing": 16,
-    "modules-left": ["custom/launcher", "custom/recordscreen", "hyprland/workspaces"],
-    "modules-center": ["hyprland/window"],
-    "modules-right": ["network", "pulseaudio", "battery", "clock#date", "clock#time"],
-    "battery": {
-        "format": "{icon} {capacity}%",
-        "format-charging": "󰂄 {capacity}%",
-        "format-plugged": "󰂄 {capacity}%",
-        "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰁹"],
-        "tooltip-format": "{time}"
-    },
-    "clock#time": {
-        "interval": 1,
-        "format": "{:%H:%M}"
-    },
-    "clock#date": {
-        "interval": 10,
-        "format": " {:%m-%d}",
-        "tooltip-format": "{:%Y-%m-%d-%A}"
-    },
-    "custom/launcher": {
-        "format": "",
-        "on-click": "kill $(cat ${XDG_RUNTIME_DIR}/tofi.lock) || tofi-drun",
-        "tooltip": false
-    },
-    "custom/recordscreen": {
-        "exec": "exec ~/.config/waybar/scripts/rec_sc_d.sh",
-        "exec-on-event": false,
-        "on-click": "cat ${UPID_DIR}/wf_recorder.pid | xargs kill -TERM"
-    },
-    "hyprland/window": {
-        "separate-outputs": true
-    },
-    "network": {
-        "format-wifi": "󰖩 {essid}",
-        "format-ethernet": "󰈀 {ifname}",
-        "format-linked": " {ifname}",
-        "format-disconnected": "󰖪 disconnected"
-    },
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": "󰖁 {volume}%",
-        "format-bluetooth": "󰂯 {icon} {volume}%",
-        "format-bluetooth-muted": "󰂯 󰖁 {volume}%",
-        "scroll-step": 5,
-        "on-click": "wpctl set-mute @DEFAULT_SINK@ toggle",
-        "on-click-right": "wpctl set-mute @DEFAULT_SINK@ 1",
-        "on-click-middle": "pavucontrol",
-        "format-icons": {
-            "default": ["󰖀", "󰕾", "󰕾"]
-        }
-    }
+// -- config
+    "reload_style_on_change": true, "spacing": 8,
+    "position": "top", "layer": "top",
+        
+        // -- containers
+        "modules-left": [
+            "hyprland/submap",
+            "custom/recordscreen",
+            "group/memory-wrap",
+            "group/prossessing-units",
+            "hyprland/window"
+        ],
+        "modules-right": [
+            "pulseaudio",
+            "group/keyboard-wrap",
+            "network",
+            // "group/upower-wrap",
+            "battery"
+        ],
+        "modules-center": [
+            "hyprland/workspaces#left",
+            "group/date-wrap",
+            "hyprland/workspaces#right"
+        ],
+        // --
+        
+    // -- modules waybar
+    // "include": "~/.config/waybar/sway.jsonc",
+    // "include": "~/.config/waybar/niri.jsonc",
+    "include": "~/.config/waybar/hyprland.jsonc",
+
+        // -- hw, status
+
+            // -- internals
+            "battery": {
+                "format": "{icon}", "format-charging": "󰂄 {capacity}",
+                "format-plugged": "󰂄 {capacity}", "tooltip-format": "{time}",
+                "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰁹"],
+                "justify": "center"
+            },
+            // "upower#keyboard": {
+            //     "format:": "{percentage}",
+            //     // "model": "Keychron K3",
+            //     "tooltip": "{time}",
+            //     "native-path": "/org/bluez/hci0/dev_ED_70_45_4F_BB_E2",
+            //     "hide-if-empty": false
+            // },
+            "network": {
+                "format-wifi": "{icon} {ssid}", /* "min-length": 26, */
+                "format-icons": {
+                    "wifi": [ "󰤯", "󰤟", "󰤢", "󰤥", "󰤨" ]
+                },
+                "format-ethernet": "󰈀", "format-linked": "{icon}",
+                "format-disconnected": "󰤮", "interval": "5",
+                "justify": "center",
+                "tooltip-format-ethernet": "Interface: {ifname}\nLocalAddress: {ipaddr}\n5min-UpDown: [{bandwidthUpBytes}|{bandwidthDownBytes}]"
+            },
+            "cpu": {
+                "interval": 20,
+                "format": "<span color='#a190d9' overline='single'>▕{icon}<span color='#a190d9' fgalpha='70%'>{icon0}{icon1}{icon2}{icon3}▏</span></span>",
+                "format-icons": {
+                    "default": [
+                        "▁", "▂", "▃", "▄", "▅", "▆", "▇"
+                    ]
+                }, "justify": "center"
+            },
+            // --
+
+            // -- input
+            "group/keyboard-wrap": {
+                "orientation": "horizontal",
+                "modules": [
+                    "hyprland/language",
+                    "keyboard-state"
+                ]
+            },
+                "keyboard-state": {
+                    "format": "{icon}",
+                    "format-icons": {
+                        "locked": "󰘲",
+                        "unlocked": ""
+                    },
+                    "capslock": true
+                },
+                "hyprland/language": {
+                    "format": "<span rise='-2pt' size='18pt' line_height='0.5pt' >󰌓</span> <span color='#a190d9' >{short}</span>"
+                },
+            // --
+        // --
+
+        // -- info 
+        "group/date-wrap": {
+            "orientation": "horizontal",
+            "modules": [
+                "clock#time",
+                "clock#date"
+            ],
+            "drawer": {
+                "transition-duration": 500
+            }, "justify": "center"
+        },
+            "clock#time": { "interval": 1, "format": "{:%H:%M}", "justify": "center" },
+            "clock#date": {
+                "interval": 10, "format": " {:%b %d}",
+                "tooltip-format": "{:%Y-%m-%d-%A}",
+                "justify": "center"
+            },
+        // --
+
+        // -- audio
+        "pulseaudio": {
+            "format": "󰓃<span color='#a190d9' overline='single'>▕{icon}▏</span>",
+            "format-muted": "󰓄▕{icon}▏",
+            "format-bluetooth": "󰂯▕{icon}▏",
+            "format-bluetooth-muted": "󰂲▕{icon}▏", "scroll-step": 2,
+            "on-click": "wpctl set-mute @DEFAULT_SINK@ toggle",
+            "on-click-middle": "pavucontrol",
+            "format-icons": {
+                "default": [ " ", "▁", "▂", "▃", "▄", "▅", "▆", "▇" ],
+                "default-muted": [ " " ]
+            },
+            "tooltip": false,
+            "justify": "center"
+        },
+        // --
+    // --
+
+    // -- modules custom
+
+        //-- sys status
+
+        "custom/recordscreen": {
+            "exec": "exec ~/.config/waybar/scripts/rec_sc_d.sh",
+            "exec-on-event": false, "justify": "center"
+        },
+
+            // -- group: upower
+            // "group/upower-wrap": {
+            //     "orientation": "horizontal",
+            //     "modules": [
+            //         "upower#keyboard"
+            //     ],
+            //     "drawer": {
+            //         "transition-duration": 500
+            //     }
+            // },
+            // --
+
+            // -- group: memory
+            "group/memory-wrap": {
+                "orientation": "horizontal",
+                "modules": [
+                    "custom/memory-real",
+                    "custom/memory-swap"
+                ], "justify": "center"
+            },
+            "custom/memory-real": {
+                "interval": 30,
+                "exec": "~/.config/waybar/scripts/memory.sh real 2> /dev/null",
+                "return-type": "json", "format": "<span color='#a190d9' overline='single'>▕{icon}▏</span>",
+                "format-icons":  {
+                    "default": [
+                        "▁", "▂", "▃", "▄", "▅", "▆", "▇"
+                    ]
+                }, "justify": "center"
+            },
+            "custom/memory-swap": {
+                "interval": 30,
+                "exec": "~/.config/waybar/scripts/memory.sh swap 2> /dev/null",
+                "return-type": "json", "format": "<span rise='-1pt' size='16pt' line_height='0.5pt' >󰒟</span><span color='#a190d9' overline='single'>▕{icon}▏</span>",
+                "format-icons":  {
+                    "default": [
+                        "▁", "▂", "▃", "▄", "▅", "▆", "▇"
+                    ]
+                }, "justify": "center"
+            },
+            // --
+
+            // -- group: prosessing
+            "group/prossessing-units": {
+                "orientation": "horizontal",
+                "modules": [
+                    "cpu",
+                    "custom/gpu-percentage",
+                    "custom/gpu-memory-percentage"
+                ], "justify": "center",
+                "drawer": {
+                    "transition-duration": 500
+                }
+            },
+            "custom/gpu-percentage": {
+                "interval": 30,
+                "exec": "/home/gus/.config/waybar/scripts/gpu.sh clock 2> /dev/null ",
+                "return-type": "json", "format": "<span rise='-2pt' line_height='0.8pt' size='18pt'>󰢮</span><span color='#a190d9' overline='single'>▕{icon}▏</span>",
+                "format-icons":  {
+                    "default": [
+                        "▁", "▂", "▃", "▄", "▅", "▆", "▇"
+                    ]
+                }, "justify": "center"
+            },
+            "custom/gpu-memory-percentage": {
+                "interval": 30,
+                "exec": "/home/gus/.config/waybar/scripts/gpu.sh memory 2> /dev/null",
+                "return-type": "json", "format": "<span color='#a190d9' overline='single'>▕{icon}▏</span>",
+                "format-icons":  {
+                    "default": [
+                        "▁", "▂", "▃", "▄", "▅", "▆", "▇"
+                    ]
+                }, "justify": "center"
+            }
+            // --
+        // --
+    // --
 }

@@ -61,6 +61,6 @@ export EDITOR=${VISUAL}
 # --
 
 # -- NIX
-[ -f /usr/etc/profile.d/nix.sh ] &&
-    . /usr/etc/profile.d/nix.sh
+[ -f "${HOME}"/home/gus/.nix-profile/etc/profile.d/hm-session-vars.sh ] &&
+    . "${HOME}"/home/gus/.nix-profile/etc/profile.d/hm-session-vars.sh
 # --

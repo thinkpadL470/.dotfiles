@@ -1,2 +1,2 @@
 #!/usr/bin/env dash
-newsboat -c '~/.cache/newsboat/git-cache.db' -u '~/.config/newsboat/urls.d/github.urls'
+newsboat -C '~/.config/newsboat/layouts/git.conf' -u '~/.config/newsboat/sources.d/github.txt'

@@ -29,11 +29,11 @@ lwbinary=$(type librewolf) &&
 # --
 
 # -- SOURCE
-vivid_bin="$(vivid_type="$(type vivid)" ; printf '%s' "${vivid_type##* }")"
-[ -r ~/.dircolors -a ! -x "${vivid_bin}" ] &&
-eval $(dircolors -b ~/.dircolors) ;
-[ -x "${vivid_bin}" -a -d ~/.config/vivid/themes -a -r ~/.config/vivid/filetypes.yml ] &&
-    export LS_COLORS=$(vivid generate ~/.config/vivid/themes/mytheme1.yml)
+# vivid_bin="$(vivid_type="$(type vivid)" ; printf '%s' "${vivid_type##* }")"
+# [ -r ~/.dircolors -a ! -x "${vivid_bin}" ] &&
+# eval $(dircolors -b ~/.dircolors) ;
+# [ -x "${vivid_bin}" -a -d ~/.config/vivid/themes -a -r ~/.config/vivid/filetypes.yml ] &&
+#     export LS_COLORS=$(vivid generate ~/.config/vivid/themes/mytheme1.yml)
 [ -r ~/.bash_aliases ] &&
     . ~/.bash_aliases
 [ -r ~/.config/fabric/fabric-bootstrap.inc ] &&

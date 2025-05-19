@@ -32,7 +32,7 @@ return {
             --
         
             -- Save
-            setmap('n', '<C-s>', '<CMD>write<CR>'),
+            setmap('n', '<C-w>', '<CMD>write<CR>'),
             --
         
             -- Modes

@@ -1,0 +1,41 @@
+{
+// -- config
+
+    // -- modules waybar
+        
+        // -- hyprland interface
+        "hyprland/window": {
+            "format": "{title} - {initialClass}",
+            "rewrite": { 
+                "(.*) - mpv - mpv": " $1",
+                "(.*) - terminal": "<span rise='-2pt' line_height='0.4pt' size='22pt'></span>",
+                "(.*) - libreWolf": "<span font='gus_custom_icons Regular 14'>A</span>",
+                "(.*).zathura": "<span rise='-2pt' line_height='0.4pt' size='18pt'></span>",
+                "(.*)nheko(.*)": "<span font='gus_custom_icons Regular 14'>b</span>",
+                "Neovim - (.*)": "",
+                "(.*) - Neovim": ""
+            }
+        },
+        "hyprland/workspaces#left": {
+            "format": "{icon}",
+            "format-icons": { "1": "󰂓 ", "2": "󰚄 ", "3": ""  },
+            "ignore-workspaces": [".*(4|5|6|7|8|9|10).*"],
+            "persistent-workspaces": { "*": [ 1,2,3 ] },
+            "justify": "center" /* 󰐂 󱎶 󰜃 󰚄 󰎑  */
+        },
+        "hyprland/workspaces#right": {
+            "format": "{icon}",
+            "format-icons": { "4": " ", "5": "󰜃 ", "6": "󰎑" },
+            "ignore-workspaces": [".*(1|2|3|7|8|9|10).*"],
+            "persistent-workspaces": { "*": [ 4,5,6 ] },
+            "justify": "center"
+        },
+        "hyprland/submap": {
+            "format": "<span rise='-1pt' size='16pt' line_height='0.5pt' >󰘵</span><span color='#a190d9' >{}</span>",
+            "default-submap": "󰇧",
+            "always-on": true
+        }
+        // --
+    // --
+// --
+}

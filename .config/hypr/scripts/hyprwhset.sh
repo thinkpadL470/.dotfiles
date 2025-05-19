@@ -1,6 +1,5 @@
 #!/usr/bin/env dash
 # -- set variables
-set -x
 hyprsh="${HOME}/.config/hypr/scripts"
 hyprpc="${HOME}/.config/hypr/hyprpaper.conf"
 # --
@@ -55,14 +54,30 @@ kill_paper_services () {
 # --
 
 # --
-    image_url=$(get_wh_image_url) ;
-    wp="${HOME}/.bg.${image_url##*.}" ;
+get_rand_wp_from_local_dir () {
+    local min="1" ;
+    local nl_f_list=$(find ~/Pictures/wallpapers/ -type f -print0 | tr '\0\n' '\n\0') ;
+    local tot_files=$(printf '%s' "${nl_f_list}" | wc -l) ;
+    local max="${tot_files}" ;
+    local number=$(($(od -An -N4 -tu /dev/urandom)${min+%(${max+$max- }$min+1)${max++$min}})) ;
+    { printf '%s' "${nl_f_list}" | tr '\0\n' '\n\0' | cut -d "$(printf '\0')" -f "${number}" ; } 2>/dev/null ;
+    return 0 ;
+}
 # --
 
 # --
 flush_wp
 kill_paper_services
-curl -s ${image_url} > ${wp}
+[ "${1}" = "local" ] && {
+    local_wp=$(get_rand_wp_from_local_dir) ;
+    wp="${HOME}/.bg.${local_wp##*.}" ;
+    cat ${local_wp} > ${wp} || true ;
+}
+[ ! "${1}" = "local" ] && {
+    image_url=$(get_wh_image_url) ;
+    wp="${HOME}/.bg.${image_url##*.}" ;
+    curl -s ${image_url} > ${wp} || true ;
+}
 printf '%s\n' "$(gen_hyprp_conf)" > ${hyprpc}
 setpgid ${hyprsh}/hyprpaper_d.sh & exit
 # --

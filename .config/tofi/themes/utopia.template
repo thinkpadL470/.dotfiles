@@ -1,0 +1,50 @@
+# -- looks
+
+    # -- base
+    horizontal     = true
+    anchor         = bottom
+    width          = 100%
+    height         = 44
+    exclusive-zone = 44
+    border-width   = 3
+    outline-width  = 0
+    padding-top    = 9
+    padding-bottom = 0
+    padding-left   = 20
+    padding-right  = 0
+    clip-to-padding = false
+
+        # -- base colors
+        background-color      = ${gray005_50}
+        text-color            = ${color04}
+        selection-color       = ${color03}
+        selection-match-color = ${color08}
+        outline-color         = ${gray025_50}
+        border-color          = ${gray025_50}
+        # --
+    # --
+
+    # -- promt
+    prompt-text               = "launch: "
+    prompt-padding            = 16
+    prompt-color              = ${color05}
+    # --
+
+    # -- input
+    min-input-width        = 120
+    text-cursor            = true
+    placeholder-color      = ${gray050_50}
+    # --
+
+    # -- result
+    result-spacing                    = 18
+    alternate-result-color            = ${color07}
+
+    default-result-background         = ${gray020_50}
+    default-result-background-padding = 2, 6, 0, 6
+    default-result-background-corner-radius = 4
+    selection-background              = ${gray025_50}
+    selection-background-padding      = 2, 6, 0, 6
+    selection-background-corner-radius = 4
+    # --
+# --

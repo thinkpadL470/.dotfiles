@@ -1,0 +1,118 @@
+@define-color forground #cccccc;
+@define-color background #0d1d0d;
+@define-color color01 #261c29;
+    @define-color color01-85 rgba(43, 33, 46, 0.85);
+@define-color color02 #b145d5;
+    @define-color color02-30 rgba(177, 69, 213, 0.30);
+    @define-color color02-20 rgba(177, 69, 213, 0.20);
+@define-color color03 #51d5b4;
+    @define-color color03-70 rgba(81, 213, 180, 0.70);
+    @define-color color03-70-d rgba(0, 73, 40, 0.70);
+    @define-color color03-50-d rgba(0, 73, 40, 0.50);
+    @define-color color03-30-d rgba(0, 73, 40, 0.30);
+    @define-color color03-50 rgba(81, 213, 180, 0.50);
+    @define-color color03-30 rgba(81, 213, 180, 0.30);
+@define-color color04 #d4d443;
+    @define-color color04-70 rgba(212, 212, 67, 0.70);
+    @define-color color04-50 rgba(212, 212, 67, 0.50);
+    @define-color color04-30 rgba(212, 212, 67, 0.30);
+@define-color color05 #8eb221;
+@define-color color06 #58b7d6;
+@define-color color07 #a190d9;
+    @define-color color07-70 rgba(161, 144, 217, 0.70);
+    @define-color color07-70-d rgba(21, 4, 77, 0.70);
+    @define-color color07-50-d rgba(21, 4, 77, 0.50);
+    @define-color color07-30-d rgba(21, 4, 77, 0.30);
+    @define-color color07-30 rgba(161, 144, 217, 0.30);
+    @define-color color07-50 rgba(161, 144, 217, 0.50);
+@define-color color08 #e7bbc6;
+@define-color color09 #666666;
+@define-color color10 #b145d5;
+@define-color color11 #51d5b4;
+@define-color color12 #d4d443;
+@define-color color13 #8eb221;
+@define-color color14 #58b7d6;
+@define-color color15 #a190d9;
+@define-color color16 #9ea5b9;
+@define-color gray005 #0D0D0D;
+    @define-color gray005-45 rgba(13, 13, 13, 0.45);
+    @define-color gray005-50 rgba(13, 13, 13, 0.50);
+    @define-color gray005-75 rgba(13, 13, 13, 0.75);
+@define-color gray010 #1A1A1A;
+    @define-color gray010-60 rgba(26, 26, 26, 0.60);
+    @define-color gray010-50 rgba(26, 26, 26, 0.50);
+@define-color gray015 #262626;
+    @define-color gray015-45 rgba(38, 38, 38, 0.45);
+    @define-color gray015-60 rgba(38, 38, 38, 0.60);
+    @define-color gray015-50 rgba(38, 38, 38, 0.60);
+@define-color gray020 #333333;
+    @define-color gray020-75 rgba(51, 51, 51, 0.75);
+@define-color gray025 #404040;
+    @define-color gray025-75 rgba(64, 64, 64, 0.75);
+    @define-color gray025-50 rgba(64, 64, 64, 0.50);
+@define-color gray030 #4D4D4D;
+@define-color gray035 #595959;
+    @define-color gray035-80 rgba(89, 89, 89, 0.80);
+@define-color gray040 #666666;
+@define-color gray045 #737373;
+@define-color gray050 #808080;
+@define-color gray055 #8C8C8C;
+@define-color gray060 #999999;
+@define-color gray065 #A6A6A6;
+@define-color gray070 #B3B3B3;
+@define-color gray075 #BFBFBF;
+@define-color gray080 #CCCCCC;
+    @define-color gray080-45 rgba(204, 204, 204, 0.45);
+@define-color gray085 #D9D9D9;
+@define-color gray090 #E5E5E5;
+@define-color gray095 #F2F2F2;
+@define-color gray100 #FFFFFF;
+
+@define-color clear rgba(0, 0, 0, 0);
+
+/* @define-color colorrgb03 rgba(81,213,180); */
+/* @define-color colorrgb04 rgba(212,212,67); */
+/* @define-color colorrgb05 rgba(142,178,33); */
+/* @define-color colorrgb06 rgba(88,183,214); */
+/* @define-color colorrgb07 rgba(161,144,217); */
+/* @define-color colorrgb08 rgba(231,187,198); */
+/* @define-color colorrgb09 rgba(102,102,102); */
+/* @define-color colorrgb10 rgba(177,69,213); */
+/* @define-color colorrgb11 rgba(81,213,180); */
+/* @define-color colorrgb12 rgba(212,212,67); */
+/* @define-color colorrgb13 rgba(142,178,33); */
+/* @define-color colorrgb14 rgba(88,183,214); */
+/* @define-color colorrgb15 rgba(161,144,217); */
+/* @define-color colorrgb16 rgba(158,165,185); */
+/* @define-color grayrgb005 rgba(13,13,13); */
+/* @define-color grayrgb010 rgba(26,26,26); */
+/* @define-color grayrgb015 rgba(38,38,38); */
+/* @define-color grayrgb020 rgba(51,51,51); */
+/* @define-color grayrgb025 rgba(64,64,64); */
+/* @define-color grayrgb030 rgba(77,77,77); */
+/* @define-color grayrgb035 rgba(89,89,89); */
+/* @define-color grayrgb040 rgba(102,102,102); */
+/* @define-color grayrgb045 rgba(115,115,115); */
+/* @define-color grayrgb050 rgba(128,128,128); */
+/* @define-color grayrgb055 rgba(140,140,140); */
+/* @define-color grayrgb060 rgba(153,153,153); */
+/* @define-color grayrgb065 rgba(166,166,166); */
+/* @define-color grayrgb070 rgba(179,179,179); */
+/* @define-color grayrgb075 rgba(191,191,191); */
+/* @define-color grayrgb080 rgba(204,204,204); */
+/* @define-color grayrgb085 rgba(217,217,217); */
+/* @define-color grayrgb090 rgba(229,229,229); */
+/* @define-color grayrgb095 rgba(242,242,242); */
+/* @define-color grayrgb100 rgba(255,255,255); */
+
+/* @define-color text #cdd6f4; */
+/* @define-color subtext1 #bac2de; */
+/* @define-color subtext0 #a6adc8; */
+/* @define-color overlay2 #9399b2; */
+/* @define-color overlay1 #7f849c; */
+/* @define-color overlay0 #6c7086; */
+/* @define-color surface2 #585b70; */
+/* @define-color surface1 #45475a; */
+/* @define-color surface0 #313244; */
+/* @define-color mantle #181825; */
+/* @define-color crust #11111b; */

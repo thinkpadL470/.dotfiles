@@ -16,6 +16,18 @@ cleanup () {
 }
 # --
 
+# --
+g_monitor_geometry () {
+    hyprctl monitors all |
+        grep -n1 $(monitor_list=$(hyprctl monitors all |
+        grep Monitor | cut -d' ' -f'2') ; printf '%s\n' "${monitor_list}" | tofi) |
+        grep '@' |
+        tr '\t' ' ' |
+        cut -d' ' -f'2' |
+        cut -d'@' -f'1' ;
+}
+# --
+
 # -- record screen, with waybar widget, kill wf_rec if its running and exit
 [ -f ${UPID_DIR}/wf_recorder.pid ] && wf_recPID=$(cat ${UPID_DIR}/wf_recorder.pid 2>/dev/null)
 ! kill -TERM "${wf_recPID}" 2>/dev/null && {
@@ -43,7 +55,7 @@ cleanup () {
         wf-recorder \
             --audio=rec_monitor -r 24 \
             -f ~/Videos/Recordings/"${fnprefix:-screen-record}-$(date +%Y-%m-%d-%H-%M-%S).mp4" \
-            ${wf_base_format} -g "${geometry:-0,0 1920x1080}" & wf_recPID=$! ;
+            ${wf_base_format} -g "${geometry:-0,0 $(g_monitor_geometry)}" & wf_recPID=$! ;
             printf '%s\n' "${wf_recPID}" > ${UPID_DIR}/wf_recorder.pid ;
             wait "${wf_recPID}" ;
         kill -USR2 "${rec_sc_dPID}" ; # change status to stopped recording
