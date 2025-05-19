@@ -38,9 +38,11 @@
         #   echo "Hello, ${config.home.username}!"
         # '')
     ];
-
+qt.enable = true;
+qt.platformTheme= "gtk";
+dconf.enable = true;
+gtk.enable = true;
     gtk = {
-        enable = true;
         # iconTheme = {
         #     name = "Papirus-Dark";
         #     package = pkgs.papirus-icon-theme;
@@ -65,12 +67,31 @@
         };
     };
 
-    dconf.settings = {
-        enable = true;
-        "org/gnome/desktop/interface" = {
-            color-scheme = "prefer-dark";
+    # qt = {
+    #     enable = true;
+    #     platformTheme = "gnome";
+    #     style = ""
+    # }
+
+    dconf = {
+            settings = {
+            "org/gnome/desktop/interface" = {
+                color-scheme = "prefer-dark";
+            };
         };
     };
+
+    home.pointerCursor = {
+        gtk.enable = true;
+        name = "Catppuccin-Mocha-Dark-Cursors";
+        package = pkgs.catppuccin-cursors.mochaDark;
+        size = 22;
+    };
+
+    # xdg.systemDirs.data = [
+    #     "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+    #     "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
+    # ];
     
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
     # plain files is through 'home.file'.
