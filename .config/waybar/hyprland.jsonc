@@ -7,7 +7,7 @@
         "hyprland/window": {
             "format": "{title} - {initialClass}",
             "rewrite": { 
-                "(.*) - mpv - mpv": " $1",
+                "(.*) - mpv - (.*)": " $1",
                 "(.*) - terminal": "<span rise='-2pt' line_height='0.4pt' size='22pt'></span>",
                 "(.*) - libreWolf": "<span font='gus_custom_icons Regular 14'>A</span>",
                 "(.*).zathura": "<span rise='-2pt' line_height='0.4pt' size='18pt'></span>",

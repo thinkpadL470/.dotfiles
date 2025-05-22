@@ -21,6 +21,8 @@
     home.packages = [
         pkgs.librewolf-wayland
         pkgs.rip2
+        pkgs.manix
+        pkgs.shellcheck-minimal
         # # Adds the 'hello' command to your environment. It prints a friendly
         # # "Hello, world!" when run.
         # pkgs.hello
@@ -39,45 +41,25 @@
         # '')
     ];
 qt.enable = true;
-qt.platformTheme= "gtk";
-dconf.enable = true;
 gtk.enable = true;
     gtk = {
-        # iconTheme = {
-        #     name = "Papirus-Dark";
-        #     package = pkgs.papirus-icon-theme;
-        #     };
-        theme = {
-            name = "sierra";
-            package = pkgs.sierra-gtk-theme;
+        iconTheme = {
+            name = "WhiteSur-dark";
+            package = pkgs.whitesur-icon-theme;
             };
-        # cursorTheme = {
-        #     name = "whitesur-cursors";
-        #     package = pkgs.whitesur-cursors;
-        # };
+        theme = {
+            name = "Mojave-Dark";
+            package = pkgs.mojave-gtk-theme;
+        };
         gtk3.extraConfig = {
             Settings = ''
-            gtk-application-prefer-dark-theme=1
+            gtk-application-prefer-dark-theme=TRUE
             '';
         };
         gtk4.extraConfig = {
             Settings = ''
-            gtk-application-prefer-dark-theme=1
+            gtk-application-prefer-dark-theme=TRUE
             '';
-        };
-    };
-
-    # qt = {
-    #     enable = true;
-    #     platformTheme = "gnome";
-    #     style = ""
-    # }
-
-    dconf = {
-            settings = {
-            "org/gnome/desktop/interface" = {
-                color-scheme = "prefer-dark";
-            };
         };
     };
 

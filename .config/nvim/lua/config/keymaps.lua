@@ -24,26 +24,26 @@ return {
     },
     {
         -- Vim Keymaps
-        
+
             -- disable commands
             setmap('n', 'gt', '<nop>'),
             setmap('n', 'gT', '<nop>'),
             setmap('n', '<C-w>', '<nop>'),
             --
-        
+
             -- Save
             setmap('n', '<C-w>', '<CMD>write<CR>'),
             --
-        
+
             -- Modes
             setmap('i', 'jk', '<ESC>'),
             setmap('n', ';', ':'),
             --
-        
+
             -- Completion
             setmap('i', '<C-f>', '<C-x><C-f>', { desc = 'Dir/File Name Completion' }),
             setmap('i', '<C-k>', '<C-x><C-n>', { desc = 'In Current File Completion' }),
-        
+
             -- Find
             -- setmap('n', '<leader>ff', '<CMD>FzfLua files<CR>', { desc = 'Find Files' }),
             -- setmap('n', '<leader>fh', '<CMD>FzfLua helptags<CR>', { desc = 'Find Help' }),
@@ -53,7 +53,7 @@ return {
             -- setmap('n', '<leader>mf', '<CMD>Lexplore<CR>', { desc = 'manage files' }),
             setmap('n', '<leader>ml', '<CMD>Lazy<CR>', { desc = 'manage Lazy' }),
             --
-        
+
             -- Windows
             setmap('n', '<leader>h', '<CMD>lefta:vert:new<CR>', { desc = 'New Window Left' }),
             setmap('n', '<leader>j', '<CMD>bel:hor:new<CR>', { desc = 'New Window Down' }),
@@ -62,31 +62,32 @@ return {
             setmap('n', '<leader>x', '<CMD>bdelete<CR>', { desc = 'Delete Buffer' }),
             setmap('n', '<leader>tw', '<CMD>set wrap !<CR>', { desc = 'Toggle Wrap' }),
             --
-        
+
             -- tabs
             setmap('n', '<leader>ot', '<CMD>tab new<CR>'),
-            setmap('n', '<leader><TAB>', '<CMD>tabnext<CR>'),
-            setmap('n', '<leader><S-TAB>', '<CMD>tabprevious<CR>'),
+            -- setmap('n', '<leader><TAB>', '<CMD>tabnext<CR>'),
+            -- setmap('n', '<leader><S-TAB>', '<CMD>tabprevious<CR>'),
+            setmap('n', '<C-n>', '<CMD>tabnext<CR>'),
+            setmap('n', '<C-p>', '<CMD>tabprevious<CR>'),
             --
-        
+
             -- File systm navigation
             setmap('n', '<leader>od', ':chdir ./'),
             --
-        
+
             -- Window Navigation
             setmap('n', '<esc>l', '<CMD>wincmd l<CR>'),
             setmap('n', '<esc>h', '<CMD>wincmd h<CR>'),
             setmap('n', '<esc>j', '<CMD>wincmd j<CR>'),
             setmap('n', '<esc>k', '<CMD>wincmd k<CR>'),
             --
-        
+
             -- Resize Windows
             setmap('n', '<esc><C-l>', '<C-w><'),
             setmap('n', '<esc><C-h>', '<C-w>>'),
             setmap('n', '<esc><C-j>', '<C-w>+'),
             setmap('n', '<esc><C-k>', '<C-w>-'),
             --
-        
         --
     },
     {

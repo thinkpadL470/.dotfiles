@@ -16,12 +16,12 @@ ls -1 ${HOME}/.bg.* |
 
 # --
 kill_paper_services () {
-    [ -s "${UPID_DIR}/mpvpaper_d.pid" ] && {
+    [ -s "${XDG_RUNTIME_DIR}"/mpvpaper_d.pid ] && {
         until [ -z "${UPID_DIR}/mpvpaper_d.pid" ]
         do
             kill -TERM $(cat ${UPID_DIR}/mpvpaper_d.pid) ;
-    [ -s "${UPID_DIR}/hyprpaper_d.pid" ] &&
-        kill -TERM $(cat ${UPID_DIR}/hyprpaper_d.pid) ;
+    [ -s "${UPID_DIR}"/hyprpaper.lock ] &&
+        kill -TERM $(cat ${UPID_DIR}/hyprpaper.lock) ;
     return 0 ;
 }
 # --
@@ -34,29 +34,19 @@ wp=~/.bg.
     cat ~/.config/mime/image.txt | grep -x "${f##*.}" && wp_application='hyprpaper'
     # --
 sh_d="${HOME}/.local/scripts"
-[ "${wp_application}" = "hyprpaper" ] && {
-    hyprsh="${HOME}/.config/hypr/scripts"
-    hyprpc=${HOME}/.config/hypr/hyprpaper.conf ;
-    genconfig=$({ printf '%s\n%s\n%s\n' \
-        "preload = ${wp}${f##*.}" \
-        "wallpaper = , ${wp}${f##*.}" \
-        "splash = false" ;
-    });
-}
 # --
 
 # -- set selected lf file as wallpaper file and kill running wallpaper services 
 flush_wp
-cp $f ${wp}${f##*.}
+cp "${f}" "${wp}${f##*.}"
 kill_paper_services
 # --
 
 # -- run wallpaper service
 [ "${wp_application}" = 'hyprpaper' ] && {
-    printf '%s\n' "${genconfig}" > ${hyprpc} ;
-    setpgid dash ${hyprsh}/hyprpaper_d.sh & exit ;
+    hyprctl hyprpaper reload ,"${wp}${f##.}" & exit ;
 }
 [ "${wp_application}" = 'mpvpaper' ] && {
-    setpgid dash ${sh_d}/mpvpaper_d.sh "${wp}${f##*.}" & exit ;
+    setpgid dash ${sh_d}/mpvpaper_d.sh "${wp}${f##.}" & exit ;
 }
 # --

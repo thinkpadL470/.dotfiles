@@ -1,7 +1,6 @@
 #!/usr/bin/env dash
 # -- set variables
 hyprsh="${HOME}/.config/hypr/scripts"
-hyprpc="${HOME}/.config/hypr/hyprpaper.conf"
 # --
 
 # --
@@ -34,21 +33,21 @@ get_wh_image_url () {
 # --
 
 # --
-gen_hyprp_conf () {
-    printf '%s\n%s\n%s\n' \
-        "preload = ${wp} " \
-        "wallpaper = , ${wp} " \
-        "splash = false" ;
-    return 0 ;
-}
+# gen_hyprp_conf () {
+#     printf '%s\n%s\n%s\n' \
+#         "preload = ${wp} " \
+#         "wallpaper = , ${wp} " \
+#         "splash = false" ;
+#     return 0 ;
+# }
 # --
 
 # --
 kill_paper_services () {
     [ -s "${UPID_DIR}/mpvpaper_d.pid" ] &&
         kill -TERM $(cat ${UPID_DIR}/mpvpaper_d.pid) ;
-    [ -s "${UPID_DIR}/hyprpaper_d.pid" ] &&
-        kill -TERM $(cat ${UPID_DIR}/hyprpaper_d.pid) ;
+    [ -s "${XDG_RUNTIME_DIR}/hyprpaper.lock" ] &&
+        kill -TERM $(cat ${XDG_RUNTIME_DIR}/hyprpaper.lock) ;
     return 0 ;
 }
 # --
@@ -66,18 +65,17 @@ get_rand_wp_from_local_dir () {
 # --
 
 # --
+kill -0 "${UPID_DIR}"/mpvpaper_d.pid && kill_paper_services || true
 flush_wp
-kill_paper_services
 [ "${1}" = "local" ] && {
     local_wp=$(get_rand_wp_from_local_dir) ;
-    wp="${HOME}/.bg.${local_wp##*.}" ;
-    cat ${local_wp} > ${wp} || true ;
+    wp="${HOME}"/.bg."${local_wp##*.}" ;
+    cat "${local_wp}" > "${wp}" || true ;
 }
 [ ! "${1}" = "local" ] && {
     image_url=$(get_wh_image_url) ;
-    wp="${HOME}/.bg.${image_url##*.}" ;
+    wp="${HOME}"/.bg."${image_url##*.}" ;
     curl -s ${image_url} > ${wp} || true ;
 }
-printf '%s\n' "$(gen_hyprp_conf)" > ${hyprpc}
-setpgid ${hyprsh}/hyprpaper_d.sh & exit
+hyprctl hyprpaper reload ,$(realpath "${wp}") & exit
 # --
