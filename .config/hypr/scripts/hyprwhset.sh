@@ -1,81 +1,99 @@
 #!/usr/bin/env dash
-# -- set variables
-hyprsh="${HOME}/.config/hypr/scripts"
+[ -z "${UPID_DIR}" ] && {
+    { [ -z "${XDG_RUNTIME_DIR}" ] && exit ; } || UPID_DIR=${XDG_RUNTIME_DIR} ;
+}
+
+# --
+proper_ls () {
+    _searchDir="${1}" ;
+    {
+        [ "${#}" -eq "2" ] && {
+            _name="-name" _searchRegX="${2}" ;
+        } ;
+    } && {
+        find "${_searchDir}" \
+        ! \( -path "${_searchDir}"'/*/*' -prune \) \
+        -type f "${_name}" "${_searchRegX}" ;
+    } ; unset _searchDir _searchRegX _name ; return 0 ;
+}
 # --
 
 # --
 flush_wp () {
-    local tra_dir="${HOME}/.local/share/graveyard" ;
-    [ ! -d "${tra_dir}" ] && mkdir -p ${tra_dir} ;
-    ls -1 ${HOME}/.bg.* |
-        while IFS= read -r wpfile
+    _traDir="${HOME}"/.local/share/graveyard ;
+    [ ! -d "${_traDir}" ] && mkdir -p "${_traDir}" ;
+    proper_ls "${HOME}" "*.bg.*" |
+        while IFS= read -r _wpFile
         do
-            wpfilep=${wpfile%/*}
-            mkdir -p ${tra_dir}/${wpfilep}
-            mv ${wpfile} ${tra_dir}/${wpfilep}$(date +%y-%b-%d-%H-%M-%S)${wpfile##*/}
-        done ;
-    return 0 ;
+            _wpFilep="${_wpFile%/*}"
+            mkdir -p "${_traDir}"/"${_wpFilep}"
+            _fileShasum=$(shasum -U -a 256 "${_wpFile}" | cut -d' ' -f1)
+            _newFName="$(date +%y-%b-%d)-${_fileShasum}-${_wpFile##*/}"
+            mv "${_wpFile}" "${_traDir}"/"${_wpFilep}"/"${_newFName}"
+        done ; unset _traDir _wpFilep _wpFile _fileShasum ; return 0 ;
 }
 # --
 
 # --
 get_wh_image_url () {
-    local api="https://wallhaven.cc/api/v1/search?" ;
-    local key="$(cat ~/.config/hypr/whkey)" ;
-        local q= categories=110 ;
-        local purity=110 sorting=random ;
-        local atleast=1920x1080 ratios=landscape ;
-    local api_url="${api}apikey=${key}&q=${keywords}&categories=${categories}&purity=${purity}&ratios=${ratios}&sorting=${sorting}" ;
-    local api_curl=$(curl -sS --max-time 10 --retry 2 --retry-delay 3 --retry-max-time 20 "${api_url}") ;
-    echo "${api_curl}" | jq -r '[.data[] | .path] | .[0]' ;
+    _keyDir="${HOME}/.config/hypr/whkey"
+    _api="https://wallhaven.cc/api/v1/search?" _k="$(cat "${_keyDir}")" ;
+    _kW="" _c=110 _p=111 _s=random _aL=1920x1080 _r=landscape ;
+    _apiUrl1="${_api}apikey=${_k}&q=${_kW}&categories=${_c}&"
+    _apiUrl2="purity=${_p}&sorting=${_s}&atleast=${_aL}&ratios=${_r}" ;
+    _apiUrl="${_apiUrl1}${_apiUrl2}"
+    _apiCurl="$({ curl -sS -m 10 --retry 2 --retry-delay 3 \
+        --retry-max-time 20 "${_apiUrl}" ;
+    })" ;
+    echo "${_apiCurl}" | jq -r '[.data[] | .path] | .[0]' ;
+    unset _keyDir _api _k _kW _c _p _s _aL \
+        _r _apiUrl1 _apiUrl2 _apiUrl _apiCurl ;
     return 0 ;
 }
 # --
 
 # --
-# gen_hyprp_conf () {
-#     printf '%s\n%s\n%s\n' \
-#         "preload = ${wp} " \
-#         "wallpaper = , ${wp} " \
-#         "splash = false" ;
-#     return 0 ;
-# }
-# --
-
-# --
 kill_paper_services () {
-    [ -s "${UPID_DIR}/mpvpaper_d.pid" ] &&
-        kill -TERM $(cat ${UPID_DIR}/mpvpaper_d.pid) ;
-    [ -s "${XDG_RUNTIME_DIR}/hyprpaper.lock" ] &&
-        kill -TERM $(cat ${XDG_RUNTIME_DIR}/hyprpaper.lock) ;
+    _mpvPdPid="${UPID_DIR}"/mpvpaper_d.sh.d/pid ;
+    # _hyprPPid="${XDG_RUNTIME_DIR}"/hyprpaper.lock ;
+    {
+        ! kill -0 "${_mpvPdPid}" || kill -TERM "${_mpvPdPid}" ;
+        # ! kill -0 "${_hyprPPid}" || kill -TERM "${_hyprPPid}" ;
+    } 2>/dev/null ;
+    unset _mpvPdPid ; # _hyprPPid ;
     return 0 ;
 }
 # --
 
 # --
 get_rand_wp_from_local_dir () {
-    local min="1" ;
-    local nl_f_list=$(find ~/Pictures/wallpapers/ -type f -print0 | tr '\0\n' '\n\0') ;
-    local tot_files=$(printf '%s' "${nl_f_list}" | wc -l) ;
-    local max="${tot_files}" ;
-    local number=$(($(od -An -N4 -tu /dev/urandom)${min+%(${max+$max- }$min+1)${max++$min}})) ;
-    { printf '%s' "${nl_f_list}" | tr '\0\n' '\n\0' | cut -d "$(printf '\0')" -f "${number}" ; } 2>/dev/null ;
+    _min="1" ;
+    _nlFList=$(find ~/Pictures/wallpapers/ -type f -print0 | tr '\0\n' '\n\0') ;
+    _totFiles=$(printf '%s' "${_nlFList}" | wc -l) ;
+    _max="${_totFiles}" ;
+    _number=$(($(od -An -N4 -tu /dev/urandom)${_min+%(${_max+$_max- }$_min+1)${_max++$_min}})) ;
+    { 
+        printf '%s' "${_nlFList}" |
+        tr '\0\n' '\n\0' |
+        cut -d "$(printf '\0')" -f "${_number}" ;
+    } 2>/dev/null ;
+    unset _min _max _nlFList _totFiles _number ;
     return 0 ;
 }
 # --
 
 # --
-kill -0 "${UPID_DIR}"/mpvpaper_d.pid && kill_paper_services || true
+kill_paper_services
 flush_wp
 [ "${1}" = "local" ] && {
     local_wp=$(get_rand_wp_from_local_dir) ;
     wp="${HOME}"/.bg."${local_wp##*.}" ;
-    cat "${local_wp}" > "${wp}" || true ;
+    cat "${local_wp}" > "${wp}" ;
 }
-[ ! "${1}" = "local" ] && {
+[ -z "${1}" ] && {
     image_url=$(get_wh_image_url) ;
     wp="${HOME}"/.bg."${image_url##*.}" ;
-    curl -s ${image_url} > ${wp} || true ;
+    curl -s "${image_url}" -o "${wp}" ;
 }
-hyprctl hyprpaper reload ,$(realpath "${wp}") & exit
+hyprctl hyprpaper reload ,"${wp}" ; exit 0
 # --

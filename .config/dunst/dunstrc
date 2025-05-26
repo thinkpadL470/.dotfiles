@@ -1,67 +1,44 @@
 [global]
 # -- GLOBAL
-title               = dunst
-class               = dunst
 always_run_script   = true
-ignore_dbusclose    = false
+ignore_dbusclose    = true
 monitor             = 0
-notification_limit  = 10
-indicate_hidden     = yes
-sort                = yes
+    follow          = mouse
 idle_threshold      = 120
-show_age_threshold  = 60
-follow              = mouse
-show_indicators     = no
-browser             = /usr/bin/xdg-open
+show_age_threshold  = -1
+enable_posix_regex  = true
     
     # -- WINDOW
     alignment           = left
     vertical_alignment  = top
-    width               = (50, 450)
-    height              = (50, 300)
-    origin              = top-right
-    scale               = 0
-    corner_radius       = 3
-    separator_height    = 1
-    padding             = 5
-    horizontal_padding  = 5
-    text_icon_padding   = 0
-    frame_width         = 1
-    gap_size            = 3
-    # --
-    
-    # -- PROGRESS_BAR
-    progress_bar                = true
-    progress_bar_height         = 10
-    progress_bar_frame_width    = 1
-    progress_bar_min_width      = 150
-    progress_bar_max_width      = 300
-    progress_bar_corner_radius  = 0
-    icon_corner_radius          = 0
-    # --
-    
-    # -- CONTENT
-    font                  = Fira Code Nerd Font 13
-    format                = "<b>%a</b> <i>%s</i>\n%b"
-    ellipsize             = end
-    ignore_newline        = no
-    stack_duplicates      = true
-    hide_duplicate_count  = false
-    line_height           = 0
-    markup                = full
-    # --
-    
-    # -- ICON
-    # default_icon                = /path/to/icon
-    icon_position                 = left
-    min_icon_size                 = 32
-    max_icon_size                 = 32
-    enable_recursive_icon_lookup  = true
-    # --
-    
-    # -- HISTORY
-    sticky_history = yes
-    history_length = 20
+    width               = (0, 700)
+    height              = (0, 400)
+    offset              = (20, 20)
+    corner_radius       = 4
+    padding             = 15
+    horizontal_padding  = 15
+    frame_width         = 3
+    gap_size            = 4
+
+        # -- PROGRESS_BAR
+        progress_bar_frame_width    = 4
+        progress_bar_corner_radius  = 2
+        icon_corner_radius          = 0
+        # --
+
+        # -- CONTENT
+        font                  = FiraCode Nerd Font 16
+        format                = "<b>%a</b>\n\n<span underline='single' color='#58b7d6' font='22pt'><b>%s</b></span>\n%b"
+        stack_duplicates      = true
+        hide_duplicate_count  = true
+        markup                = full
+        # --
+
+        # -- ICON
+        default_icon                  = ~/.config/dunst/icons.d/icons8-notification-128.png
+        icon_position                 = left
+        max_icon_size                 = 64
+        # --
     # --
     
     # -- MOUSE

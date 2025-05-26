@@ -1,49 +1,44 @@
 #!/usr/bin/env dash
-[ -z "${UPID_DIR}" ] && { [ -z "${XDG_RUNTIME_DIR}" ] && exit || UPID_DIR=${XDG_RUNTIME_DIR} ; }
-printf '%s\n' "$$" > ${UPID_DIR}/mpvpaper_d.pid
+[ -z "${UPID_DIR}" ] && {
+    { [ -z "${XDG_RUNTIME_DIR}" ] && exit ; } || UPID_DIR=${XDG_RUNTIME_DIR} ;
+}
+shName='mpvpaper_d.sh'
+shFPath="${HOME}"/.local/scripts/"${shName}" ;
+shPathError="script assumes ""${shFPath}"" is the path for itself, \
+simpily edit the variable 'shFPath' in the script, the script requiers \
+this to be able to restart itself incase of stale pidfile"
+[ -f "${shFPath}" ] || { notify-send -a "${shName}" "Editing Needed" "${shPathError}" ; exit 1 ; }
+lockDir="${UPID_DIR}"/"${shName}"'.d' ; pidFile="${lockDir}"'/pid'
 
-
-# app_name=mpvpaper
-# script_name=$(basename $0)
-# lockdir="${UPID_DIR}/${script_name}"
-# pidfile="${lockdir}/pid"
-# ! mkdir $lockdir 2>/dev/null && {
-#     pid=$(cat $pidfile) ;
-#     ! kill -0 ${pid} 2>/dev/null && {
-#         rm -rf ${lockdir} ;
-#         exec "$0" "$@" ;
-#     } ;
-#     exit 1 ;
-# } || {
-#     printf '%s\n' "$$" > ${pidfile} ;
-# }
-
-# -- set pids file to use for cleanup
-pids="\
-${UPID_DIR}/mpvpaper.pid \
-${UPID_DIR}/mpvpaper_d.pid"
-# --
+{
+    ! mkdir "${lockDir}" && {
+        pid="$(cat "${pidFile}")" ;
+        ! kill -0 "${pid}" && [ "${UPID_DIR}" = "${lockDir%/*}" ] && {
+            rm -rf "${lockDir}" ;
+            "${shFPath}" "${@}" ;
+        } ;
+        exit 1 ;
+    } ;
+} 2>/dev/null || {
+    printf '%s\n' "$$" > "${pidFile}" ;
+} 2>/dev/null
 
 # -- define cleanup function
 cleanup () {
-    { rm ${pids} ; } 2>/dev/null
+    { [ "${UPID_DIR}" = "${lockDir%/*}" ] && rm -rf "${lockDir}" ; } 2>/dev/null
 }
 # --
 
 # -- setup traps
 trap "exit" INT TERM HUP QUIT
-trap "cleanup ; kill -- -$$" EXIT
+trap 'cleanup ; kill -- -$$' EXIT
 # --
 
 # -- run mpvpaper, record PID and wait for mpvpaper to end
-live_wp="${1}"
-while true
-do
-    { mpvpaper -o \
-        "no-config load-scripts=no aid=no loop-file=inf vo=libmpv panscan=1" \
-        '*' \
-        "${live_wp}" & mpvpaper_PID="$!" ; } || exit 1
-    printf '%s\n' "${mpvpaper_PID}" > ${UPID_DIR}/mpvpaper.pid
-    wait "${mpvpaper_PID}"
-done
+liveWp="${1}"
+{ mpvpaper -o \
+    "no-config load-scripts=no aid=no loop-file=inf vo=libmpv panscan=1" \
+    '*' \
+    "${liveWp}" & mpvPPid="$!" ; } || exit 1 ;
+wait "${mpvPPid}"
 # --
