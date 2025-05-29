@@ -1,38 +1,87 @@
 #!/usr/bin/env dash
-# -- look for wallpaper in home dir
-current_wp=$(ls -1 .bg.* | head -n1)
-wpext=${current_wp##*.}
+
+# --
+type shasum notify-send || exit 1
 # --
 
 # --
 mkdir_folders_inseq () {
-    local first_dir="${1}" ;
-    local end_dir="${2}/" ;
-    local dir_seqence=$({
-        until [ "${first_dir}" = "${end_dir}" ]
+    _firstDir="${1}" ;
+    _endDir="${2}/" ;
+    _dirSeqence=$({
+        until [ "${_firstDir}" = "${_endDir}" ]
         do
-            end_dir="${end_dir%/*}"
-            printf '%s\n' "${end_dir}"
+            _endDirItem="${_endDir%/*}"
+            printf '%s\n' "${_endDirItem}"
         done | sort ;
     }) ;
     {
-        printf '%s\n' "${dir_seqence}" |
-        while IFS= read item ; do mkdir -m 700 ${item} ; done ;
+        printf '%s\n' "${_dirSeqence}" |
+        while IFS= read -r _item ; do mkdir -m 700 "${_item}" ; done ;
     } 2>/dev/null ;
-    [ -d "${end_dir}" ] && return 0 || return 1 ;
+    [ -d "${_endDir}" ] && return 0 || return 1 ;
 }
 # --
 
-# -- save the wallpaper
-[ -n "${wpext}" ] && {
-    { [ ! -d "${HOME}/Pictures/wallpapers" ] &&
-        mkdir_folders_inseq "${HOME}/Pictures" "${HOME}/Pictures/wallpapers" ;
-    };
-    cp ${HOME}/.bg.${wpext} ${HOME}/Pictures/wallpapers/WP-$(date +%y-%b-%d-%H-%M-%S).${wpext} &&
-        { notify-send -t 2000 "hyprwhsave" 'wallpaper saved' && exit 0 ; } ||
-            { notify-send -t 2000 "hyprwhsave" 'wallpaper faild saveing' && exit 0 ; }
-} || {
-    notify-send -t 2000 "hyprwhsave" 'no applicable wallpaper exists' ;
-    exit 1 ;
+# --
+proper_ls () {
+    _searchDir="${1}" ;
+    {
+        _searchRegX="$(printf '%s' "${2}")" ;
+        [ -n "${_searchDir}" ] && {
+            find "${_searchDir}" \
+            ! \( -path "${_searchDir}"'/*/*' -prune \) \
+            -type f -name "${_searchRegX}" ;
+        } ;
+    } ; unset _searchDir _searchRegX _name ; return 0 ;
 }
+# --
+
+# --
+currentWp="$(proper_ls "${HOME}" "*.bg.*" | head -n1)" || exit 1
+shName="$(basename "${0}")"
+wpExt="${currentWp##*.}"
+nsDelay='500'
+# --
+
+# --
+nsSaveId=$(notify-send -w -u normal -t "${nsDelay}" -p -a "${shName}" \
+'save current wallpaper' \
+'initializeing...')
+[ ! -f "${currentWp}" ] && { notify-send -w -u critical -t 5000 -r "${nsSaveId}" -u critical -a "${shName}" \
+    'save current wallpaper' \
+    'no applicable wallpaper exists' ; exit 1
+}
+[ -z "${wpExt}" ] && { notify-send -w -u critical -t 5000 -r "${nsSaveId}" -u critical -a "${shName}" \
+    'save current wallpaper' \
+    'file dose not have a extention' ; exit 1
+}
+notify-send -w -u normal -t "${nsDelay}" -r "${nsSaveId}" -a "${shName}" \
+'save current wallpaper' \
+'attempting to save...'
+# --
+
+# --
+[ ! -d "${HOME}"/Pictures/wallpapers ] && {
+    mkdir_folders_inseq "${HOME}"/Pictures "${HOME}"/Pictures/wallpapers || exit 1 ;
+} ;
+wpShasum="$(shasum -U -a 256 "${currentWp}" | cut -d' ' -f1)"
+wpPath="${HOME}"/Pictures/wallpapers
+wpFile="${wpPath}"/WP-"${wpShasum}"-."${wpExt}"
+[ -f "${wpFile}" ] && {
+    notify-send -w -u low -t 5000 -r "${nsSaveId}" -a "${shName}" \
+    'save current wallpaper' \
+    'wallpaper alredy saved' ; exit 1 ; 
+} ;
+cp "${currentWp}" "${wpFile}" ; saveExitState=${?} ;
+[ "${saveExitState}" -lt 1 ] && {
+    notify-send -w -u normal -t "${nsDelay}" -r "${nsSaveId}" -a "${shName}" \
+    'save current wallpaper' \
+    'save successfull' ; exit 0 ;
+} ;
+[ "${saveExitState}" -gt 0 ] && {
+    notify-send -w -u critical -t 5000 -r "${nsSaveId}" -a "${shName}" \
+    'save current wallpaper' \
+    'wallpaper faild saveing' ; exit 1 ;
+} ;
 # --

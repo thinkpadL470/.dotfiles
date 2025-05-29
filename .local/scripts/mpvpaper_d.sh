@@ -2,13 +2,19 @@
 [ -z "${UPID_DIR}" ] && {
     { [ -z "${XDG_RUNTIME_DIR}" ] && exit ; } || UPID_DIR=${XDG_RUNTIME_DIR} ;
 }
+
+# --
 shName='mpvpaper_d.sh'
-shFPath="${HOME}"/.local/scripts/"${shName}" ;
+shFPath="${HOME}"/.local/scripts/"${shName}"
 shPathError="script assumes ""${shFPath}"" is the path for itself, \
 simpily edit the variable 'shFPath' in the script, the script requiers \
 this to be able to restart itself incase of stale pidfile"
-[ -f "${shFPath}" ] || { notify-send -a "${shName}" "Editing Needed" "${shPathError}" ; exit 1 ; }
+[ ! -f "${shFPath}" ] && { notify-send -w -u critical -a "${shName}" \
+    "Editing Needed" \
+    "${shPathError}" ; exit 1 ;
+}
 lockDir="${UPID_DIR}"/"${shName}"'.d' ; pidFile="${lockDir}"'/pid'
+# --
 
 {
     ! mkdir "${lockDir}" && {

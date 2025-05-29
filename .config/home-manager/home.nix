@@ -23,6 +23,7 @@
         pkgs.rip2
         pkgs.manix
         pkgs.shellcheck-minimal
+        pkgs.fabric-ai
         # # Adds the 'hello' command to your environment. It prints a friendly
         # # "Hello, world!" when run.
         # pkgs.hello

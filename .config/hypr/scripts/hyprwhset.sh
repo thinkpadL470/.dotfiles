@@ -4,16 +4,21 @@
 }
 
 # --
+type shasum curl jq hyprctl hyprpaper notify-send || exit 1
+hyprPConf="$(realpath "${HOME}"'/.config/hypr/hyprpaper.conf')"
+[ ! -f "${hyprPConf}" ] && exit 1
+# --
+
+# --
 proper_ls () {
     _searchDir="${1}" ;
     {
-        [ "${#}" -eq "2" ] && {
-            _name="-name" _searchRegX="${2}" ;
+        _searchRegX="$(printf '%s' "${2}")" ;
+        [ -n "${_searchDir}" ] && {
+            find "${_searchDir}" \
+            ! \( -path "${_searchDir}"'/*/*' -prune \) \
+            -type f -name "${_searchRegX}" ;
         } ;
-    } && {
-        find "${_searchDir}" \
-        ! \( -path "${_searchDir}"'/*/*' -prune \) \
-        -type f "${_name}" "${_searchRegX}" ;
     } ; unset _searchDir _searchRegX _name ; return 0 ;
 }
 # --
@@ -28,7 +33,7 @@ flush_wp () {
             _wpFilep="${_wpFile%/*}"
             mkdir -p "${_traDir}"/"${_wpFilep}"
             _fileShasum=$(shasum -U -a 256 "${_wpFile}" | cut -d' ' -f1)
-            _newFName="$(date +%y-%b-%d)-${_fileShasum}-${_wpFile##*/}"
+            _newFName="${_fileShasum}-${_wpFile##*/}"
             mv "${_wpFile}" "${_traDir}"/"${_wpFilep}"/"${_newFName}"
         done ; unset _traDir _wpFilep _wpFile _fileShasum ; return 0 ;
 }
@@ -39,29 +44,24 @@ get_wh_image_url () {
     _keyDir="${HOME}/.config/hypr/whkey"
     _api="https://wallhaven.cc/api/v1/search?" _k="$(cat "${_keyDir}")" ;
     _kW="" _c=110 _p=111 _s=random _aL=1920x1080 _r=landscape ;
-    _apiUrl1="${_api}apikey=${_k}&q=${_kW}&categories=${_c}&"
-    _apiUrl2="purity=${_p}&sorting=${_s}&atleast=${_aL}&ratios=${_r}" ;
-    _apiUrl="${_apiUrl1}${_apiUrl2}"
+    _part="${_api}apikey=${_k}&q=${_kW}&categories=${_c}&"
+    _apiUrl="${_part}purity=${_p}&sorting=${_s}&atleast=${_aL}&ratios=${_r}" ;
     _apiCurl="$({ curl -sS -m 10 --retry 2 --retry-delay 3 \
         --retry-max-time 20 "${_apiUrl}" ;
     })" ;
     echo "${_apiCurl}" | jq -r '[.data[] | .path] | .[0]' ;
     unset _keyDir _api _k _kW _c _p _s _aL \
-        _r _apiUrl1 _apiUrl2 _apiUrl _apiCurl ;
+        _r _part _apiUrl _apiCurl ;
     return 0 ;
 }
 # --
 
 # --
-kill_paper_services () {
-    _mpvPdPid="${UPID_DIR}"/mpvpaper_d.sh.d/pid ;
-    # _hyprPPid="${XDG_RUNTIME_DIR}"/hyprpaper.lock ;
+kill_wallpaper_services () {
     {
-        ! kill -0 "${_mpvPdPid}" || kill -TERM "${_mpvPdPid}" ;
-        # ! kill -0 "${_hyprPPid}" || kill -TERM "${_hyprPPid}" ;
-    } 2>/dev/null ;
-    unset _mpvPdPid ; # _hyprPPid ;
-    return 0 ;
+        [ "${1}" = "mpvP" ] && kill -0 "${mpvPdPid}" && kill -TERM "${mpvPdPid}" ;
+        [ "${2}" = "hyprP" ] && kill -0 "${hyprPPid}" && kill -TERM "${hyprPPid}" ;
+    } 2>/dev/null ; return 0 ;
 }
 # --
 
@@ -83,17 +83,60 @@ get_rand_wp_from_local_dir () {
 # --
 
 # --
-kill_paper_services
-flush_wp
+update_hypr_conf () {
+    _hyprPConf="${1}"
+    _wpFilePSed="$(printf '%s' "${2}" | sed 's/\//\\\//g')"
+    _wpFilePSed="${_wpFilePSed#*/*/*/}"
+
+cat <<EOF > "${_hyprPConf}"
+$(sed 's/~\/.*$/~\/'"${_wpFilePSed}"'/' "${_hyprPConf}")
+EOF
+
+    unset _wpFilePSed _hyprPConf ; return 0 ;
+}
+# --
+
+# --
+shName="$(basename "${0}")"
+nsDelay='500'
 [ "${1}" = "local" ] && {
-    local_wp=$(get_rand_wp_from_local_dir) ;
-    wp="${HOME}"/.bg."${local_wp##*.}" ;
-    cat "${local_wp}" > "${wp}" ;
+    localWp="$(get_rand_wp_from_local_dir)" ;
+    summeryLocal='Setting wallpaper from local' ;
+}
+[ ! "${1}" = "local" ] && {
+    summeryWh='Setting wallpaper from WH' ;
+}
+nsId=$(notify-send -t 60000 -u normal -p -a "${shName}" \
+"${summeryLocal:-${summeryWh}}" \
+'Loading...')
+mpvPdPid="$(cat "${UPID_DIR}"/mpvpaper_d.sh.d/pid)" ;
+hyprPPid="$(cat "${XDG_RUNTIME_DIR}"/hyprpaper.lock)" ;
+# --
+
+# --
+kill_paper_services mpvP
+kill -0 "${hyprPPid}" && {
+    setpgid dash -c 'hyprpaper' &
+}
+# --
+
+# --
+[ "${1}" = "local" ] && {
+    update_hypr_conf "${hyprPConf}" "${localWp}" ;
+    hyprctl hyprpaper reload ,"${localWp}" ;
+    notify-send -w -u normal -t "${nsDelay}" -r "${nsId}" -a "${shName}" \
+        "${summeryLocal}" \
+        'Done' ; exit 0 ;
 }
 [ -z "${1}" ] && {
+    flush_wp ;
     image_url=$(get_wh_image_url) ;
     wp="${HOME}"/.bg."${image_url##*.}" ;
     curl -s "${image_url}" -o "${wp}" ;
-}
-hyprctl hyprpaper reload ,"${wp}" ; exit 0
+    update_hypr_conf "${hyprPConf}" "${wp}" ;
+    hyprctl hyprpaper reload ,"${wp}" ;
+    notify-send -w -u normal -t "${nsDelay}" -r "${nsId}"  -a "${shName}" \
+        "${summeryWh}"\
+        'Done' ; exit 0 ;
+} ; exit 0
 # --
