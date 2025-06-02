@@ -1,5 +1,4 @@
 #!/usr/bin/env dash
-set -x
 [ -z "${UPID_DIR}" ] && {
     { [ -z "${XDG_RUNTIME_DIR}" ] && exit ; } || UPID_DIR=${XDG_RUNTIME_DIR} ;
 }
@@ -14,9 +13,9 @@ lfInput="${f}"
 
 # --
 mpvPShPath="$(x="$(hash -r ; type mpvpaper_d.sh)" x="${x##* }" ; printf '%s' "${x}")"
-. /dev/stdin <<EOF
+. /dev/stdin <<_HD_mpvPShVar
 $(grep '^shFPath' "${mpvPShPath}" | sed 's/^.*=/mpvPShVar=/ ; s/shName/mpvPDaemon/')
-EOF
+_HD_mpvPShVar
 [ ! "${mpvPShPath}" = "${mpvPShVar}" ] && exit 1
 # --
 
@@ -25,7 +24,7 @@ proper_ls () {
     _searchDir="${1}" ;
     {
         _searchRegX="$(printf '%s' "${2}")" ;
-        [ -n "${_searchDir}" ] && {
+        [ -n ${_searchDir} ] && {
             find "${_searchDir}" \
             ! \( -path "${_searchDir}"'/*/*' -prune \) \
             -type f -name "${_searchRegX}" ;
@@ -56,10 +55,19 @@ update_hypr_conf () {
     _wpFilePSed="$(printf '%s' "${2}" | sed 's/\//\\\//g')"
     _wpFilePSed="${_wpFilePSed#*/*/*/}"
 
-cat <<EOF > "${_hyprPConf}"
+    {
+        grep '^preload = ~' "${_hyprPConf}" &&
+        grep '^wallpaper = .* ~' "${_hyprPConf}" ;
+    } > /dev/null 2>&1 || {
+        notify-send -u critical -w -a "${shName}" \
+        "${summeryLocal:-${summeryWh}}" \
+        'setup config file so it can be updated use ~ 
+instead of /home/<user>/ for preload and wallpaper' ;
+        exit 1 ;
+    }
+cat <<_HD_hyprPConf > ${_hyprPConf}
 $(sed 's/~\/.*$/~\/'"${_wpFilePSed}"'/' "${_hyprPConf}")
-EOF
-
+_HD_hyprPConf
     unset _wpFilePSed _hyprPConf ; return 0 ;
 }
 # --

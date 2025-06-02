@@ -4,9 +4,32 @@
 }
 
 # --
-type shasum curl jq hyprctl hyprpaper notify-send || exit 1
+shName="$(basename "${0}")"
+[ "${1}" = "local" ] && {
+    summeryLocal='Setting wallpaper from local' ;
+}
+[ ! "${1}" = "local" ] && {
+    summeryWh='Setting wallpaper from WH' ;
+}
+# --
+
+# --
+type notify-send || { printf '%s\n' "notify-send is missing" ; exit 1 ; }
+type shasum curl jq hyprctl hyprpaper || {
+    notify-send -u critical -w -a "${shName}" \
+    "${summeryLocal:-${summeryWh}}" \
+    "missing dependencies check the script and your \$PATH" ;
+    exit 1 ;
+}
+nsDelay='500'
 hyprPConf="$(realpath "${HOME}"'/.config/hypr/hyprpaper.conf')"
-[ ! -f "${hyprPConf}" ] && exit 1
+[ ! -f "${hyprPConf}" ] && {
+    notify-send -u critical -w -a "${shName}" \
+    "${summeryLocal:-${summeryWh}}" \
+    'no hyprpaper.conf, needed for setting the wallpaper at startup
+that was last set' ;
+    exit 1 ;
+}
 # --
 
 # --
@@ -14,7 +37,7 @@ proper_ls () {
     _searchDir="${1}" ;
     {
         _searchRegX="$(printf '%s' "${2}")" ;
-        [ -n "${_searchDir}" ] && {
+        [ -n ${_searchDir} ] && {
             find "${_searchDir}" \
             ! \( -path "${_searchDir}"'/*/*' -prune \) \
             -type f -name "${_searchRegX}" ;
@@ -43,25 +66,17 @@ flush_wp () {
 get_wh_image_url () {
     _keyDir="${HOME}/.config/hypr/whkey"
     _api="https://wallhaven.cc/api/v1/search?" _k="$(cat "${_keyDir}")" ;
-    _kW="" _c=110 _p=111 _s=random _aL=1920x1080 _r=landscape ;
-    _part="${_api}apikey=${_k}&q=${_kW}&categories=${_c}&"
-    _apiUrl="${_part}purity=${_p}&sorting=${_s}&atleast=${_aL}&ratios=${_r}" ;
+    _kW="" _c=110 _p=110 _s=random _aL=1920x1080 _r=landscape ;
+    _col=''
+    _part="${_api}apikey=${_k}&q=${_kW}&categories=${_c}&purity=${_p}&"
+    _apiUrl="${_part}sorting=${_s}&atleast=${_aL}&ratios=${_r}&colors=${_col}" ;
     _apiCurl="$({ curl -sS -m 10 --retry 2 --retry-delay 3 \
         --retry-max-time 20 "${_apiUrl}" ;
     })" ;
     echo "${_apiCurl}" | jq -r '[.data[] | .path] | .[0]' ;
-    unset _keyDir _api _k _kW _c _p _s _aL \
+    unset _keyDir _api _k _kW _c _p _s _aL _col \
         _r _part _apiUrl _apiCurl ;
     return 0 ;
-}
-# --
-
-# --
-kill_wallpaper_services () {
-    {
-        [ "${1}" = "mpvP" ] && kill -0 "${mpvPdPid}" && kill -TERM "${mpvPdPid}" ;
-        [ "${2}" = "hyprP" ] && kill -0 "${hyprPPid}" && kill -TERM "${hyprPPid}" ;
-    } 2>/dev/null ; return 0 ;
 }
 # --
 
@@ -88,24 +103,23 @@ update_hypr_conf () {
     _wpFilePSed="$(printf '%s' "${2}" | sed 's/\//\\\//g')"
     _wpFilePSed="${_wpFilePSed#*/*/*/}"
 
-cat <<EOF > "${_hyprPConf}"
+    {
+        grep '^preload = ~' "${_hyprPConf}" &&
+        grep '^wallpaper = .* ~' "${_hyprPConf}" ;
+    } > /dev/null 2>&1 || {
+        notify-send -u critical -w -a "${shName}" \
+        "${summeryLocal:-${summeryWh}}" \
+        'setup config file so it can be updated use ~ instead of /home/<user>/ for preload and wallpaper' ;
+        exit 1 ;
+    }
+cat <<_HD_hyprPConf > ${_hyprPConf}
 $(sed 's/~\/.*$/~\/'"${_wpFilePSed}"'/' "${_hyprPConf}")
-EOF
-
+_HD_hyprPConf
     unset _wpFilePSed _hyprPConf ; return 0 ;
 }
 # --
 
 # --
-shName="$(basename "${0}")"
-nsDelay='500'
-[ "${1}" = "local" ] && {
-    localWp="$(get_rand_wp_from_local_dir)" ;
-    summeryLocal='Setting wallpaper from local' ;
-}
-[ ! "${1}" = "local" ] && {
-    summeryWh='Setting wallpaper from WH' ;
-}
 nsId=$(notify-send -t 60000 -u normal -p -a "${shName}" \
 "${summeryLocal:-${summeryWh}}" \
 'Loading...')
@@ -114,14 +128,13 @@ hyprPPid="$(cat "${XDG_RUNTIME_DIR}"/hyprpaper.lock)" ;
 # --
 
 # --
-kill_paper_services mpvP
-kill -0 "${hyprPPid}" && {
-    setpgid dash -c 'hyprpaper' &
-}
+{ kill -0 "${mpvPdPid}" && kill -TERM "${mpvPdPid}" ; } 2>/dev/null
+! kill -0 "${hyprPPid}" && { setpgid dash -c 'hyprpaper' & }
 # --
 
 # --
 [ "${1}" = "local" ] && {
+    localWp="$(get_rand_wp_from_local_dir)" ;
     update_hypr_conf "${hyprPConf}" "${localWp}" ;
     hyprctl hyprpaper reload ,"${localWp}" ;
     notify-send -w -u normal -t "${nsDelay}" -r "${nsId}" -a "${shName}" \
@@ -137,6 +150,6 @@ kill -0 "${hyprPPid}" && {
     hyprctl hyprpaper reload ,"${wp}" ;
     notify-send -w -u normal -t "${nsDelay}" -r "${nsId}"  -a "${shName}" \
         "${summeryWh}"\
-        'Done' ; exit 0 ;
+        'Done' ;
 } ; exit 0
 # --

@@ -1,7 +1,25 @@
 #!/usr/bin/env dash
 
 # --
-type shasum notify-send || exit 1
+shName="$(basename "${0}")"
+[ ! "${1}" = "local" ] && {
+    summeryWhSave='save current wallpaper' ;
+}
+nsDelay='500'
+type notify-send || { printf '%s\n' "notify-send is missing" ; exit 1 ; }
+type shasum hyprpaper || {
+    notify-send -u critical -w -a "${shName}" \
+    "${summeryWhSave}" \
+    "missing dependencies check the script and your \$PATH" ;
+    exit 1 ;
+}
+hyprPConf="$(realpath "${HOME}"'/.config/hypr/hyprpaper.conf')"
+[ ! -f "${hyprPConf}" ] && {
+    notify-send -u critical -w -a "${shName}" \
+    "${summeryLocal:-${summeryWh}}" \
+    'no hyprpaper.conf, needed for getting the currently set wallpaper' ;
+    exit 1 ;
+}
 # --
 
 # --
@@ -29,7 +47,7 @@ proper_ls () {
     {
         _searchRegX="$(printf '%s' "${2}")" ;
         [ -n "${_searchDir}" ] && {
-            find "${_searchDir}" \
+            find ${_searchDir} \
             ! \( -path "${_searchDir}"'/*/*' -prune \) \
             -type f -name "${_searchRegX}" ;
         } ;
@@ -38,50 +56,51 @@ proper_ls () {
 # --
 
 # --
-currentWp="$(proper_ls "${HOME}" "*.bg.*" | head -n1)" || exit 1
-shName="$(basename "${0}")"
-wpExt="${currentWp##*.}"
-nsDelay='500'
+wpDir="${HOME}"/Pictures/wallpapers
+[ ! -d "${wpDir}" ] || [ ! -d "${wpDir}".orig.shasums ] && {
+    mkdir_folders_inseq "${wpDir%/*}" "${wpDir}" > /dev/null 2>&1 ;
+    mkdir_folders_inseq "${wpDir%/*}" "${wpDir}.orig.shasums" > /dev/null 2>&1 ;
+    [ -d "${wpDir}" ] || [ -d "${wpDir}".orig.shasums ] || {
+        notify-send -u critical -w -a "${shName}" \
+        "${summeryWhSave}" \
+        "faild to create wallpaper directory for saving" ;
+        exit 1 ;
+    } ;
+}
+currentWp="${HOME}""$(grep '^wallpaper' "${hyprPConf}" | cut -d'~' -f2)"
+currentWpExt="${currentWp##*.}"
+currentWpShasum="$(shasum -U -a 256 "${currentWp}" | cut -d' ' -f1)"
+saveFile="${wpDir}"'/WP-'"${currentWpShasum}"'-.'"${currentWpExt}"
 # --
 
 # --
 nsSaveId=$(notify-send -w -u normal -t "${nsDelay}" -p -a "${shName}" \
-'save current wallpaper' \
-'initializeing...')
-[ ! -f "${currentWp}" ] && { notify-send -w -u critical -t 5000 -r "${nsSaveId}" -u critical -a "${shName}" \
-    'save current wallpaper' \
-    'no applicable wallpaper exists' ; exit 1
+    "${summeryWhSave}" \
+    'attempting to save...')
+[ ! -f "${currentWp}" ] && {
+    notify-send -w -u critical -t 5000 -r "${nsSaveId}" -u critical -a "${shName}" \
+    "${summeryWhSave}" \
+    'no applicable wallpaper exists' ; exit 1 ;
 }
-[ -z "${wpExt}" ] && { notify-send -w -u critical -t 5000 -r "${nsSaveId}" -u critical -a "${shName}" \
-    'save current wallpaper' \
-    'file dose not have a extention' ; exit 1
+[ -z "${currentWpExt}" ] && {
+    notify-send -w -u critical -t 5000 -r "${nsSaveId}" -u critical -a "${shName}" \
+    "${summeryWhSave}" \
+    'file dose not have a extention' ; exit 1 ;
 }
-notify-send -w -u normal -t "${nsDelay}" -r "${nsSaveId}" -a "${shName}" \
-'save current wallpaper' \
-'attempting to save...'
-# --
-
-# --
-[ ! -d "${HOME}"/Pictures/wallpapers ] && {
-    mkdir_folders_inseq "${HOME}"/Pictures "${HOME}"/Pictures/wallpapers || exit 1 ;
-} ;
-wpShasum="$(shasum -U -a 256 "${currentWp}" | cut -d' ' -f1)"
-wpPath="${HOME}"/Pictures/wallpapers
-wpFile="${wpPath}"/WP-"${wpShasum}"-."${wpExt}"
-[ -f "${wpFile}" ] && {
+proper_ls "${wpDir}.orig.shasums/ ${wpDir}/" "*" | grep "${currentWpShasum}" && {
     notify-send -w -u low -t 5000 -r "${nsSaveId}" -a "${shName}" \
-    'save current wallpaper' \
-    'wallpaper alredy saved' ; exit 1 ; 
+    "${summeryWhSave}" \
+    'wallpaper alredy saved' ; exit 1 ;
 } ;
-cp "${currentWp}" "${wpFile}" ; saveExitState=${?} ;
+cp "${currentWp}" "${saveFile}" ; saveExitState=${?} ;
 [ "${saveExitState}" -lt 1 ] && {
-    notify-send -w -u normal -t "${nsDelay}" -r "${nsSaveId}" -a "${shName}" \
-    'save current wallpaper' \
-    'save successfull' ; exit 0 ;
+    notify-send -w -u normal -t 5000 -r "${nsSaveId}" -a "${shName}" \
+    "${summeryWhSave}" \
+    "save successfull, saved to ${saveFile}" ; exit 0 ;
 } ;
 [ "${saveExitState}" -gt 0 ] && {
     notify-send -w -u critical -t 5000 -r "${nsSaveId}" -a "${shName}" \
-    'save current wallpaper' \
+    "${summeryWhSave}" \
     'wallpaper faild saveing' ; exit 1 ;
 } ;
 # --
