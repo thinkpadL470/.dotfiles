@@ -1,5 +1,5 @@
 #!/usr/bin/env dash
-set -xu
+set -u
 # --
 cleanup () {
     rm -rf ${tmp_d}
@@ -108,9 +108,9 @@ sh_name=$(basename $0)
 tmpdir=${HOME}/tmp
 tmp_d="${tmpdir}/$(generate_random_string).tmp.d"
 [ ! -d "${tmp_d}" ] && mkdir_folders_inseq "${tmpdir}" "${tmp_d}" ; mkdir_folders_inseq_ret "${tmp_d}"
-tmp_f1="${tmp_d}/sshd_config.$(generate_random_string)"
+tmp_f1="${tmp_d}/90-auth.conf.$(generate_random_string)"
 rel_etc_p=$(get_fsrc_dir_realpath "etc")
-conf_f="${rel_etc_p}/ssh/sshd_config"
+conf_f="${rel_etc_p}/ssh/sshd_config.d/90-auth.conf"
 # --
 
 # --

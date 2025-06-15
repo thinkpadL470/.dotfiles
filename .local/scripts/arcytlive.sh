@@ -43,6 +43,7 @@ do
         --fragment-retries 15 \
         --file-access-retries 15 \
         -R 50 -N 3 -c \
+        --force-overwrites \
         --no-download-archive \
         --wait-for-video "$(( 15 * 60 ))" \
         --live-from-start \

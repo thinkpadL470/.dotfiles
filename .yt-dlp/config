@@ -1,4 +1,5 @@
 # [YTDLP_CONF]
+--user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36'
   # [ALAISES]
     --alias gulopt,-X "--user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36' --no-restrict-filenames --no-download-archive --flat-playlist --print filename"
     --alias dlyts,-X "--sponsorblock-mark sponsor,selfpromo,preview -f '((bv*[vcodec~="'"vp*9*"'"]/bv*)+ba)/b' -o 'V-%(upload_date,release_date,modified_date|Unknown)s_%(title)s_%(id)s_%(duration_string)s.%(ext)s'"
@@ -16,6 +17,7 @@
     --prefer-free-formats
     --restrict-filenames
     --download-archive "./.dl-archive"
+    --cookies-from-browser firefox:~/.librewolf/c79gwmzx.default/
   # [RETRY]
     -R 5
     --retry-sleep 10

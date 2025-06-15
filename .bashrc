@@ -6,12 +6,12 @@
     set -o vi
     shopt -s autocd
     shopt -s histappend
-    [ -e ~/.inputrc ] && bind -f ~/.inputrc
+    [ -e ~/.inputrc ] && bind -f "${HOME}"/.inputrc
 # --
 
 # -- VARIABLES
-export \
-    PS1="\[\e[38;5;33m\]\u\[\e[38;5;69m\]@\[\e[38;5;105m\]\h \[\e[38;5;141m\]\W \[\033[0m\]$ " \
+[ ! -d "data/data/com.termux" ] && export \
+    PS1="\[\e[38;2;129;224;255m\]\u\[\e[38;2;142;178;33m\]@\[\e[38;2;164;143;230m\]\h \[\e[38;2;212;212;67m\]\W \[\033[0m\]$ " \
     PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
 # --
 
@@ -25,7 +25,7 @@ lwbinary=$(type librewolf) &&
 
 # -- NVIDIA 
 [ -n "${__GL_SHADER_DISK_CACHE_PATH}" ] && export \
-    __GL_SHADER_DISK_CACHE_PATH="~/.cache/nv"
+    __GL_SHADER_DISK_CACHE_PATH="${HOME}/.cache/nv"
 # --
 
 # -- SOURCE

@@ -1,8 +1,8 @@
 # -- VARIABLES
 export \
     PATH="${HOME}/.local/bin:${HOME}/.local/scripts:${PATH}" \
-    HISTSIZE= \
-    HISTFILESIZE= \
+    HISTSIZE='' \
+    HISTFILESIZE='' \
     HISTCONTROL=ignorespace:erasedups \
     HISTIGNORE=ct:ls:clear
     HISTFILE="${HOME}/.history" \
@@ -23,18 +23,18 @@ export EDITOR=${VISUAL}
 
 # -- LANG_PATH
 [ -d /usr/lib/jvm ] && export \
-     RUBYPATH="~/.local/share/gem/ruby/3.2.0/bin" \
+     RUBYPATH="${HOME}/.local/share/gem/ruby/3.2.0/bin" \
      INSTALL4J_JAVA_HOME="/usr/lib/jvm/java-8-openjdk/jre"
 # --
 
 # -- SOURCE
 [ -f "$HOME/.config/fabric/fabric-bootstrap.inc" ] &&
-    . ~/.config/fabric/fabric-bootstrap.inc
+    . "${HOME}"/.config/fabric/fabric-bootstrap.inc
 # --
 
 # -- TERMUX
 [ -d /data/data/com.termux ] &&
-    for i in /data/data/com.termux/files/usr/etc/profile.d/*.sh; do test -r $i && source $i && unset i; done
+    for i in /data/data/com.termux/files/usr/etc/profile.d/*.sh; do test -r "${i}" && . "${i}" && unset i; done
 # --
 
     # -- SOURCE
@@ -48,16 +48,16 @@ export EDITOR=${VISUAL}
 
     # -- EXEC
     [ -d /data/data/com.termux ] && {
-        eval $(ssh-agent) && eval 'ssh-agent' ;
-        [ -x ~/.local/scripts/update-env-conf.sh ] &&
-            ~/.local/scripts/update-env-conf.sh
+        eval "$(ssh-agent)" && eval 'ssh-agent' ;
+        [ -x "${HOME}/.local/scripts/update-env-conf.sh" ] &&
+            "${HOME}"/.local/scripts/update-env-conf.sh
     }
     # --
 # --
 
 # -- GLOBAL
-[ -f ~/.bashrc ] &&
-    . ~/.bashrc
+[ -f "${HOME}/.bashrc" ] &&
+    . "${HOME}"/.bashrc
 # --
 
 # -- NIX
