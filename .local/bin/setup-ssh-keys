@@ -65,7 +65,7 @@ unalias depCmd
                 "this usually will ask for the password" ;
             ssh-copy-id \
                 -i "${HOME}/.ssh/${keyFilename}.pub" \
-                -o "'""${sshOpt#* * }""'" \
+                "${sshOpt#* }" \
                 -p "${sshOpt##* }" "${targetUser}@${targetHostname}" ; _ret="${?}" ;
         } ;
         [ "${_ret}" -gt 0 ] && {
@@ -131,7 +131,7 @@ unalias depCmd
 
 # -- analyse perameters
 defaultCryptoKeytype='ed25519'
-sshOpt='ssh -o PubkeyAuthentication=no'
+sshOpt='-o PubkeyAuthentication=no'
 while [ "${#}" -gt 0 ]
 do
     key="${1}" ; shift
@@ -169,7 +169,7 @@ done
     printf '\n%s%s\n%s\n\n%s\n' \
         "Transferring key from ${HOME}/.ssh/${keyFilename} " \
         "to ${targetUser}@${targetHostname}" \
-        "using options '${sshOpt#* }' " \
+        "using options '${sshOpt}' " \
         "Press ENTER to continue or CTRL-C to abort" ;
     read -r nonsense ; printf '%s' "${nonsense}" ;
     
@@ -210,7 +210,7 @@ done
             printf '\n%s%s\n' \
                 "Adjusting permissions to avoid errors in ssh-daemon, " \
                 "this may ask once more for the password" ; 
-            ssh -o "${sshOpt# * *}" "${targetUser}@${targetHostname}" \
+            ssh "${sshOpt}" "${targetUser}@${targetHostname}" \
                 "chmod go-w ~ && chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys" ||
             { printf '%s\n' "${shName}: ssh-chmod failed" ; exit 1 ; } ;
         } ;
