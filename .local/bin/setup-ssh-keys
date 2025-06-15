@@ -3,8 +3,8 @@
 # -- dependencies
 hash -r
 shName="$(basename "${0}")"
-depCmd="type ssh ssh-keygen ip chmod grep"
-"${depCmd}" || { printf '%s\n' "${shName}: some missing requierd binaries ${depCmd#* }" ; exit 1 ; }
+depArgs="type ssh ssh-keygen ip chmod grep"
+type "${depArgs}" || { printf '%s\n' "${shName}: some missing requierd binaries ${depArgs}" ; exit 1 ; }
 [ "${#}" -lt 1 ] && { usage ; exit 1 ; }
 # --
 
@@ -28,7 +28,7 @@ depCmd="type ssh ssh-keygen ip chmod grep"
             "Host ${targetHostAlias:-${keyFilename}}" \
             "    Hostname ${targetHostname}" \
             "    User ${targetUser}" \
-            "    Port ${sshCmd##* }" \
+            "    Port ${sshOpt##* }" \
             "    IdentityFile ${HOME}/.ssh/${keyFilename}" ;
         return 0 ;
     } ;
@@ -52,7 +52,7 @@ depCmd="type ssh ssh-keygen ip chmod grep"
             printf '\n%s%s\n' \
                 "${shName}: Could not find ssh-copy-id " \
                 "executable, using manual copy instead" ;
-            "${sshCmd} ${targetUser}@${targetHostname}" \
+            "ssh ${sshOpt} ${targetUser}@${targetHostname}" \
                 'cat >> ~/.ssh/authorized_keys' < "${HOME}"/.ssh/"${keyFilename}".pub ;
             _ret="${?}" ;
         } ;
@@ -61,8 +61,8 @@ depCmd="type ssh ssh-keygen ip chmod grep"
                 "Copying the key to the remote machine " \
                 "${targetUser}@${targetHostname}, " \
                 "this usually will ask for the password" ;
-            ssh-copy-id "${sshCmd#* } -i ${HOME}/.ssh/${keyFilename}.pub" \
-                "${targetUser}@${targetHostname}" ; _ret="${?}" ;
+            ssh-copy-id -i "${HOME}/.ssh/${keyFilename}.pub" -o "${sshOpt#* * }" \
+                -p "${sshOpt##* }" "${targetUser}@${targetHostname}" ; _ret="${?}" ;
         } ;
         [ "${_ret}" -gt 0 ] && {
             printf '%s\n' "${shName}: ssh_copy_keyid_methods: copying ssh id failed" ;
@@ -127,7 +127,7 @@ depCmd="type ssh ssh-keygen ip chmod grep"
 
 # -- analyse perameters
 defaultCryptoKeytype='ed25519'
-sshCmd='ssh -o PubkeyAuthentication=no'
+sshOpt='ssh -o PubkeyAuthentication=no'
 while [ "${#}" -gt 0 ]
 do
     key="${1}" ; shift
@@ -138,7 +138,7 @@ do
             ;;
         -u*|--user) targetUser="${1}" ; shift
             ;;
-        -p*|--port) sshCmd="${sshCmd} -p ${1}" ; shift
+        -p*|--port) sshOpt="${sshOpt} -p ${1}" ; shift
             ;;
         -f*|--filename) keyFilename="${1}" ; shift
             ;;
@@ -165,9 +165,9 @@ done
     printf '\n%s%s\n%s\n\n%s\n' \
         "Transferring key from ${HOME}/.ssh/${keyFilename} " \
         "to ${targetUser}@${targetHostname}" \
-        "using options '${sshCmd#* }' " \
+        "using options '${sshOpt#* }' " \
         "Press ENTER to continue or CTRL-C to abort" ;
-    read -r nonsense ;
+    read -r nonsense ; printf '%s' "${nonsense}" ;
     
     # -- keygen
     [ -f "${HOME}"/.ssh/"${keyFilename}" ] && printf '\n%s\n' "Using existing key"
@@ -206,7 +206,7 @@ done
             printf '\n%s%s\n' \
                 "Adjusting permissions to avoid errors in ssh-daemon, " \
                 "this may ask once more for the password" ; 
-            "${sshCmd} ${targetUser}@${targetHostname}" \
+            ssh -o "${sshOpt# * *}" "${targetUser}@${targetHostname}" \
                 "chmod go-w ~ && chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys" ||
             { printf '%s\n' "${shName}: ssh-chmod failed" ; exit 1 ; } ;
         } ;
@@ -259,7 +259,7 @@ done
         "- Try running ssh with '-v' and look for clues in the resulting output" ;
     adjustedSshCmd="$({
         printf '\n%s\n' \
-            "${sshCmd}" |
+            "ssh ${sshOpt}" |
             sed -e 's/\ PubkeyAuthentication=no//g' ;
     })"
     printf '\n%s\n%s\n' \

@@ -19,5 +19,5 @@ done
 {
     type find && {
         find -L ~/.config/ ~/.local/ ~/.cache/ ~/.yt-dlp ! \( -path "${HOME}"/.local/state/nix -prune \) -type l -print0 -exec rm {} \; ;
-    } && find .config -type d -name '*' -print0 | while IFS= read -r -d '' dir ; do rmdir ${dir} ; done ;
+    } && find ~/.config -type d -name '*' -print0 | while IFS= read -r -d '' dir ; do rmdir ${dir} ; done ;
 } 2> /dev/null 1> /dev/null ; exit
