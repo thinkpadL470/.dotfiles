@@ -56,12 +56,14 @@ depArgs="ssh ssh-keygen ip chmod grep"
                 'cat >> ~/.ssh/authorized_keys' < "${HOME}"/.ssh/"${keyFilename}".pub ;
             _ret="${?}" ;
         } ;
-        type ssh-copy-id > /dev/null 2>/dev/null && {
+        type ssh-copy-id >/dev/null 2>&1 && {
             printf '\n%s%s%s\n' \
                 "Copying the key to the remote machine " \
                 "${targetUser}@${targetHostname}, " \
                 "this usually will ask for the password" ;
-            ssh-copy-id -i "${HOME}/.ssh/${keyFilename}.pub" -o "${sshOpt#* * }" \
+            ssh-copy-id \
+                -i "${HOME}/.ssh/${keyFilename}.pub" \
+                -o "'""${sshOpt#* * }""'" \
                 -p "${sshOpt##* }" "${targetUser}@${targetHostname}" ; _ret="${?}" ;
         } ;
         [ "${_ret}" -gt 0 ] && {
