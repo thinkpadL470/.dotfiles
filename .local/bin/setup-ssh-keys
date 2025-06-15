@@ -4,8 +4,10 @@
 hash -r
 shName="$(basename "${0}")"
 depArgs="ssh ssh-keygen ip chmod grep"
-"type ${depArgs}" || { printf '%s\n' "${shName}: some missing requierd binaries ${depArgs}" ; exit 1 ; }
+alias depCmd="type ${depArgs}"
+depCmd || { printf '%s\n' "${shName}: some missing requierd binaries ${depArgs}" ; exit 1 ; }
 [ "${#}" -lt 1 ] && { usage ; exit 1 ; }
+unalias depCmd
 # --
 
 # -- functions
