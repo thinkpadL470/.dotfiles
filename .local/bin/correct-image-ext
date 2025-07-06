@@ -2,9 +2,12 @@
 get_image_fmt () {
     _inputFile="${1}" ;
     _fmtDesc="$(file "${_inputFile}" 2>&1)" ;
-    { printf '%s' "${_fmtDesc}" | grep -e 'JPEG' ; } 2>/dev/null 1>/dev/null && printf '%s' "JPEG" && return 0 ;
-    { printf '%s' "${_fmtDesc}" | grep -e 'PNG' ; } 2>/dev/null 1>/dev/null && printf '%s' "PNG" && return 0 ;
-    { printf '%s' "${_fmtDesc}" | grep -e 'empty' ; } 2>/dev/null 1>/dev/null && printf '%s' "empty" && return 0 ;
+    { printf '%s' "${_fmtDesc}" | grep -e 'JPEG' ; } >/dev/null 2>&1 &&
+        printf '%s' "JPEG" && return 0 ;
+    { printf '%s' "${_fmtDesc}" | grep -e 'PNG' ; } >/dev/null 2>&1 &&
+        printf '%s' "PNG" && return 0 ;
+    { printf '%s' "${_fmtDesc}" | grep -e 'empty' ; } >/dev/null 2>&1 &&
+        printf '%s' "empty" && return 0 ;
 }
 fd_b="$(type fd)"
 { [ -x "${fd_b##* }" ] && cmd () { ${fd_b##* } -t f -e jpg -e png . ./ ; } ; } || {

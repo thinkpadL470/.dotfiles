@@ -28,8 +28,12 @@ set history true
     cmd open ${{ . ~/.config/lf/func/lf-open.sh }}
     cmd copy-clip ${{ wl-copy < $f }}
     cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
-    cmd mkdir %{{ IFS=" " ; mkdir -p -- "$*" ; lf -remote "send $id select \"$*\"" }}
-    cmd tar ${{ set -f ; mkdir $1 ; cp -r $fx $1 ; tar czf $1.tar.gz $1 ; rm -rf $1 }}
+    cmd mkdir %{{
+        IFS=" " ; mkdir -p -- "$*" ; lf -remote "send $id select \"$*\""
+    }}
+    cmd tar ${{
+        set -f ; mkdir $1 ; cp -r $fx $1 ; tar czf $1.tar.gz $1 ; rm -rf $1
+    }}
     cmd ripf &{{ ~/.local/bin/del $fx ; }}
     cmd extarc !{{ . ~/.config/lf/func/extarc.sh }}
     # --

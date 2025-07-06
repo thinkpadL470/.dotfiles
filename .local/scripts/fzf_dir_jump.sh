@@ -1,99 +1,119 @@
 #!/usr/bin/env dash
 
 # --
-[ -x /usr/bin/fzf ] && fzf_bin_p="/usr/bin/fzf" || {
-    fzf_bin_p="$(type fzf)" && fzf_bin_p=$(realpath ${fzf_bin_p##* }) ;
-} || { printf '%s\n' "cant find fzf exiting" && exit 1 ; }
-[ -x ~/.nix-profile/bin/fd ] && fd_bin_p="${HOME}/.nix-profile/bin/fd" || {
-    fd_bin_p="$(type fd)" && fd_bin_p=$(realpath ${fd_bin_p##* }) ;
-} || printf '%s\n' "cant find fd, using find instead"
+shName="$(basename "${0}")"
+hash -r
+shDeps="$(printf '%s\n' fzf find)"
+printf '%s\n' "${shDeps}" | while IFS= read -r dep ;
+do
+    type "${dep}" >/dev/null 2>&1 ||
+        printf '%s\n' "${shName}: dep check: missing binary ${dep}" && exit 1 ;
+done ;
 # --
 
 # --
-check__auth () {
-    [ -d /data/data/com.termux/files/home ] && { printf '%s' "" ; return 0 ; };
-    local doas_bin=$(realpath /usr/bin/doas) || { # set doas bin, if not in default path try to find it with type
-        local doas_bin=$(type doas) && local doas_bin=$(realpath ${doas_bin##* }) ;
-    } || { doas_bin="" ; true ; };
-    local sudo_bin=$(realpath /usr/bin/sudo) || { # like for doas, do the same for sudo
-        local sudo_bin=$(type sudo) && local sudo_bin=$(realpath ${sudo_bin##* }) ;
-    } || { sudo_bin="" ; true ; };
-    [ -x "${sudo_bin}" ] && [ ! -x "${doas_bin}" ] && local auth=${sudo_bin} || true ;
-    [ ! -x "${sudo_bin}" ] && [ -x "${doas_bin}" ] && local auth=${doas_bin} || true ;
-    [ ! -x "${sudo_bin}" ] && [ ! -x "${doas_bin}" ] && return 1 ;
-    printf '%s' "${auth}" ;
+check_auth () {
+    [ -d /data/data/com.termux/files/home ] && {
+        printf '%s' "" ; return 0 ;
+    };
+    _doasBin="$(realpath /usr/bin/doas)" || {
+        _doasBin="$(type doas)" &&
+        _doasBin="$(realpath "${_doasBin##* }")" ;
+    } || {
+        _doasBin="" ; true ;
+    };
+    _sudoBin="$(realpath /usr/bin/sudo)" || {
+        _sudoBin="$(type sudo)" &&
+        _sudoBin="$(realpath "${_sudoBin##* }")" ;
+    } || {
+        _sudoBin="" ; true ;
+    };
+    [ -x "${_sudoBin}" ] && [ ! -x "${_doasBin}" ] && _auth=${_sudoBin}
+    [ ! -x "${_sudoBin}" ] && [ -x "${_doasBin}" ] && _auth=${_doasBin}
+    [ ! -x "${_sudoBin}" ] && [ ! -x "${_doasBin}" ] && return 1 ;
+    printf '%s' "${_auth}" ;
+    unset _sudoBin _doasBin _auth ;
     return 0 ;
 }
-check__auth_ret () {
-    local ret="${?}" ;
-    [ "${ret}" = 1 ] && {
-        printf '%s\n' "${sh_name}: check__auth: setup your authentication, uninstall either doas or sudo" ;
+check_auth_ret () {
+    _ret="${?}" ;
+    [ "${_ret}" = 1 ] && {
+        printf '%s%s\n' \
+            "${shName}: check_auth: setup your authentication, " \
+            "uninstall either doas or sudo" ;
         exit 1 ;
     } ;
+    unset _ret
     return 0 ;
 }
 # --
 
 # --
-check__base_dir () {
+check_base_dir () {
     [ -d /home ] && {
-        basedir=$(printf "${PWD}" | cut -d '/' -f '1-3') ;
-        basedirroot="/" ;
+        baseDir=$(printf '%s' "${PWD}" | cut -d '/' -f '1-3') ;
+        baseDirRoot="/" ;
     };
     [ -d /data/data/com.termux/files/home ] && {
-        basedir=$(printf "${PWD}" | cut -d '/' -f '1-6') ;
-        basedirroot=$(printf "${PWD}" | cut -d '/' -f '1-5') ;
+        baseDir=$(printf '%s' "${PWD}" | cut -d '/' -f '1-6') ;
+        baseDirRoot=$(printf '%s' "${PWD}" | cut -d '/' -f '1-5') ;
     };
 }
 # --
 
 # --
-check__clip_copy () {
-    wl_copy_bin_path=$(realpath /usr/bin/wl-copy) || {
-        wl_copy_bin_path=$(type wl-copy) && wl_copy_bin_path=$(realpath ${wl_copy_bin_path##* }) ;
-    };
-    [ -x "${wl_copy_bin_path}" ] &&
-        cbc="${wl_copy_bin_path}" ;
-    [ -x /data/data/com.termux/files/usr/bin/termux-clipboard-set ] &&
-        cbc="/data/data/com.termux/files/usr/bin/termux-clipboard-set" ;
+auth="$(check_auth)" ; check_auth_ret
+alias auth='${auth}'
+check_base_dir
+# --
+
+# --
+fdBin="$(x="$(type fd)" x="${x##* }" ; printf '%s' "${x}")"
+[ ! -x "${fdBin}" ] && {
+    findPru="$(tr '\n' ' ' < ~/.config/find/pruned)" &&
+    find_cmd_Wargs () {
+        [ "${1}" = -r ] &&
+            auth find -L "${baseDir}" -type d ! \( "${findPru% *}" \) ;
+        [ -z "${1}" ] &&
+            find -L "${baseDir}" -type d ! \( "${findPru% *}" \) ;
+    } ;
 }
-# --
-
-# --
-sh_name="$(basename $0)"
-auth="$(check__auth)" ; check__auth_ret
-check__base_dir
-check__clip_copy
-# --
-
-# --
-[ ! -x "${fd_bin_p}" ] && prunedtargets=$(cat ~/.config/find/pruned | tr '\n' ' ') &&
-    find_cmd="find" &&
-    find_cmd_args () { printf '%s ' -L ${basedir} -type d ! \( ${prunedtargets% *} \) ; }
-[ -x "${fd_bin_p}" ] && 
-    find_cmd="${fd_bin_p}" && ignorefile=$(realpath ~/.config/fd/ignore) &&
-    find_cmd_args () { printf '%s ' -L -H -c never -t d --ignore-file ${ignorefile} . ${basedir} ; }
-fzf_args='--reverse --header="Change_Dir"'
+[ -x "${fdBin}" ] && { 
+    fdPru="$(realpath ~/.config/fd/ignore)" &&
+    find_cmd_Wargs () {
+        [ "${1}" = -r ] &&
+            auth fd -L -H -c never -t d --ignore-file "${fdPru}" . "${baseDir}" ;
+        [ -z "${1}" ] &&
+            fd -L -H -c never -t d --ignore-file "${fdPru}" . "${baseDir}" ;
+    } ;
+}
+fzf_Wargs () { fzf --reverse --header='Change_Dir' ; }
+termuxDir="/data/data/com.termux/files/home"
+deskDir="/home/${USER}"
 # --
 
 # -- IN_SHELL
 [ -z "$lf" ] && {
-    [ "${basedir}" = "/home/${USER}" -o "${basedir}" = "/data/data/com.termux/files/home" ] && {
-        cd "$(${find_cmd} $(find_cmd_args) 2>/dev/null | ${fzf_bin_p} ${fzf_args})" ;
-    } || { basedir=${basedirroot} ;
-        cd "$(${auth} ${find_cmd} $(find_cmd_args) 2>/dev/null | ${fzf_bin_p} ${fzf_args})" ;
-    };
+    {
+        {
+            [ "${baseDir}" = "${deskDir}" ] ||
+            [ "${baseDir}" = "${termuxDir}" ] ;
+        } && {
+            cd "$(find_cmd_Wargs 2>/dev/null | fzf_Wargs)" || exit ;
+        } ;
+    } || {
+        baseDir="${baseDirRoot}" ;
+        cd "$(find_cmd_Wargs -r 2>/dev/null | fzf_Wargs)" || exit ;
+    } ;
 }
 # --
 
 # -- IN_LF
 [ -n "$lf" ] && {
-    [ "${basedir}" = "/home/${USER}" ] && {
-        ${find_cmd} $(find_cmd_args) 2>/dev/null |
-        ${fzf_bin_p} ${fzf_args} ; exit 0 ;
+    { [ "${baseDir}" = "/home/${USER}" ] &&
+        find_cmd_Wargs 2>/dev/null | fzf_Wargs ; exit ;
     } || {
-        ${auth} ${find_cmd} $(find_cmd_args) 2>/dev/null |
-        ${fzf_bin_p} ${fzf_args} ; exit 0 ;
+        find_cmd_Wargs -r 2>/dev/null | fzf_Wargs ; exit ;
     };
 }
 # --

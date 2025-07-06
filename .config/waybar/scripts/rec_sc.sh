@@ -1,5 +1,9 @@
 #!/usr/bin/env dash
-[ -z "${UPID_DIR}" ] && { [ -z "${XDG_RUNTIME_DIR}" ] && exit || UPID_DIR=${XDG_RUNTIME_DIR} ; }
+{ [ -z "${UPID_DIR}" ] && [ -z "${XDG_RUNTIME_DIR}" ] && exit ; } ||
+    UPID_DIR="${XDG_RUNTIME_DIR}"
+
+shName="$(basename "${0}")"
+shDeps="$(printf '%s\n' hyprctl wf_recorder )"
 
 # -- set pids file to use for cleanup
 pids="\
@@ -10,7 +14,7 @@ ${UPID_DIR}/wf_recorder.pid"
 # -- define cleanup function
 cleanup () {
     {
-        cat ${pids##* } | xargs kill -TERM ;
+        cat "${pids##* }" | xargs kill -TERM ;
         rm ${pids} ;
     } 2>/dev/null
 }
@@ -54,9 +58,10 @@ g_monitor_geometry () {
         kill -USR1 "${rec_sc_dPID}" ; # change status to started recording
         wf-recorder \
             --audio=rec_monitor -r 24 \
-            -f ~/Videos/Recordings/"${fnprefix:-screen-record}-$(date +%Y-%m-%d-%H-%M-%S).mp4" \
-            ${wf_base_format} -g "${geometry:-0,0 $(g_monitor_geometry)}" & wf_recPID=$! ;
-            printf '%s\n' "${wf_recPID}" > ${UPID_DIR}/wf_recorder.pid ;
+            -f "~/Videos/Recordings/${fnprefix:-screen-record}-$(date +%Y-%m-%d-%H-%M-%S).mp4" \
+            "${wf_base_format}" \
+            -g "${geometry:-0,0 $(g_monitor_geometry)}" & wf_recPID=$! ;
+            printf '%s\n' "${wf_recPID}" > "${UPID_DIR}/wf_recorder.pid" ;
             wait "${wf_recPID}" ;
         kill -USR2 "${rec_sc_dPID}" ; # change status to stopped recording
         # --

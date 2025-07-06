@@ -10,7 +10,7 @@
     set colored-completion-prefix on
     set completion-ignore-case on
     set show-mode-in-prompt on
-    set mark-modified-lines on
+    # set mark-modified-lines on
     set print-completions-horizontally on
     $if term=linux
         set vi-ins-mode-string \1\e[?0c\2

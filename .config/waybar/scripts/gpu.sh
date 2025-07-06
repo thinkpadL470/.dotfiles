@@ -11,10 +11,12 @@
 [ "${1}" = "memory" ] && {
     output=$({
         mem_total=$({
-            nvidia-smi --query-gpu=memory.total --format="csv,noheader,nounits" ; exit ;
+            nvidia-smi --query-gpu=memory.total --format="csv,noheader,nounits" ;
+            exit ;
         }) ;
         mem_available=$({
-            nvidia-smi --query-gpu=memory.free --format="csv,noheader,nounits" ; exit ;
+            nvidia-smi --query-gpu=memory.free --format="csv,noheader,nounits" ;
+            exit ;
         }) ;
         mem_used=$((mem_total - mem_available)) ;
         usage_percentage=$(((mem_used * 100)/mem_total)) ;

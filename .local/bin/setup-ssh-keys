@@ -4,10 +4,16 @@
 hash -r
 shName="$(basename "${0}")"
 depArgs="ssh ssh-keygen ip chmod grep"
-alias depCmd="type ${depArgs}"
-depCmd || { printf '%s\n' "${shName}: some missing requierd binaries ${depArgs}" ; exit 1 ; }
+{ printf '%s\n' "${depArgs}" |
+    while IFS= read -d ' ' -r dep ;
+    do
+        type "${dep}" || {
+            printf '%s\n' "${shName}: missing requierd binari ${dep}" ;
+            exit 1 ;
+        } ;
+    done ;
+}
 [ "${#}" -lt 1 ] && { usage ; exit 1 ; }
-unalias depCmd
 # --
 
 # -- functions
@@ -30,7 +36,7 @@ unalias depCmd
             "Host ${targetHostAlias:-${keyFilename}}" \
             "    Hostname ${targetHostname}" \
             "    User ${targetUser}" \
-            "    Port ${sshOpt##*=}" \
+            "    Port ${sshOpt##* }" \
             "    IdentityFile ${HOME}/.ssh/${keyFilename}" ;
         return 0 ;
     } ;
@@ -54,7 +60,7 @@ unalias depCmd
             printf '\n%s%s\n' \
                 "${shName}: Could not find ssh-copy-id " \
                 "executable, using manual copy instead" ;
-            ssh ${sshOpt} "${targetUser}@${targetHostname}" \
+            ssh -o "${sshOpt}" "${targetUser}@${targetHostname}" \
                 'cat >> ~/.ssh/authorized_keys' < "${HOME}"/.ssh/"${keyFilename}".pub ;
             _ret="${?}" ;
         } ;
@@ -65,8 +71,8 @@ unalias depCmd
                 "this usually will ask for the password" ;
             ssh-copy-id \
                 -i "${HOME}/.ssh/${keyFilename}.pub" \
-                ${sshOpt} \
-                -p "${sshOpt##*=}" "${targetUser}@${targetHostname}" ; _ret="${?}" ;
+                -o "${sshOpt}" \
+                -p "${sshOpt##* }" "${targetUser}@${targetHostname}" ; _ret="${?}" ;
         } ;
         [ "${_ret}" -gt 0 ] && {
             printf '%s\n' "${shName}: ssh_copy_keyid_methods: copying ssh id failed" ;
@@ -131,7 +137,7 @@ unalias depCmd
 
 # -- analyse perameters
 defaultCryptoKeytype='ed25519'
-sshOpt='-o PubkeyAuthentication=no'
+sshOpt='PubkeyAuthentication no'
 while [ "${#}" -gt 0 ]
 do
     key="${1}" ; shift
@@ -142,7 +148,7 @@ do
             ;;
         -u*|--user) targetUser="${1}" ; shift
             ;;
-        -p*|--port) sshOpt="${sshOpt} -o Port=${1}" ; shift
+        -p*|--port) sshOpt="${sshOpt} Port ${1}" ; shift
             ;;
         -f*|--filename) keyFilename="${1}" ; shift
             ;;
@@ -210,7 +216,7 @@ done
             printf '\n%s%s\n' \
                 "Adjusting permissions to avoid errors in ssh-daemon, " \
                 "this may ask once more for the password" ; 
-            ssh ${sshOpt} "${targetUser}@${targetHostname}" \
+            ssh -o "${sshOpt}" "${targetUser}@${targetHostname}" \
                 "chmod go-w ~ && chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys" ||
             { printf '%s\n' "${shName}: ssh-chmod failed" ; exit 1 ; } ;
         } ;

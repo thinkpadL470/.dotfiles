@@ -6,13 +6,14 @@ shName="$(basename "${0}")"
     summeryWhSave='save current wallpaper' ;
 }
 nsDelay='500'
-type notify-send || { printf '%s\n' "notify-send is missing" ; exit 1 ; }
-type shasum hyprpaper || {
-    notify-send -u critical -w -a "${shName}" \
-    "${summeryWhSave}" \
-    "missing dependencies check the script and your \$PATH" ;
-    exit 1 ;
-}
+shDeps="$(printf '%s\n' notify-send shasum hyprpaper)"
+printf '%s\n' "${shDeps}" | while IFS= read -r dep ;
+do
+    type "${dep}" >/dev/null 2>&1 || {
+        notify-send -u critical -w -a "${shName}" \
+        "missing dep ${dep}" ; exit 1 ;
+    }
+done
 hyprPConf="$(realpath "${HOME}"'/.config/hypr/hyprpaper.conf')"
 [ ! -f "${hyprPConf}" ] && {
     notify-send -u critical -w -a "${shName}" \
@@ -36,22 +37,28 @@ mkdir_folders_inseq () {
     {
         printf '%s\n' "${_dirSeqence}" |
         while IFS= read -r _item ; do mkdir -m 700 "${_item}" ; done ;
-    } 2>/dev/null ;
-    [ -d "${_endDir}" ] && return 0 || return 1 ;
+    } 2>/dev/null ; unset _firstDir _dirSeqence _endDirItem _item
+    { [ -d "${_endDir}" ] &&
+        { unset _endDir ; return 0 ; } ;
+    } || {
+        unset _endDir ; return 1 ;
+    }
 }
 # --
 
 # --
 proper_ls () {
-    _searchDir="${1}" ;
-    {
-        _searchRegX="$(printf '%s' "${2}")" ;
-        [ -n "${_searchDir}" ] && {
-            find ${_searchDir} \
-            ! \( -path "${_searchDir}"'/*/*' -prune \) \
-            -type f -name "${_searchRegX}" ;
-        } ;
-    } ; unset _searchDir _searchRegX _name ; return 0 ;
+    _searchRegX="$(printf '%s' "${1}")"
+    shift
+    until [ "${#}" -lt 1 ] ;
+    do
+        selDir="${1}"
+        find "${selDir%/}" \
+        ! \( -path "${selDir%/}"'/*/*' -prune \) \
+        -type f -name "${_searchRegX}"
+        shift
+    done ;
+    unset _searchDir _searchRegX _sDir ; return 0 ;
 }
 # --
 
@@ -74,9 +81,11 @@ saveFile="${wpDir}"'/WP-'"${currentWpShasum}"'-.'"${currentWpExt}"
 # --
 
 # --
-nsSaveId=$(notify-send -w -u normal -t "${nsDelay}" -p -a "${shName}" \
+nsSaveId=$({
+    notify-send -w -u normal -t "${nsDelay}" -p -a "${shName}" \
     "${summeryWhSave}" \
-    'attempting to save...')
+    'attempting to save...' ;
+})
 [ ! -f "${currentWp}" ] && {
     notify-send -w -u critical -t 5000 -r "${nsSaveId}" -u critical -a "${shName}" \
     "${summeryWhSave}" \
@@ -87,7 +96,7 @@ nsSaveId=$(notify-send -w -u normal -t "${nsDelay}" -p -a "${shName}" \
     "${summeryWhSave}" \
     'file dose not have a extention' ; exit 1 ;
 }
-proper_ls "${wpDir}.orig.shasums/ ${wpDir}/" "*" | grep "${currentWpShasum}" && {
+proper_ls "*" "${wpDir}.orig.shasums" "${wpDir}" | grep "${currentWpShasum}" && {
     notify-send -w -u low -t 5000 -r "${nsSaveId}" -a "${shName}" \
     "${summeryWhSave}" \
     'wallpaper alredy saved' ; exit 1 ;

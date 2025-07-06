@@ -51,7 +51,7 @@ export EDITOR=${VISUAL}
         eval "$(ssh-agent)" && eval 'ssh-agent' ;
         [ -x "${HOME}/.local/scripts/update-env-conf.sh" ] &&
             "${HOME}"/.local/scripts/update-env-conf.sh
-    }
+    } >/dev/null 2>&1
     # --
 # --
 

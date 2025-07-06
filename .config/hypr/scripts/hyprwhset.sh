@@ -14,13 +14,16 @@ shName="$(basename "${0}")"
 # --
 
 # --
-type notify-send || { printf '%s\n' "notify-send is missing" ; exit 1 ; }
-type shasum curl jq hyprctl hyprpaper || {
-    notify-send -u critical -w -a "${shName}" \
-    "${summeryLocal:-${summeryWh}}" \
-    "missing dependencies check the script and your \$PATH" ;
-    exit 1 ;
-}
+shDeps="$(printf '%s\n' notify-send shasum curl jq hyprctl hyprpaper)"
+printf '%s' "${shDeps}" | while IFS= read -r dep ;
+do
+    type "${dep}" || {
+        notify-send -u critical -w -a "${shName}" \
+        "${summeryLocal:-${summeryWh}}" \
+        "missing dep ${dep} check the script and your \$PATH" ;
+        exit 1 ;
+    }
+done
 nsDelay='500'
 hyprPConf="$(realpath "${HOME}"'/.config/hypr/hyprpaper.conf')"
 [ ! -f "${hyprPConf}" ] && {
@@ -34,15 +37,17 @@ that was last set' ;
 
 # --
 proper_ls () {
-    _searchDir="${1}" ;
-    {
-        _searchRegX="$(printf '%s' "${2}")" ;
-        [ -n ${_searchDir} ] && {
-            find "${_searchDir}" \
-            ! \( -path "${_searchDir}"'/*/*' -prune \) \
-            -type f -name "${_searchRegX}" ;
-        } ;
-    } ; unset _searchDir _searchRegX _name ; return 0 ;
+    _searchRegX="$(printf '%s' "${1}")"
+    shift
+    until [ "${#}" -lt 1 ] ;
+    do
+        _selDir="${1}"
+        find "${_selDir%/}" \
+        ! \( -path "${_selDir%/}"'/*/*' -prune \) \
+        -type f -name "${_searchRegX}"
+        shift
+    done ;
+    unset _searchDir _searchRegX _selDir ; return 0 ;
 }
 # --
 
@@ -50,7 +55,7 @@ proper_ls () {
 flush_wp () {
     _traDir="${HOME}"/.local/share/graveyard ;
     [ ! -d "${_traDir}" ] && mkdir -p "${_traDir}" ;
-    proper_ls "${HOME}" "*.bg.*" |
+    proper_ls "*.bg.*" "${HOME}" |
         while IFS= read -r _wpFile
         do
             _wpFilep="${_wpFile%/*}"
@@ -86,7 +91,9 @@ get_rand_wp_from_local_dir () {
     _nlFList=$(find ~/Pictures/wallpapers/ -type f -print0 | tr '\0\n' '\n\0') ;
     _totFiles=$(printf '%s' "${_nlFList}" | wc -l) ;
     _max="${_totFiles}" ;
-    _number=$(($(od -An -N4 -tu /dev/urandom)${_min+%(${_max+$_max- }$_min+1)${_max++$_min}})) ;
+    _number=$((
+        $(od -An -N4 -tu /dev/urandom)${_min+%(${_max+$_max- }$_min+1)${_max++$_min}}
+    )) ;
     { 
         printf '%s' "${_nlFList}" |
         tr '\0\n' '\n\0' |
