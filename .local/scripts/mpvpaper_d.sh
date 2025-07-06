@@ -4,7 +4,7 @@
 }
 
 # --
-shName='mpvpaper_d.sh'
+shName='mpvpaper_d.sh' 
 shFPath="${HOME}"/.local/scripts/"${shName}"
 shPathError="script assumes ""${shFPath}"" is the path for itself, \
 simpily edit the variable 'shFPath' in the script, the script requiers \
