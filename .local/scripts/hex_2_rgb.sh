@@ -1,5 +1,5 @@
 #!/usr/bin/env dash
-hexinput=`echo $1 | tr '[:lower:]' '[:upper:]'`  # uppercase-ing
+hexinput=`echo $1 | tr '[:lower:]' '[:upper:]'`  # uppercase-ing 
 a=`echo $hexinput | cut -c-2`
 b=`echo $hexinput | cut -c3-4`
 c=`echo $hexinput | cut -c5-6`
