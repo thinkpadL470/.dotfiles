@@ -2,7 +2,7 @@
 
 # --
 shName="$(basename "${0}")"
-hash -r
+hash -r 
 shDeps="$(printf '%s\n' fzf find)"
 printf '%s\n' "${shDeps}" | while IFS= read -r dep ;
 do
