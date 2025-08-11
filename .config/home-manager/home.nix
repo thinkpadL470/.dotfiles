@@ -24,6 +24,7 @@
         pkgs.manix
         pkgs.shellcheck-minimal
         pkgs.fabric-ai
+        pkgs.vcv-rack
         # pkgs.kodi-wayland
         # # Adds the 'hello' command to your environment. It prints a friendly
         # # "Hello, world!" when run.

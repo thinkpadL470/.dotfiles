@@ -99,11 +99,11 @@ deskDir="/home/${USER}"
             [ "${baseDir}" = "${deskDir}" ] ||
             [ "${baseDir}" = "${termuxDir}" ] ;
         } && {
-            cd "$(find_cmd_Wargs 2>/dev/null | fzf_Wargs)" || exit ;
+            cd "$(find_cmd_Wargs 2>/dev/null | fzf_Wargs)" || return ;
         } ;
     } || {
         baseDir="${baseDirRoot}" ;
-        cd "$(find_cmd_Wargs -r 2>/dev/null | fzf_Wargs)" || exit ;
+        cd "$(find_cmd_Wargs -r 2>/dev/null | fzf_Wargs)" || return ;
     } ;
 }
 # --
