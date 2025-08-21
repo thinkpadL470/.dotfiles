@@ -1,6 +1,11 @@
 { config, pkgs, ... }:
 
 {
+    home-manager.useGlobalPkgs = true;
+    home-manager.useUserPackages = true;
+};
+
+{
     targets.genericLinux.enable = true;
     # Home Manager needs a bit of information about you and the paths it should
     # manage.
@@ -18,8 +23,6 @@
     
     # The home.packages option allows you to install Nix packages into your
     # environment.
-    home-manager.useGlobalPkgs = true;
-    home-manager.useUserPackages = true;
     home.packages = [
         pkgs.librewolf-wayland
         pkgs.rip2
