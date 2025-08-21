@@ -30,6 +30,7 @@
         pkgs.manix
         pkgs.shellcheck-minimal
         pkgs.fabric-ai
+        pkgs.helio-workstation
         # pkgs.vcv-rack
         # pkgs.kodi-wayland
         # # Adds the 'hello' command to your environment. It prints a friendly
