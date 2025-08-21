@@ -58,7 +58,7 @@ g_monitor_geometry () {
         # -- run wf_rec and wait for it to terminate, notify deamon when wf_rec starts and ends
         kill -USR1 "${rec_sc_dPID}" ; # change status to started recording
         wf-recorder \
-            --audio=RecordSink -r 24 \
+            --audio=RecordSink -R 96000 -r 24 \
             -f "${RecordDir}/${fnprefix:-screen-record}-$(date +%Y-%m-%d-%H-%M-%S).mkv" \
             -F "${wf_base_format}" -g "${geometry:-0,0 $(g_monitor_geometry)}" &
         wf_recPID=$! ;
