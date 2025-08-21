@@ -18,6 +18,8 @@
     
     # The home.packages option allows you to install Nix packages into your
     # environment.
+    home-manager.useGlobalPkgs = true;
+    home-manager.useUserPackages = true;
     home.packages = [
         pkgs.librewolf-wayland
         pkgs.rip2
