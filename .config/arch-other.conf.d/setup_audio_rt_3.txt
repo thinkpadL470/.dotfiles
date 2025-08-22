@@ -1,0 +1,6 @@
+16439  sudo mkdir -p /etc/security/limits.d/
+16440  echo "@audio    -  rtprio 95 
+@audio    -  memlock    unlimited" | sudo tee /etc/security/limits.d/audio.conf
+16441  sudo groupadd audio
+16442  sudo usermod -a -G gus
+16443  sudo usermod -a -G audio gus
