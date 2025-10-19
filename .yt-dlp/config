@@ -1,25 +1,20 @@
-# [YTDLP_CONF]
 --user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36'
-  # [ALAISES]
-    --alias gulopt,-X "--user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36' --no-restrict-filenames --no-download-archive --flat-playlist --print filename"
-    --alias dlyts,-X "--sponsorblock-mark sponsor,selfpromo,preview -f '((bv*[vcodec~="'"vp*9*"'"]/bv*)+ba)/b' -o 'V-%(upload_date,release_date,modified_date|Unknown)s_%(title)s_%(id)s_%(duration_string)s.%(ext)s'"
-    --alias dlytsds,-X "--sponsorblock-mark sponsor,selfpromo,preview -f '((bv*[height<=720]/bv*[height<=480]/bv*)[vcodec~="'"vp*9*"'"][fps<=30]+ba)/((bv*[height<=720]/bv*[height<=480]/bv*)[fps<=30]+ba) / ((bv*[height<=720]/bv*[height<=480]/bv*)+ba/b)' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
-    --alias dlythds,-X "--sponsorblock-mark sponsor,selfpromo,preview -f '((bv*[height<=1080]/bv*)[vcodec~="'"vp*9*"'"][fps<=30]+ba)/((bv*[height<=1080]/bv*)[fps<=30]+ba) / ((bv*[height<=1080]/bv*)+ba/b)' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
-    --alias dlyt,-X "-f '((bv*[vcodec~="'"vp*9*"'"]/bv*)+ba)/b' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s' "
-    --alias dlytsd,-X "-f '((bv*[height<=720]/bv*[height<=480]/bv*)[vcodec~="'"vp*9*"'"][fps<=30]+ba)/((bv*[height<=720]/bv*[height<=480]/bv*)[fps<=30]+ba) / ((bv*[height<=720]/bv*[height<=480]/bv*)+ba/b)' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
-    --alias dlythd,-X "-f '((bv*[height<=1080]/bv*)[vcodec~="'"vp*9*"'"][fps<=30]+ba)/((bv*[height<=1080]/bv*)[fps<=30]+ba) / ((bv*[height<=1080]/bv*)+ba/b)' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
-    --alias dlstsd,-X "--user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36' -f 'bv*[height<=720][fps<=30]+ba/bv*[format_id=720p30]+ba/bv*[format_id=720p]+ba/bv*[height<=480][fps<=30]+ba/bv*[format_id=480p30]+ba/bv*[format_id=480p]+ba/bv*[height<=720][fps<=30]/bv*[format_id=720p30]/bv*[format_id=720p]/bv*[height<=480][fps<=30]/bv*[format_id=480p30]/bv*[format_id=480p] / bv+ba/b' -o 'V-%(uploader)s__%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
-    --alias dlphsd,-X "-f 'b[height<=720]/b[height<=1080] / b' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
-    --alias dof,-X "-o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
-    --alias urls,-X "--skip-download --no-download-archive --flat-playlist -O 'https://www.%(webpage_url_domain)s/%(webpage_url_basename)s?v=%(id)s'"
-    --alias dateurls,-X "--skip-download --flat-playlist -O '%(upload_date,release_date,modified_date|Unknown)s https://www.%(webpage_url_domain)s/%(webpage_url_basename)s?v=%(id)s'"
-  # [FILES]
-    --prefer-free-formats
-    --restrict-filenames
-    --download-archive "./.dl-archive"
-    --cookies-from-browser firefox:~/.librewolf/c79gwmzx.default/
-  # [RETRY]
-    -R 5
-    --retry-sleep 10
-    --sleep-interval 3
-    --max-sleep-interval 7
+--alias gulopt,-X "--user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36' --no-restrict-filenames --no-download-archive --flat-playlist --print filename"
+--alias dlyts,-X "--sponsorblock-mark sponsor,selfpromo,preview -f '((bv*[vcodec~="'"vp*9*"'"]/bv*)+ba)/b' -o 'V-%(upload_date,release_date,modified_date|Unknown)s_%(title)s_%(id)s_%(duration_string)s.%(ext)s'"
+--alias dlytsds,-X "--sponsorblock-mark sponsor,selfpromo,preview -f '((bv*[height<=720]/bv*[height<=480]/bv*)[vcodec~="'"vp*9*"'"][fps<=30]+ba)/((bv*[height<=720]/bv*[height<=480]/bv*)[fps<=30]+ba) / ((bv*[height<=720]/bv*[height<=480]/bv*)+ba/b)' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
+--alias dlythds,-X "--sponsorblock-mark sponsor,selfpromo,preview -f '((bv*[height<=1080]/bv*)[vcodec~="'"vp*9*"'"][fps<=30]+ba)/((bv*[height<=1080]/bv*)[fps<=30]+ba) / ((bv*[height<=1080]/bv*)+ba/b)' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
+--alias dlyt,-X "-f '((bv*[vcodec~="'"vp*9*"'"]/bv*)+ba)/b' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s' "
+--alias dlytsd,-X "-f '((bv*[height<=720]/bv*[height<=480]/bv*)[vcodec~="'"vp*9*"'"][fps<=30]+ba)/((bv*[height<=720]/bv*[height<=480]/bv*)[fps<=30]+ba) / ((bv*[height<=720]/bv*[height<=480]/bv*)+ba/b)' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
+--alias dlythd,-X "-f '((bv*[height<=1080]/bv*)[vcodec~="'"vp*9*"'"][fps<=30]+ba)/((bv*[height<=1080]/bv*)[fps<=30]+ba) / ((bv*[height<=1080]/bv*)+ba/b)' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
+--alias dlstsd,-X "--user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36' -f 'bv*[height<=720][fps<=30]+ba/bv*[format_id=720p30]+ba/bv*[format_id=720p]+ba/bv*[height<=480][fps<=30]+ba/bv*[format_id=480p30]+ba/bv*[format_id=480p]+ba/bv*[height<=720][fps<=30]/bv*[format_id=720p30]/bv*[format_id=720p]/bv*[height<=480][fps<=30]/bv*[format_id=480p30]/bv*[format_id=480p] / bv+ba/b' -o 'V-%(uploader)s__%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
+--alias dlphsd,-X "-f 'b[height<=720]/b[height<=1080] / b' -o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
+--alias dof,-X "-o 'V-%(title)s__%(id)s__%(duration_string)s.%(ext)s'"
+--alias urls,-X "--skip-download --no-download-archive --flat-playlist -O 'https://www.%(webpage_url_domain)s/%(webpage_url_basename)s?v=%(id)s'"
+--alias dateurls,-X "--skip-download --flat-playlist -O '%(upload_date,release_date,modified_date|Unknown)s https://www.%(webpage_url_domain)s/%(webpage_url_basename)s?v=%(id)s'"
+--prefer-free-formats
+--restrict-filenames
+--download-archive "./.dl-archive"
+-R 5
+--retry-sleep 3
+--sleep-interval 10
+--max-sleep-interval 20

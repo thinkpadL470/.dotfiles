@@ -44,10 +44,10 @@ set history true
 
     # -- NAV
     cmd fcd ${{
-        export selected_dir=$(~/.local/scripts/fzf_dir_jump.sh)
+        export selected_dir="$(${HOME}/.local/scripts/fzf_dir_jump.sh)"
         [ -d "${selected_dir}" ] && cmd="cd"
         lf -remote "send $id $cmd \"${selected_dir}\""
-        unset selected_dir
+        unset selected_dir cmd
     }}
     # --
 # --

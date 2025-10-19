@@ -1,0 +1,57 @@
+#!/usr/bin/env dash
+set -x
+shName="$(basename "${0}")"
+fail='Failed loading video'
+url="$(wl-paste)"
+case ${url} in
+    https://*)
+        mpvPipe=$(mktemp -u "${HOME}"/tmp/mpv.pipe.XXXXXX)
+        mpvFlag=$(mktemp "${HOME}"/tmp/mpv.loaded.XXXXXX) || exit 1
+        : >"${mpvFlag}"
+        
+        mkfifo "${mpvPipe}" || {
+            notify-send -u critical -a \
+            "${shName}" "${fail}" "mkfifo failed" ;
+            exit 1 ;
+        }
+
+    (
+        ( while IFS= read -r line ;
+            do
+                case "${line}" in
+                    *FILE_LOADED*)
+                        [ ! -s "${mpvFlag}" ] && printf '%s' "ok" >"${mpvFlag}" ;;
+                esac
+            done <"${mpvPipe}"
+        ) &
+        flagReaderPid=$!
+
+        trap '' HUP
+        mpv --mute=yes --term-playing-msg='FILE_LOADED' \
+            -- "${url}" >"${mpvPipe}" 2>/dev/null &
+        mpvPid=$!
+        trap - HUP
+
+        while :;
+        do
+            [ -s "${mpvFlag}" ] && {
+                notify-send -u normal -a \
+                "${shName}" "Video loaded" "Started: ${url}" ;
+                break
+            }
+            ! kill -0 "${mpvPid}" 2>/dev/null && break
+            sleep 0.05
+        done
+
+        wait "${mpvPid}"
+        rc=$?
+        [ ! -s "${mpvFlag}" ] && {
+            notify-send -u critical -a \
+            "${shName}" "${fail}" "mpv could not load: ${url} (exit ${rc})" ;
+        }
+        kill "${flagReaderPid}" 2>/dev/null
+        rm -f "${mpvPipe}" "${mpvFlag}"
+    ) &
+        ;;
+    *) notify-send -u critical -a "${shName}" "${fail}" "paste is not https link" ;;
+esac

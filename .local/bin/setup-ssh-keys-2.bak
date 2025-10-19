@@ -1,0 +1,225 @@
+#!/usr/bin/env dash
+set -eu
+
+shName=$(basename "$0")
+
+die() { printf '%s: %s\n' "$shName" "$*" >&2; exit 1; }
+msg() { printf '%s\n' "$*"; }
+
+usage() {
+  printf '%s\n' "$shName: provision an SSH host and create a config.d entry" \
+" " \
+"Required:" \
+"    -a <alias>      Host alias name (min 4 chars recommended)" \
+"    -h <hostname>   Target hostname or IP" \
+"    -u <user>       Remote username" \
+"    -f <file>       Key filename (no path); stored at \$HOME/.ssh/<file>" \
+" " \
+"Optional:" \
+"    -p <port>       SSH port (default: 22)" \
+"    -t <type>       Key type for ssh-keygen (default: ed25519)" \
+" " \
+"Long option aliases supported:" \
+"    --host-alias, --hostname, --user, --port, --filename, --keytype"
+}
+
+require_cmds() {
+    printf '%s\n' "$@" |
+        while IFS= read -r ReqCommand ;
+        do
+            command -v "${ReqCommand}" >/dev/null 2>&1 ||
+                die "missing required binary: ${ReqCommand}"
+        done
+}
+
+map_long_opts() {
+    while [ "$#" -gt 0 ]
+    do
+        case $1 in
+            --host-alias) printf '%s %s ' -a "$2"; shift 2 ;;
+            --hostname) printf '%s %s ' -h "$2"; shift 2 ;;
+            --user) printf '%s %s ' -u "$2"; shift 2 ;;
+            --port) printf '%s %s ' -p "$2"; shift 2 ;;
+            --filename) printf '%s %s ' -f "$2"; shift 2 ;;
+            --keytype) printf '%s %s ' -t "$2"; shift 2 ;;
+            --) shift; break ;;
+            -*)
+                printf '%s ' "$1"; [ "${2-}" ] &&
+                    case $1 in
+                        -[ahufpt]) printf '%s ' "$2"; shift 2 ;;
+                        *) shift ;;
+                    esac
+            ;;
+            *) printf '%s ' "$1"; shift ;;
+        esac
+    done
+}
+
+ssh_do() {
+    _remote=$1 ; shift || true
+    _cmd=$*
+    set -- -p "${sshPort}"
+
+    IFS='
+'
+    while IFS= read -r _opt ;
+    do
+        [ -n "${_opt}" ] && set -- "$@" -o "${_opt}"
+    done <<SSH_O_LIST
+${sshOList}
+SSH_O_LIST
+    IFS=' '
+    { [ -n "${_cmd}" ] && ssh "$@" "${_remote}" "${_cmd}" ; } || ssh "$@" "${_remote}"
+}
+
+sshcopyid_do() {
+    _remote=$1
+    set -- -p "${sshPort}" -i "${HOME}/.ssh/${keyFilename}.pub"
+    IFS='
+'
+    while IFS= read -r _opt ;
+    do
+        [ -n "${_opt}" ] && set -- "$@" -o "${_opt}"
+    done <<SSH_O_LIST
+${sshOList}
+SSH_O_LIST
+    IFS=' '
+    ssh-copy-id "$@" "${_remote}"
+}
+
+ssh_copy_id() {
+    {
+        command -v ssh-copy-id >/dev/null 2>&1 &&
+        {
+            msg "Copying public key to ${targetUser}@${targetHostname} (may ask for password)…"
+            sshcopyid_do "${targetUser}@${targetHostname}" ;
+        } ;
+    } || {
+        msg "ssh-copy-id not found; doing manual copy (will ask for password)…" ;
+        set -- -p "${sshPort}"
+        IFS='
+'
+        while IFS= read -r _opt ;
+        do
+            [ -n "${_opt}" ] && set -- "$@" -o "${_opt}"
+        done <<SSH_O_LIST
+${sshOList}
+SSH_O_LIST
+        IFS=' '
+        ssh "$@" "${targetUser}@${targetHostname}" \
+            'umask 077; mkdir -p ~/.ssh; cat >> ~/.ssh/authorized_keys' \
+            < "${HOME}/.ssh/${keyFilename}.pub" ;
+    }
+}
+
+require_cmds ssh ssh-keygen chmod
+
+sshPort='22'
+defaultCryptoKeytype='ed25519'
+sshOList='PubkeyAuthentication=no PasswordAuthentication=yes'
+targetHostAlias=''
+targetHostname=''
+targetUser=''
+keyFilename=''
+
+[ "${1-}" = "-h" ] || [ "${1-}" = "--help" ] && { usage; exit 0 ; }
+set -- "$(map_long_opts "$@")"
+while getopts ":a:h:u:p:f:t:o:" opt ;
+do
+    case $opt in
+        a) targetHostAlias=$OPTARG ;;
+        h) targetHostname=$OPTARG ;;
+        u) targetUser=$OPTARG ;;
+        p) sshPort=$OPTARG ;;
+        f) keyFilename=$OPTARG ;;
+        t) defaultCryptoKeytype=$OPTARG ;;
+        o) sshOList=${sshOList}"\n${OPTARG}" ;;
+        \?) usage ; die "unknown option: -$OPTARG" ;;
+        :) usage ; die "option -$OPTARG requires an argument" ;;
+    esac
+done
+shift $((OPTIND-1))
+
+[ -n "$targetHostAlias" ] || die "missing -a <alias>"
+[ -n "$targetHostname" ] || die "missing -h <hostname>"
+[ -n "$targetUser" ] || die "missing -u <user>"
+[ -n "$keyFilename" ] || die "missing -f <file>"
+
+printf '%s\n' "\
+Transferring key from ${HOME}/.ssh/${keyFilename}
+to ${targetUser}@${targetHostname}
+using options '${sshOList}'
+
+Press ENTER to continue or CTRL-C to abort"
+IFS= read -r _junk || true
+
+{
+    [ -f "${HOME}/.ssh/${keyFilename}" ] && 
+        msg "Using existing key: ${keyFilename}" ;
+} || {
+  msg "Creating a new key with ssh-keygen (${defaultCryptoKeytype})…"
+  ssh-keygen \
+      -t "${defaultCryptoKeytype}" \
+      -f "${HOME}/.ssh/${keyFilename}" || die "ssh-keygen failed" ;
+}
+
+[ -f "${HOME}/.ssh/${keyFilename}.pub" ] || die "missing public key ${keyFilename}.pub"
+msg "key info: $(ssh-keygen -l -f "${HOME}/.ssh/${keyFilename}")"
+
+mkdir -p "${HOME}/.ssh"
+chmod 700 "${HOME}/.ssh" 2>/dev/null || true
+chmod 600 "${HOME}/.ssh/${keyFilename}"
+chmod 600 "${HOME}/.ssh/${keyFilename}.pub"
+
+printf 'Copy key now? [y/n]: ' ; IFS= read -r ans || true
+[ "$ans" = "y" ] && {
+    ssh_copy_id || die "copying public key failed"
+    msg "Adjusting permissions remotely (may ask password once more)…"
+    ssh_do "${targetUser}@${targetHostname}" \
+        'chmod go-w "${HOME}" && chmod 700 "${HOME}/.ssh" && chmod 600 "${HOME}/.ssh/authorized_keys"' ||
+        die "remote chmod failed" ;
+}
+
+confDir="${HOME}/.ssh/config.d"
+mkdir -p "${confDir}"
+chmod 700 "${confDir}"
+
+{
+    [ "${#targetHostAlias}" -lt 4 ] &&
+        {
+            msg "Alias should be at least 4 characters."
+            printf 'Use key filename "%s" instead? [1] or enter new alias [2]: ' "${keyFilename}"
+            IFS= read -r pick || true
+            [ "${pick}" = "1" ] && { targetHostAlias=${keyFilename} ; } ;
+        } ;
+} || {
+    printf 'New alias: '; IFS= read -r targetHostAlias || true
+    [ -n "${targetHostAlias}" ] || die "empty alias" ;
+}
+
+confPath="${confDir}/${targetHostAlias}.conf"
+confContent=$(printf '%s\n' \
+"Host ${targetHostAlias}" \
+"    HostName ${targetHostname}" \
+"    User ${targetUser}" \
+"    Port ${sshPort}" \
+"    IdentityFile ${HOME}/.ssh/${keyFilename}"
+)
+
+printf '\nAbout to write %s with:\n\n%s\n\nProceed? [y/n]: ' "${confPath}" "${confContent}"
+IFS= read -r go || true
+[ "${go}" = "y" ] && {
+    printf '%s\n' "${confContent}" > "${confPath}" ;
+    chmod 600 "${confPath}" ;
+}
+
+[ -f "${HOME}/.ssh/config" ] && chmod 600 "${HOME}/.ssh/config"
+
+printf '%s' \
+" " \
+"If it still does not work:" \
+"- Ensure the key type is supported on the server (e.g. dsa is deprecated)." \
+"- Try: ssh -v <alias>   and read the diagnostics."
+
+adjCmd=$(printf 'ssh %s' "${sshOList}" | sed 's/ PubkeyAuthentication=no//')
+printf '\nSetup finished. Try:\n  %s %s\n' "${adjCmd}" "${targetHostAlias}"

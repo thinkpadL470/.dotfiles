@@ -10,19 +10,18 @@
 # --
 
 # -- VARIABLES
-[ ! -d "data/data/com.termux" ] && export \
-    PS1=$'\\[\e[38;2;212;212;67m\\]\u256D\u2574'"(\[\e[38;2;129;224;255m\]\u\[\e[38;2;142;178;33m\]@\[\e[38;2;164;143;230m\]\h\[\e[38;2;212;212;67m\]) \W \n\[\033[0m\]"$'\\[\e[38;2;212;212;67m\\]\u2570'"$\[\e[38;2;231;187;198m\] "
-    PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
-[ -d "data/data/com.termux" ] && export \
-    PS1=$'\\[\e[38;2;212;212;67m\\]\u256D\u2574'"\[\e[38;2;129;224;255m\]\u\[\e[38;2;142;178;33m\]@\[\e[38;2;164;143;230m\]\h \[\e[38;2;212;212;67m\]\W \n\[\033[0m\]"$'\\[\e[38;2;212;212;67m\\]\u2570'"$\[\e[38;2;231;187;198m\] "
-    PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
+PS1=$'\\[\e[38;2;212;212;67m\\]\u256D\u2574'"(\[\e[38;2;129;224;255m\]\u\[\e[38;2;142;178;33m\]@\[\e[38;2;164;143;230m\]\h\[\e[38;2;212;212;67m\]) \W \n\[\033[0m\]"$'\\[\e[38;2;212;212;67m\\]\u2570'"$\[\e[38;2;231;187;198m\] "
+PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
+# [ -d "data/data/com.termux" ] && export \
+#     PS1=$'\\[\e[38;2;212;212;67m\\]\u256D\u2574'"\[\e[38;2;129;224;255m\]\u\[\e[38;2;142;178;33m\]@\[\e[38;2;164;143;230m\]\h \[\e[38;2;212;212;67m\]\W \n\[\033[0m\]"$'\\[\e[38;2;212;212;67m\\]\u2570'"$\[\e[38;2;231;187;198m\] "
+#     PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
 # --
 
 # -- Desktop vars
 [ -n "${XDG_CURRENT_DESKTOP}" ] && {
-    export OPENER="xdg-open"
-lwbinary=$(type librewolf) &&
-    export  BROWSER="${lwbinary##* }"
+    export OPENER="xdg-open" \
+    lwbinary=$(type librewolf) \
+    BROWSER="${lwbinary##* }"
 }
 # --
 

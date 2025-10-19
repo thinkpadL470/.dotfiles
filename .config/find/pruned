@@ -2,6 +2,8 @@
 -path /proc -prune -o
 -path /sys -prune -o
 -path /run -prune -o
+-path /var/run -prune -o
+-path /dev/fd -prune -o
 -path *\/[Gg]o -prune -o
 -path *\/[Pp]ython* -prune -o
 -path *\/[Ii]nclude -prune -o
@@ -9,6 +11,8 @@
 -path *\/[Nn]ode_modules -prune -o
 -path *\/[Mm]odules -prune -o
 -path *\/site-local -prune -o
+-path *\/nix* -prune -o
+-path *\/.nix* -prune -o
 -path *\/ghc-* -prune -o
 -path *\/jvm* -prune -o
 -path *\/texmf-dist* -prune

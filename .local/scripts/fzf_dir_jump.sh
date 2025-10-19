@@ -110,10 +110,12 @@ deskDir="/home/${USER}"
 
 # -- IN_LF
 [ -n "$lf" ] && {
-    { [ "${baseDir}" = "/home/${USER}" ] &&
-        find_cmd_Wargs 2>/dev/null | fzf_Wargs ; exit ;
-    } || {
-        find_cmd_Wargs -r 2>/dev/null | fzf_Wargs ; exit ;
-    };
+    {
+        [ "${baseDir}" = "/home/${USER}" ] && {
+            find_cmd_Wargs 2>/dev/null | fzf_Wargs || exit ;
+        } || {
+            find_cmd_Wargs -r 2>/dev/null | fzf_Wargs || exit ;
+        } ;
+    } ;
 }
 # --

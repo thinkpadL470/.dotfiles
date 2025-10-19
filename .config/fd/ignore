@@ -2,6 +2,8 @@
 /proc
 /sys
 /run
+/var/run
+/dev/fd
 *[Gg]o
 *[Pp]ython*
 *[Ii]nclude
@@ -9,6 +11,8 @@
 *[Nn]ode_modules
 *[Mm]odules
 *site-local
+*nix*
+*.nix*
 *ghc-*
 *jvm*
 *texmf-dist*

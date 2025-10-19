@@ -56,8 +56,8 @@ export EDITOR=${VISUAL}
 # --
 
 # -- GLOBAL
-[ -f "${HOME}/.bashrc" ] &&
-    . "${HOME}"/.bashrc
+[ ! "${0}" = "dash" ] && [ -f "${HOME}/.bashrc" ] &&
+    . "${HOME}"/.bashrc ;
 # --
 
 # -- NIX

@@ -6,8 +6,6 @@
 
     # -- SETTINGS
     set editing-mode vi
-    set colored-stats on 
-    set colored-completion-prefix on
     set completion-ignore-case on
     set show-mode-in-prompt on
     # set mark-modified-lines on

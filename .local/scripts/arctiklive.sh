@@ -14,8 +14,8 @@ cleanup () {
 # --
 
 # -- setup traps
-trap "exit" INT TERM HUP QUIT
-trap "cleanup ; kill -- -$$" EXIT
+trap 'exit' INT TERM HUP QUIT
+trap 'cleanup ; kill -- -$$' EXIT
 # --
 
 # -- run tikliverec py script for every user and wait
@@ -29,7 +29,7 @@ do
             python3 main.py \
             -mode automatic \
             -user "${usr}" \
-            -output "/mnt/sm3-1-1/Videos/arctiklive/"
+            -output "/mnt/sm3-1-1/Videos/arctiklive_9a56899871ea6fff8c965f98a57c050e51acfee5/"
     done &
 done ;
 wait

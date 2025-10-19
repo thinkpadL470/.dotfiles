@@ -1,8 +1,9 @@
 # -- GLOBAL_ALIASES
 alias \
-    ct="clear" \
+    ct="clear ; clear" \
     ls="ls --color=auto" \
     lm="ls -rt1" \
+    ll="ls -al"
     cp="cp -iv" \
     mv="mv -iv" \
     mkd="mkdir" \
@@ -24,12 +25,11 @@ alias \
     imv="imv -r" \
     tmuxk="tmux kill-session -t" \
     cbp="wl-paste" \
-    cbc="wl-copy" \
+    cbc="wl-copy"
 # --
 
 # -- TERMUX_ALIASES
 [ -d /data/data/com.termux ] && alias \
-    sshadd="ssh-add ~/.ssh/*-rsa" \
     sshconf="nvim ~/../usr/etc/ssh/sshd_config" \
     cbc="termux-clipboard-set" \
     cbp="termux-clipboard-get"
@@ -41,11 +41,10 @@ alias \
         mpkg="makepkg -cirs --config '~/.makepkg.conf'" \
         pacman="pacman --config "${PACMCONF}"" \
         downgrade="downgrade --pacman-conf "${PACMCONF}"" \
-        paclunneeded="pacman -Qqd | pacman -Rsu --print -" \
+        paclunneeded="pacman -Qqd | pacman -Rsu --print -"
 # --
 
 # -- FUNC
-[ -d ~/.local/func ] && alias \
-    fcd=". ~/.local/scripts/fzf_dir_jump.sh" \
-    lf="~/.local/scripts/lf_wrapper.sh"
+[ -d ~/.local/scripts ] && alias \
+    fcd=". ~/.local/scripts/fzf_dir_jump.sh"
 # --

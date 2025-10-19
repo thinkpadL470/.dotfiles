@@ -1,0 +1,280 @@
+#!/usr/bin/env dash
+
+# -- dependencies
+hash -r
+shName="$(basename "${0}")"
+depArgs="ssh ssh-keygen ip chmod grep"
+{ printf '%s\n' "${depArgs}" |
+    while IFS= read -r dep ;
+    do
+        type "${dep}" || {
+            printf '%s\n' "${shName}: missing requierd binary ${dep}" ;
+            exit 1 ;
+        } ;
+    done ;
+}
+[ "${#}" -lt 1 ] && { usage ; exit 1 ; }
+# --
+
+# -- functions
+
+    # -- info functions
+    usage () {
+        printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s' \
+            "${shName}: Specify some parameters, valid ones are:" \
+            "-a (--host-alias) <host>, (requierd)" \
+            "-h (--hostname)   <hostname>, (requierd) default: list ips in current network" \
+            "-u (--user)       <username>, (requierd)" \
+            "-p (--port)       <port>,     default: 22" \
+            "-f (--file)       <file>, (requierd)" \
+            "-t (--keytype)    <type>,     default: ${defaultCryptoKeytype}," ;
+        return 0 ;
+    } ;
+
+    gen_host_conf_file () {
+        printf '%s\n%s\n%s\n%s\n%s\n' \
+            "Host ${targetHostAlias:-${keyFilename}}" \
+            "    Hostname ${targetHostname}" \
+            "    User ${targetUser}" \
+            "    Port ${sshPort}" \
+            "    IdentityFile ${HOME}/.ssh/${keyFilename}" ;
+        return 0 ;
+    } ;
+    # --
+
+    # -- functionality functions
+    pseq () {
+        _minNum="${1}" ;
+        _stepCount="${2}" ;
+        _maxNum="${3}" ;
+        while [ "${_minNum}" -lt "$(( _maxNum + 1 ))" ]
+        do
+            printf '%s\n' "${_minNum}"
+            local _minNum=$(( _minNum + _stepCount ))
+        done ;
+        unset _minNum _stepCount _maxNum ; return 0 ;
+    } ;
+
+    ssh_copy_keyid_methods () {
+        ! type ssh-copy-id > /dev/null 2>/dev/null && {
+            printf '\n%s%s\n' \
+                "${shName}: Could not find ssh-copy-id " \
+                "executable, using manual copy instead" ;
+            ssh -o "${sshOpt}" -p "${sshPort}" "${targetUser}@${targetHostname}" \
+                'cat >> ~/.ssh/authorized_keys' < "${HOME}"/.ssh/"${keyFilename}".pub ;
+            _ret="${?}" ;
+        } ;
+        type ssh-copy-id >/dev/null 2>&1 && {
+            printf '\n%s%s%s\n' \
+                "Copying the key to the remote machine " \
+                "${targetUser}@${targetHostname}, " \
+                "this usually will ask for the password" ;
+            ssh-copy-id \
+                -i "${HOME}/.ssh/${keyFilename}.pub" \
+                -o "${sshOpt}" \
+                -p "${sshPort}" "${targetUser}@${targetHostname}" ; _ret="${?}" ;
+        } ;
+        [ "${_ret}" -gt 0 ] && {
+            printf '%s\n' "${shName}: ssh_copy_keyid_methods: copying ssh id failed" ;
+            unset _ret ; return 1 ;
+        }
+        unset _ret ; return 0 ;
+    } ;
+
+    choose_ip () {
+        _netIpA=$({
+            ip a |
+            sed '/\(\ lo\|inet6\)/d' |
+            grep inet |
+            cut -d ' ' -f '6' |
+            head -n1 ;
+        }) ;
+        _IpsToTest=$(printf "${_netIpA%.*}.%s\n" "$(pseq 1 1 254 | tr '\n' ' ')") ;
+        _avalibleIps=$({
+            for ip in ${_IpsToTest}
+            do
+                ping -c 1 -W 1 "${ip}" 2>/dev/null | grep "64 bytes" &
+            done |
+            cut -d ' ' -f '4' | tr -d ':' ;
+        }) ;
+        [ -z "${targetHostname}" ] && {
+            _networkIpList=$({ printf '%s\n' \
+                "${_avalibleIps}" | nl -n ln -s' ' | tr -s ' ' ;
+            }) ;
+            _numberOfIps=$({ printf '%s\n' \
+                "${_networkIpList}" | wc -l ;
+            }) ;
+            printf '%s\n%s\n%s' \
+                "${_networkIpList}" \
+                "target host not specified" \
+                "${shName}: choose_ip: select target host: "
+            while true
+            do
+                read -r selection
+                { [ "${selection}" -eq "${selection}" ] &&
+                    [ "${selection}" -gt 0 ] &&
+                    [ "${selection}" -le "${_numberOfIps}" ] &&
+                    break ;
+                } || {
+                        printf '%s%s%s\n%s\n' \
+                            "${shName}: choose_ip: " \
+                            "index ${selection} is higer than " \
+                            "index max ${_numberOfIps} " \
+                            "select a valid number in the index of the ips" ;
+                        printf '%s\n%s\n' "${_networkIpList}" \
+                            "${shName}: choose_ip: select target host: " ;
+                } ;
+            done ;
+            _chosenHostName=$({ printf '%s\n' \
+                "${_networkIpList}" | sed -n ''"${selection}"'p' ;
+            }) ;
+            printf '%s' "${_chosenHostName##* }" ;
+            unset _networkIpList _numberOfIps _chosenHostName ; return 0 ;
+        } ;
+    };
+    # --
+# --
+
+set -x
+# -- analyse perameters
+defaultCryptoKeytype='ed25519'
+sshOpt='PubkeyAuthentication no'
+while [ "${#}" -gt 0 ]
+do
+    key="${1}" ; shift
+    case ${key} in
+        -a*|--host-alias) targetHostAlias="${1}" ; shift
+            ;;
+        -h*|--hostname) targetHostname="${1}" ; shift
+            ;;
+        -u*|--user) targetUser="${1}" ; shift
+            ;;
+        -p*|--port) sshPort="${1}" ; shift
+            ;;
+        -f*|--filename) keyFilename="${1}" ; shift
+            ;;
+        -t*|--keytype) defaultCryptoKeytype="${1}" ; shift
+            ;;
+        *) usage ;
+            printf '%s\n' "${shName}: unknown parameter: ${key}"
+            exit 1
+            ;;
+    esac
+done
+{ [ -z "${targetHostAlias}" ] ||
+    [ -z "${targetHostname}" ] ||
+    [ -z "${targetUser}" ] ||
+    [ -z "${keyFilename}" ] && {
+        printf '%s%s' "${shName}: requierd args are -a -h -u -f, with apropiet arg " \
+        "provided to each" ; exit 1 ;
+    } ;
+}
+[ -z "${targetHostname}" ] && targetHostname=$(choose_ip)
+# --
+
+# -- start script
+    printf '\n%s%s\n%s\n\n%s\n' \
+        "Transferring key from ${HOME}/.ssh/${keyFilename} " \
+        "to ${targetUser}@${targetHostname}" \
+        "using options '${sshOpt}' " \
+        "Press ENTER to continue or CTRL-C to abort" ;
+    read -r nonsense ; printf '%s' "${nonsense}" ;
+    
+    # -- keygen
+    [ -f "${HOME}"/.ssh/"${keyFilename}" ] && printf '\n%s\n' "Using existing key"
+    [ ! -f "${HOME}"/.ssh/"${keyFilename}" ] && {
+        printf '\n%s\n' \
+            "Creating a new key using ssh-keygen" ;
+        ssh-keygen \
+            -t "${defaultCryptoKeytype}" \
+            -f "${HOME}"/.ssh/"${keyFilename}" ||
+        { printf '%s\n' "${shName}: ssh-keygen failed" ; exit 1 ; }
+    }
+
+        # -- check keys
+        [ ! -f "${HOME}"/.ssh/"${keyFilename}".pub ] && {
+            printf '%s\n' "${shName}: didnt find the expected .pub key file" ; exit 2 ;
+        }
+        printf '%s\n' "key info: $(ssh-keygen -l -f "${keyFilename}")"
+        # --
+
+        # -- adjust premissions
+        [ -f "${HOME}"/.ssh/"${keyFilename}" ] && {
+            printf '\n%s\n' \
+                "Adjust permissions of generated key-files locally" ;
+            chmod 0600 \
+                "${HOME}"/.ssh/"${keyFilename}" \
+                "${HOME}"/.ssh/"${keyFilename}".pub ||
+            { printf '%s\n' "${shName}: chmod failed" ; exit 1 ; } ;
+        }
+        # --
+    # --
+
+    # -- copy key
+    printf '%s\n%s' "about to copy key, y to proccede, n to skip" "[y,n]: " ; read -r ans
+    [ "${ans}" = y ] && {
+        { ssh_copy_keyid_methods || { printf '%s' "${shName}: ssh_copy_key_methods failed" ; exit 1 ; } ; } && {
+            printf '\n%s%s\n' \
+                "Adjusting permissions to avoid errors in ssh-daemon, " \
+                "this may ask once more for the password" ; 
+            ssh -o "${sshOpt}" "${targetUser}@${targetHostname}" \
+                "chmod go-w ~ && chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys" ||
+            { printf '%s\n' "${shName}: ssh-chmod failed" ; exit 1 ; } ;
+        } ;
+    } ; unset ans
+    # --
+
+    # -- generate config
+    [ ! -d "${HOME}/.ssh/config.d" ] && {
+        mkdir -m 700 "${HOME}"/.ssh ; mkdir -m 700 "${HOME}"/.ssh/config.d ;
+    }
+
+        # --
+        [ "${#targetHostAlias}" -gt 3 ] && {
+            until [ "${#targetHostAlias}" -gt 3 ] ;
+            do
+            printf '%s\n%s\n%s' \
+                "${shName}: alias has to be atleast 4 charecters" \
+                "use ${keyFilename} instead?[1] or change ${targetHostAlias}[2]" \
+                "[1,2]: " ; read -r ans
+            [ "${ans}" = 1 ] && { unset ans ; targetHostAlias="${keyFilename}" ; }
+            [ "${ans}" = 2 ] && {
+                unset ans ;
+                printf '\n%s\n%s' "provide new alias" "targetHostAlias: " ;
+                read -r ans ;
+                targetHostAlias=${ans} ;
+            }
+            done ;
+        }
+        # --
+
+        # -- inform operations and generate/save
+        DFPTxtConfF="${HOME}"/.ssh/config.d/"${targetHostAlias}".conf
+        confIdFile="$(gen_host_conf_file)"
+        printf '\n%s\n' \
+            "about to generate ${DFPTxtConfF}, that contains:" \
+            "${confIdFile}" \
+            "proccede [y,n]: " ;
+        read -r ans ;
+        [ "${ans}" = "y" ] && { printf '%s\n' "${confIdFile}" > "${DFPTxtConfF}" ; }
+        chmod 700 "${HOME}"/.ssh/config.d
+        chmod 600 "${HOME}"/.ssh/config "${HOME}"/.ssh/config.d/*.conf
+        # --
+    # --
+
+    # -- inform
+    printf '\n%s\n%s%s\n%s' \
+        "If it still does not work, you can try the following steps:" \
+        "- Make sure the type of key is supported, " \
+        "e.g. 'dsa' is deprecated and might be disabled" \
+        "- Try running ssh with '-v' and look for clues in the resulting output" ;
+    adjustedSshCmd="$({
+        printf '\n%s\n' \
+            "ssh ${sshOpt}" |
+            sed -e 's/\ PubkeyAuthentication=no//g' ;
+    })"
+    printf '\n%s\n%s\n' \
+        "Setup finished, now try to run:" \
+        "${adjustedSshCmd} ${targetHostAlias}"
+    # --
+# -- end script
