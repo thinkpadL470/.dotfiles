@@ -96,6 +96,6 @@ trueOrphans="$(pacman -Qtdq || true)"
 [ -n "${trueOrphans}" ] && {
     printf '%s\n' "${trueOrphans}" > ~/.config/pacman/syscpkglist.txt ;
     printf '%s\n' "${trueOrphans}" | run_priv xargs -r pacman --noconfirm -Rns ;
-}
+} 
 run_priv pacman --noconfirm -Sc
 run_priv paccache -r
